@@ -5,9 +5,9 @@
   <name>Config</name>
   <summary>Class for reading and writing Config-"files"</summary>
   <maintainer>
-    <initials>AM</initials>
+    <user>alexmerz</user>
     <name>Alexander Merz</name>
-    <email></email>
+    <email>alexander.merz@t-online.de</email>
   </maintainer>
   <release>
     <version>0.2.2</version>
