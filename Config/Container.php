@@ -17,6 +17,8 @@
 //
 // $Id$
 
+require_once('Config.php');
+
 /**
 * Interface for Config containers
 *
@@ -27,6 +29,7 @@ class Config_Container {
 
     /**
     * Container object type
+    * Ex: section, directive, comment, blank
     * @var  string
     */
     var $type;
@@ -56,12 +59,6 @@ class Config_Container {
     var $parent;
 
     /**
-    * Contains the options used by the parser
-    * @var array
-    */
-    var $options = array();
-
-    /**
     * Constructor
     *
     * @param  string  type      (optional)Type of container object
@@ -77,81 +74,122 @@ class Config_Container {
     } // end constructor
 
     /**
-    * Adds an item to this item.
+    * Create a child for this item.
     * @param  string  type      type of item: directive, section, comment, blank...
-    * @param  mixed   item      item name or an item container object
-    * @param  string  content   object content
-    * @return object  reference to new item
+    * @param  mixed   item      item name
+    * @param  string  content   item content
+    * @return object  reference to new item or Pear_Error
     */
-    function &addItem($type = null, $item = null, $content = '')
+    function &createItem($type, $item, $content, $where = 'bottom', $target = null)
     {
-        $index = sizeof($this->children);
-        if (is_null($item))
-            $item = '';
-        if (is_object($item) && is_a($item, 'config_container')) {
-            $this->children[$index] = $item;
-            $this->children[$index]->parent =& $this;
-        } elseif (is_string($item)) {
-            $currentContainer = get_class($this);
-            $this->children[$index] = new $currentContainer($type, $item, $content);
-            $this->children[$index]->parent =& $this;
-        } else {
-            return PEAR::raiseError('Cannot add child in Config_Container::addItem.', null, PEAR_ERROR_RETURN);
+        if ($this->type != 'section') {
+            return PEAR::raiseError('Config_Container::createItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
         }
+        if (is_null($target)) {
+            $target =& $this;
+        }
+        if (!is_object($target) || !is_a($target, 'Config_Container')) {
+            return PEAR::raiseError('Target must be a Config_Container object in Config_Container::createItem.', null, PEAR_ERROR_RETURN);
+        }
+
+        switch ($where) {
+            case 'before':
+                $index = $target->getItemIndex();
+                break;
+            case 'after':
+                $index = $target->getItemIndex()+1;
+                break;
+            case 'top':
+                $index = 0;
+                break;
+            case 'bottom':
+                $index = -1;
+                break;
+            default:
+                return PEAR::raiseError('Use only top, bottom, before or after in Config_Container::insertItem.', null, PEAR_ERROR_RETURN);
+        }
+        if (isset($index) && $index >= 0) {
+            array_splice($this->children, $index, 0, 'tmp');
+        } else {
+            $index = sizeof($this->children);
+        }
+        $currentContainer = get_class($this);
+        $itemObj =& new $currentContainer($type, $item, $content);
+        $this->children[$index] =& $itemObj;
+        $this->children[$index]->parent =& $this;
+
         return $this->children[$index];
-    } // end func &addItem
+    } // end func &createItem
+    
+    /**
+    * Adds an item to this item.
+    * @param  object   item      a container object
+    * @return true on success, Pear_Error on error
+    */
+    function addItem(&$item, $where = 'bottom', $target = null)
+    {
+
+        $index = sizeof($this->children);
+        if (is_object($item) && is_a($item, 'config_container')) {
+            $this->children[$index] =& $item;
+            $this->children[$index]->parent =& $this;
+            return true;
+        } else {
+            return PEAR::raiseError('Child must be a Config_Container object for Config_Container::addItem.', null, PEAR_ERROR_RETURN);
+        }
+    } // end func addItem
 
     /**
     * Adds a comment to this item.
-    * This is a helper method that calls addItem
+    * This is a helper method that calls createItem
     *
     * @param  string  content   object content
     * @return object  reference to new item
     */
-    function &addComment($content = '')
+    function &createComment($content = '', $where = 'bottom', $target = null)
     {
-        $item =& $this->addItem('comment', '', $content);
+        $item =& $this->createItem('comment', null, $content, $where, $target);
         return $item;
-    } // end func &addComment
+    } // end func &createComment
 
     /**
     * Adds a blank line to this item.
-    * This is a helper method that calls addItem
+    * This is a helper method that calls createItem
     *
     * @return object  reference to new item
     */
-    function &addBlank()
+    function &createBlank($where = 'bottom', $target = null)
     {
-        $item =& $this->addItem('blank');
+        $item =& $this->createItem('blank', null, null, $where, $target);
         return $item;
-    } // end func &addBlank
+    } // end func &createBlank
 
     /**
     * Adds a directive to this item.
-    * This is a helper method that calls addItem
+    * This is a helper method that calls createItem
     *
     * @param  string  name      Name of new directive
     * @param  string  content   Content of new directive
     * @return object  reference to new item
     */
-    function &addDirective($name, $content)
+    function &createDirective($name, $content, $where = 'bottom', $target = null)
     {
-        $item =& $this->addItem('directive', $name, $content);
+        $item =& $this->createItem('directive', $name, $content, $where, $target);
         return $item;
-    } // end func &addDirective
+    } // end func &createDirective
 
     /**
     * Adds a section to this item.
-    * This is a helper method that calls addItem
+    * This is a helper method that calls createItem
     *
     * @param  mixed   name      Name of new section or container object
     * @return object  reference to new item
     */
-    function &addSection($section)
+    function &createSection($section, $content = null, $where = 'bottom', $target = null)
     {
-        $item =& $this->addItem('section', $section);
+        $item =& $this->createItem('section', $section, $content, $where, $target);
         return $item;
-    } // end func &addSection
+    } // end func &createSection
 
     /**
     * Tries to find the specified item(s) and returns the objects.
@@ -271,13 +309,13 @@ class Config_Container {
                 $this->children[$index] =& $item;
             } elseif (is_string($item)) {
                 $currentContainer = get_class($this);
-                $itemObj = new $currentContainer($type, $item, $content);
+                $itemObj =& new $currentContainer($type, $item, $content);
                 $this->children[$index] =& $itemObj;
                 $this->children[$index]->parent =& $this; 
             }
             return $this->children[$index];
         } else {
-            return $this->addItem($type, $item, $content);
+            return $this->createItem($type, $item, $content);
         }
     } // end func &insertItem
 
@@ -411,13 +449,34 @@ class Config_Container {
     } // end func getType
 
     /**
+    * Is this item root, in a config container object
+    * @return bool    true if item is root
+    */
+    function isRoot()
+    {
+        if (is_null($this->parent) && $this->name == 'root') {
+            return true;
+        }
+        return false;
+    } // end func isRoot
+
+    /**
     * Interface method
+    * @param    string  configType  Type of configuration used to generate the string
     * @access   public
     * @return null
     */
-    function toString()
+    function toString($configType = '')
     {
-        return;
+        $string = '';
+        $configType = strtolower($configType);
+        if (!Config::isConfigTypeRegistered($configType)) {
+            return PEAR::raiseError("Configuration type '$configType' is not registered in Config_Container::toString.", null, PEAR_ERROR_RETURN);
+        }
+        $className = $GLOBALS['CONFIG_TYPES'][$configType][1];
+        $includeFile = $GLOBALS['CONFIG_TYPES'][$configType][0];
+        include_once($includeFile);
+        return eval("return $className::toString('$configType');");
     } // end func toString
 
     /**
@@ -459,29 +518,16 @@ class Config_Container {
         }
         return $array;
     } // end func toArray
-
-    /**
-    * Imports the requested options if allowed
-    *
-    * @param    array   List of options to set
-    * @access   public
-    */
-    function setOptions($options)
-    {
-        foreach ($this->options as $key => $value) {
-            if (isset($options[$key]))
-                $this->options[$key] = $options[$key];
-        }
-    } // end func setOptions
     
     /**
     * Writes the configuration to a file
     * Must be overriden in case you don't use files.
-    * @param  string datasrc    path to the configuraton file
+    * @param  string datasrc        path to the configuraton file
+    * @param  string configType     type of configuration
     * @access public
     * @return PEAR_ERROR or true
     */
-    function writeDatasrc($datasrc)
+    function writeDatasrc($datasrc, $configType)
     {
         $fp = @fopen($datasrc, 'w');
         if ($fp) {
