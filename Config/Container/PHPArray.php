@@ -25,6 +25,8 @@
 * 'name' => 'conf'
 * Name of the configuration array.
 * Default is $conf[].
+* 'useAttr' => true
+* Whether we render attributes
 *
 * @author      Bertrand Mansion <bmansion@mamasam.com>
 * @package     Config
@@ -35,20 +37,25 @@ class Config_Container_PHPArray {
     * This class options:
     * - name of the config array to parse/output
     *   Ex: $options['name'] = 'myconf';
+    * - Whether to add attributes to the array
+    *   Ex: $options['useAttr'] = false;
     *
     * @var  array
     */
-    var $options = array();
+    var $options = array('name' => 'conf',
+                         'useAttr' => true);
 
     /**
     * Constructor
     *
     * @access public
-    * @param    string  $options    (optional)Options to be used by renderer
+    * @param    string  $options    Options to be used by renderer
     */
     function Config_Container_PHPArray($options = array())
     {
-        $this->options = $options;
+        foreach ($options as $key => $value) {
+            $this->options[$key] = $value;
+        }
     } // end constructor
 
     /**
@@ -71,9 +78,6 @@ class Config_Container_PHPArray {
                 return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);        
             } else {
                 include($datasrc);
-                if (empty($this->options['name'])) {
-                    $this->options['name'] = 'conf';
-                }
                 if (!isset(${$this->options['name']}) || !is_array(${$this->options['name']})) {
                     return PEAR::raiseError("File '$datasrc' does not contain a required '".$this->options['name']."' array.", null, PEAR_ERROR_RETURN);
                 }
@@ -134,7 +138,7 @@ class Config_Container_PHPArray {
                 $attrString = '';
                 $parentString = $this->_getParentString($obj);
                 $attributes = $obj->getAttributes();
-                if (is_array($attributes) && count($attributes) > 0) {
+                if ($this->options['useAttr'] && is_array($attributes) && count($attributes) > 0) {
                     // Directive with attributes '@' and value '#'
                     $string .= $parentString."['#']";
                     foreach ($attributes as $attr => $val) {
@@ -158,7 +162,7 @@ class Config_Container_PHPArray {
             case 'section':
                 $attrString = '';
                 $attributes = $obj->getAttributes();
-                if (is_array($attributes) && count($attributes) > 0) {
+                if ($this->options['useAttr'] && is_array($attributes) && count($attributes) > 0) {
                     $parentString = $this->_getParentString($obj);
                     foreach ($attributes as $attr => $val) {
                         $attrString .= $parentString."['@']"
@@ -188,7 +192,7 @@ class Config_Container_PHPArray {
         $string = '';
         if (!$obj->isRoot()) {
             if (!$obj->parent->isRoot()) {
-                $string = "['".$obj->name."']";
+                $string = is_int($obj->name) ? "[".$obj->name."]" : "['".$obj->name."']";
             } else {
                 if (empty($this->options['name'])) {
                     $string .= '$'.$obj->name;
@@ -217,7 +221,7 @@ class Config_Container_PHPArray {
     {
         $fp = @fopen($datasrc, 'w');
         if ($fp) {
-            $string = "<?php\n". $this->toString($obj) ."?>"; // <? : Fix syntax coloring
+            $string = "<?php\n". $this->toString($obj) ."?>"; // <? : Fix my syntax coloring
             $len = strlen($string);
             @flock($fp, LOCK_EX);
             @fwrite($fp, $string, $len);
