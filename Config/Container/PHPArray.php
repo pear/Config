@@ -106,13 +106,6 @@ class Config_Container_PHPArray {
                     $container->setContent($value);
                     break;
                 default:
-/*                    if (is_array($value)) {
-                        $section =& $container->createSection($key);
-                        $this->_parseArray($value, $section);
-                    } else {
-                        $container->createDirective($key, $value);
-                    }*/
-
                     if (is_array($value)) {
                         if (is_integer(key($value))) {
                             foreach ($value as $nestedValue) {
@@ -126,8 +119,7 @@ class Config_Container_PHPArray {
                         }
                     } else {
                         $container->createDirective($key, $value);
-                    }
-                                                                                                                                                                
+                    }                                                                                                                                        
             }
         }
     } // end func _parseArray
@@ -213,7 +205,7 @@ class Config_Container_PHPArray {
                 if (empty($this->options['name'])) {
                     $string .= '$'.$obj->name;
                 } else {
-                    $string .= '$'.$this->options['name']."['".$obj->name."']";
+                    $string .= '$'.$this->options['name']."['".addslashes($obj->name)."']";
                 }
             }
             $string = $this->_getParentString($obj->parent).$string;
