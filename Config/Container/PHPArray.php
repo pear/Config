@@ -93,55 +93,21 @@ class Config_Container_PHPArray {
     function _parseArray($array, &$container)
     {
         foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $isArrayCnt = 0;
-                foreach ($value as $k => $v) {
-                    if (is_int($k) && (($k == 0 && $isArrayCnt == 0) || $isArrayCnt > 0)) {
-                        // some directives can be integers not starting from 0
-                        // this test will keep their current values. ex: $conf[11] = 'abc'
-                        $isArrayCnt++;
-                    }
-                }
-                if ($isArrayCnt == count($value)) {
-                    // 1 or more directives with the same name
-                    foreach ($value as $k => $v) {
-                        if (is_array($v) && count($v) > 0) {
-                            if (!isset($section)) {
-                                $section =& $container->createSection("$key");
-                            }
-                            if (isset($v['#'])) {
-                                $directive =& $section->createDirective($k, $v['#']);
-                                if (isset($v['@']) && is_array($v['@'])) {
-                                    $directive->setAttributes($v['@']);
-                                }
-                            } else {
-                                $this->_parseArray($v, $section);
-                            }
-                        } else {
-                            $container->createDirective("$key", $v);
-                        }
-                    }
-                } else {
-                    if (isset($value['#'])) {
-                        $directive =& $container->createDirective("$key", $value['#']);
-                        if (isset($value['@']) && is_array($value['@'])) {
-                            $directive->setAttributes($value['@']);
-                        }
+            switch ((string)$key) {
+                case '@':
+                    $container->setAttributes($value);
+                    break;
+                case '#':
+                    $container->setType('directive');
+                    $container->setContent($value);
+                    break;
+                default:
+                    if (is_array($value)) {
+                        $section =& $container->createSection($key);
+                        $this->_parseArray($value, $section);
                     } else {
-                        // new section
-                        $section =& $container->createSection("$key");
-                        if (isset($value['@']) && is_array($value['@'])) {
-                            $section->setAttributes($value['@']);
-                            unset($value['@']);
-                        }
-                        if (count($value) > 0) {
-                            $this->_parseArray($value, $section);
-                        }
+                        $container->createDirective($key, $value);
                     }
-                }
-            } else {
-                // new directive
-                $container->createDirective("$key", $value);
             }
         }
     } // end func _parseArray
@@ -222,6 +188,7 @@ class Config_Container_PHPArray {
         $string = '';
         if (!$obj->isRoot()) {
             if (!$obj->parent->isRoot()) {
+                if ((int)$obj->name == 
                 $string = "['".$obj->name."']";
             } else {
                 if (empty($this->options['name'])) {
