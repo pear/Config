@@ -266,7 +266,8 @@ class Config_Container_IniCommented {
                 } elseif (strlen(trim($content)) < strlen($content) ||
                           strpos($content, ',') !== false ||
                           strpos($content, ';') !== false ||
-                          strpos($content, '"') !== false) {
+                          strpos($content, '"') !== false ||
+                          strpos($content, '%') !== false) {
                     $content = '"'.addslashes($content).'"';          
                 }
                 if ($count > 1) {
