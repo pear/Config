@@ -650,13 +650,12 @@ class Config_Container {
                             foreach ($newArr as $key => $value) {
                                 if (isset($array[$this->name][$key])) {
                                     // duplicate name/type
-                                    if (!isset($array[$this->name][$key][0])) {
+                                    if (!is_array($array[$this->name][$key]) ||
+                                        !isset($array[$this->name][$key][0])) {
                                         $old = $array[$this->name][$key];
                                         unset($array[$this->name][$key]);
                                         $array[$this->name][$key][0] = $old;
                                     }
-                                    $array[$this->name][$key][] = $value;
-                                } elseif (isset($array[$this->name][$key][0])) {
                                     $array[$this->name][$key][] = $value;
                                 } else {
                                     $array[$this->name][$key] = $value;
