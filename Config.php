@@ -159,8 +159,8 @@ class Config {
     function setRoot(&$rootContainer)
     {
         if (is_object($rootContainer) && get_class($rootContainer) == 'config_container') {
-            unset($this->container);
             $this->container =& new Config_Container('section', 'root');
+            $rootContainer->parent =& $this->container;
             $this->container->children[0] =& $rootContainer;
             return true;
         } else {
