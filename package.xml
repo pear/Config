@@ -5,11 +5,12 @@
   <summary>Your configurations swiss-army knife.</summary>
   <description>The Config package provides methods for configuration manipulation.
 * Creates configurations from scratch
-* Parses and outputs different formats (XML, PHP, INI, Apache...).
+* Parses and outputs different formats (XML, PHP, INI, Apache...)
 * Edits existing configurations
 * Converts configurations to other formats
 * Allows manipulation of sections, comments, directives...
 * Parses configurations into a tree structure
+* Provides XPath like access to directives
 </description>
   <maintainers>
     <maintainer>
@@ -21,14 +22,11 @@
   </maintainers>
  <license>PHP License</license>
   <release>
-    <version>1.8</version>
-    <date>2003-08-16</date>
+    <version>1.8.1</version>
+    <date>2003-09-07</date>
     <state>stable</state> 
     <notes>
-* Fix a bug in setRoot() for the XML generator
-* Added new method searchPath() to Config_Container (taken from Alan Knowles for XML_Tree)
-* Added float detection in Config_Container_PHPArray (Sylvinus Prodi)
-* Uses XML_Util in xml container for special entities translation, customizable linebreaks, indents, xml declaration
+* Fix a bug in XML container related to cdata handler read by chunk, reported by Stephan Wentz
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -55,6 +53,17 @@
     </deps>
   </release>
 <changelog>
+  <release>
+    <version>1.8</version>
+    <date>2003-08-16</date>
+    <state>stable</state> 
+    <notes>
+* Fix a bug in setRoot() for the XML generator
+* Added new method searchPath() to Config_Container (taken from Alan Knowles for XML_Tree)
+* Added float detection in Config_Container_PHPArray (Sylvinus Prodi)
+* Uses XML_Util in xml container for special entities translation, customizable linebreaks, indents, xml declaration
+    </notes>
+  </release>
   <release>
     <version>1.7</version>
     <date>2003-06-16</date>
