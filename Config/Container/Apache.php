@@ -65,20 +65,21 @@ class Config_Container_Apache {
         $sections[0] =& $obj->container;
         foreach ($lines as $line) {
             $n++;
-            if (preg_match('/^\s*[^#](.*)\s*\\$/', $line, $match)) {
+            if (!preg_match('/^\s*#/', $line) && 
+            	 preg_match('/^\s*(.*)\s+\\\$/', $line, $match)) {
                 // directive on more than one line
                 $lastline .= $match[1].' ';
                 continue;
             }
             if ($lastline != '') {
-                $line = $lastline.$line;
+                $line = $lastline.trim($line);
                 $lastline = '';
             }
             if (preg_match('/^\s*#+\s*(.*?)\s*$/', $line, $match)) {
                 // a comment
                 $currentSection =& $sections[count($sections)-1];
                 $currentSection->createComment($match[1]);
-            } elseif (preg_match('/^\s*$/', $line)) {
+            } elseif (trim($line) == '') {
                 // a blank line
                 $currentSection =& $sections[count($sections)-1];
                 $currentSection->createBlank();
@@ -130,7 +131,6 @@ class Config_Container_Apache {
                 $string = "\n";
                 break;
             case 'comment':
-                echo $obj->content."<br>\n";
                 $string = $ident.'# '.$obj->content."\n";
                 break;
             case 'directive':
