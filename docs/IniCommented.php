@@ -18,5 +18,6 @@ $content =& $conf->parseConfig($datasrc);
 if (PEAR::isError($content)) {
 	die($content->getMessage());
 }
-echo '<pre>'.htmlspecialchars($content->toString()).'</pre>';
+
+echo '<pre>'.htmlspecialchars($content->toString('phparray')).'</pre>';
 ?>
