@@ -17,10 +17,10 @@
 //
 // $Id$
 
-require_once('Config.php');
-
 /**
-* Config parser for apache httpd.conf files
+* Simple config parser for apache httpd.conf files
+* A more complex version could handle directives as
+* associative arrays.
 *
 * @author      Bertrand Mansion <bmansion@mamasam.com>
 * @package     Config
@@ -28,10 +28,30 @@ require_once('Config.php');
 class Config_Container_Apache {
 
     /**
+    * This class options
+    * Not used at the moment
+    *
+    * @var  array
+    */
+    var $options = array();
+
+    /**
+    * Constructor
+    *
+    * @access public
+    * @param    string  $options    (optional)Options to be used by renderer
+    */
+    function Config_Container_Apache($options = array())
+    {
+        $this->options = $options;
+    } // end constructor
+
+    /**
     * Parses the data of the given configuration file
     *
     * @access public
     * @param string $datasrc    path to the configuration file
+    * @param object $obj        reference to a config object
     * @return mixed returns a PEAR_ERROR, if error occurs or true if ok
     */
     function &parseDatasrc($datasrc, &$obj)
@@ -66,17 +86,18 @@ class Config_Container_Apache {
                 // a directive
                 $currentSection =& $sections[count($sections)-1];
                 $currentSection->createDirective($match[1], $match[2]);
-            } elseif (preg_match('/^\s*<\s*(\w+)(?:\s+([^>]*)|\s*)>\s*$/', $line, $match)) {
+            } elseif (preg_match('/^\s*<(\w+)(?:\s+([^>]*)|\s*)>\s*$/', $line, $match)) {
                 // a section opening
                 if (!isset($match[2]))
                     $match[2] = '';
                 $currentSection =& $sections[count($sections)-1];
-                $sections[] =& $currentSection->createSection($match[1], $match[2]);
-            } elseif (preg_match('/^\s*<\/\s*(\w+)\s*>\s*$/', $line, $match)) {
+                $attributes = explode(' ', $match[2]);
+                $sections[] =& $currentSection->createSection($match[1], $attributes);
+            } elseif (preg_match('/^\s*<\/(\w+)\s*>\s*$/', $line, $match)) {
                 // a section closing
                 $currentSection =& $sections[count($sections)-1];
                 if ($currentSection->name != $match[1]) {
-                    return PEAR::raiseError("Syntax error in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
+                    return PEAR::raiseError("Section not closed in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
                 }
                 array_pop($sections);
             } else {
@@ -88,10 +109,11 @@ class Config_Container_Apache {
 
     /**
     * Returns a formatted string of the object
-    * @access public
-    * @return string
+    * @param    object  $obj    Container object to be output as string
+    * @access   public
+    * @return   string
     */
-    function toString($configType = 'apache', $options = array(), &$obj)
+    function toString(&$obj)
     {
         static $deep = -1;
         $ident = '';
@@ -108,6 +130,7 @@ class Config_Container_Apache {
                 $string = "\n";
                 break;
             case 'comment':
+                echo $obj->content."<br>\n";
                 $string = $ident.'# '.$obj->content."\n";
                 break;
             case 'directive':
@@ -116,12 +139,16 @@ class Config_Container_Apache {
             case 'section':
                 if (!$obj->isRoot()) {
                     $string = $ident.'<'.$obj->name;
-                    $string .= ($obj->content != '') ? ' '.$obj->content.'>' : ' >';
-                    $string .= "\n";
+                    if (count($obj->_attributes) > 0) {
+                        while (list(,$val) = each($obj->_attributes)) {
+                            $string .= ' '.$val;
+                        }
+                    }
+                    $string .= ">\n";
                 }
                 if (count($obj->children) > 0) {
                     for ($i = 0; $i < count($obj->children); $i++) {
-                        $string .= $obj->children[$i]->toString($configType, $options);
+                        $string .= $this->toString($obj->getChild($i));
                     }
                 }
                 if (!$obj->isRoot()) {
