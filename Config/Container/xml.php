@@ -1,4 +1,4 @@
-    <?php
+<?php
 //+----------------------------------------------------------------------+
 // | PHP version 4.0                                                     |
 //+----------------------------------------------------------------------+
@@ -101,7 +101,14 @@ class Config_Container_xml extends Config_Container {
         {
             if (XML_ELEMENT_NODE == $value->type)
             {
+                //if feature KeyAttribute is set and the name is an attribute in the xml, take this as key for the array
+                if ($this->feature["KeyAttribute"] && $value->get_attribute($this->feature["KeyAttribute"]))
+                {
+                    $value->{$this->tagname} = $value->get_attribute($this->feature["KeyAttribute"]);
+                }
+                
                 $this->addAttributes($value,$parent);
+                
                 if ($value->children())
                 {
                     $this->parseElement($value,$parent."/".$value->{$this->tagname});
@@ -125,11 +132,6 @@ class Config_Container_xml extends Config_Container {
         if ($parent=="") {
                        //this is only for the root element
                         $parentslash ="/";
-        }
-        //if feature KeyAttribute is set and the name is an attribute in the xml, take this as key for the array
-        if ($this->feature["KeyAttribute"] && $element->get_attribute($this->feature["KeyAttribute"]))
-        {
-            $element->{$this->tagname} = $element->get_attribute($this->feature["KeyAttribute"]);
         }
 
 
