@@ -81,7 +81,6 @@ class Config_Container {
     * @param  string  $name       Name of container object
     * @param  string  $content    Content of container object
     * @param  array   $attributes Array of attributes for container object
-    * @return object    reference to created container
     */
     function Config_Container($type = 'section', $name = '', $content = '', $attributes = null)
     {
@@ -203,8 +202,7 @@ class Config_Container {
     */
     function &createComment($content = '', $where = 'bottom', $target = null)
     {
-        $item =& $this->createItem('comment', null, $content, null, $where, $target);
-        return $item;
+        return $this->createItem('comment', null, $content, null, $where, $target);
     } // end func &createComment
 
     /**
@@ -215,8 +213,7 @@ class Config_Container {
     */
     function &createBlank($where = 'bottom', $target = null)
     {
-        $item =& $this->createItem('blank', null, null, null, $where, $target);
-        return $item;
+        return $this->createItem('blank', null, null, null, $where, $target);
     } // end func &createBlank
 
     /**
@@ -232,8 +229,7 @@ class Config_Container {
     */
     function &createDirective($name, $content, $attributes = null, $where = 'bottom', $target = null)
     {
-        $item =& $this->createItem('directive', $name, $content, $attributes, $where, $target);
-        return $item;
+        return $this->createItem('directive', $name, $content, $attributes, $where, $target);
     } // end func &createDirective
 
     /**
@@ -251,8 +247,7 @@ class Config_Container {
     */
     function &createSection($name, $attributes = null, $where = 'bottom', $target = null)
     {
-        $item =& $this->createItem('section', $name, null, $attributes, $where, $target);
-        return $item;
+        return $this->createItem('section', $name, null, $attributes, $where, $target);
     } // end func &createSection
 
     /**
@@ -266,6 +261,7 @@ class Config_Container {
     * This method can only be called on an object of type 'section'.
     * Note that root is a section.
     * This method is not recursive and tries to keep the current structure.
+    * For a deeper search, use searchPath()
     *
     * @param  string    $type        Type of item: directive, section, comment, blank...
     * @param  mixed     $name        Item name
@@ -273,13 +269,16 @@ class Config_Container {
     * @param  array     $attributes  Find item with attribute set to the given value
     * @param  int       $index       Index of the item in the returned object list. If it is not set, will try to return the last item with this name.
     * @return mixed  reference to item found or false when not found
+    * @see &searchPath()
     */
-    function &getItem($type, $name = null, $content = null, $attributes = null, $index = -1)
+    function &getItem($type = null, $name = null, $content = null, $attributes = null, $index = -1)
     {
         if ($this->type != 'section') {
             return PEAR::raiseError('Config_Container::getItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
         }
-        $testFields[] = 'type';
+        if (!is_null($type)) {
+            $testFields[] = 'type';
+        }
         if (!is_null($name)) {
             $testFields[] = 'name';
         }
@@ -295,7 +294,7 @@ class Config_Container {
         for ($i = 0; $i < count($this->children); $i++) {
             $match = 0;
             reset($testFields);
-            foreach($testFields as $field) {
+            foreach ($testFields as $field) {
                 if ($field != 'attributes') {
                     if ($this->children[$i]->$field == ${$field}) {
                         $match++;
@@ -333,6 +332,47 @@ class Config_Container {
             }
         }
     } // end func &getItem
+
+    /**
+    * Finds a node using XPATH like format:
+    * 
+    * search format = array ( item,item,item,item)
+    * item = 'string' .. will match the <string of the xml element
+    * item = array('string',array('name'=>'xyz'))
+    *       .. will match <string name="xyz">
+    * 
+    * @param    mixed   Search path and attributes
+    * 
+    * @return   mixed   Config_Container object, array of Config_Container objects or false on failure.
+    * @access   public
+    */
+  
+    function &searchPath($args)
+    {
+        if ($this->type != 'section') {
+            return PEAR::raiseError('Config_Container::searchPath must be called on a section type object.', null, PEAR_ERROR_RETURN);
+        }
+
+        $arg = array_shift($args);
+
+        if (is_array($arg)) {
+            $name = $arg[0];
+            $attributes = $arg[1];
+        } else {
+            $name = $arg;
+            $attributes = null;
+        }
+        // find all the matches for first..
+        $match =& $this->getItem(null, $name, null, $attributes);
+
+        if (!$match) {
+            return false;
+        }
+        if (!empty($args)) {
+            return $match->searchPath($args);
+        }
+        return $match;
+    } // end func &searchPath
 
     /**
     * Returns how many children this container has
@@ -385,7 +425,7 @@ class Config_Container {
     */
     function removeItem()
     {
-        if (is_null($this->parent)) {
+        if ($this->isRoot()) {
             return PEAR::raiseError('Cannot remove root item in Config_Container::removeItem.', null, PEAR_ERROR_RETURN);
         }
         $index = $this->getItemIndex();
@@ -578,12 +618,12 @@ class Config_Container {
         if ($item === false || PEAR::isError($item)) {
             // Directive does not exist, will create one
             unset($item);
-            $item =& $this->createDirective($name, $content, null);
+            return $this->createDirective($name, $content, null);
         } else {
             // Change existing directive value
             $item->setContent($content);
+            return $item;
         }
-        return $item;
     } // end func setDirective
 
     /**
