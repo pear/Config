@@ -17,8 +17,6 @@
 //
 // $Id$
 
-require_once('Config.php');
-
 /**
 * Config parser for  generic .conf files like
 * htdig.conf...
@@ -29,54 +27,74 @@ require_once('Config.php');
 class Config_Container_GenericConf {
 
     /**
+    * This class options:
+    *   Ex: $options['comment'] = '#';
+    *   Ex: $options['equals'] = ':';
+    *   Ex: $options['newline'] = '\\';
+    *
+    * @var  array
+    */
+    var $options = array();
+
+    /**
+    * Constructor
+    *
+    * @access public
+    * @param    string  $options    (optional)Options to be used by renderer
+    */
+    function Config_Container_GenericConf($options = array())
+    {
+        if (empty($options['comment'])) {
+            $options['comment'] = '#';
+        }
+        if (empty($options['equals'])) {
+            $options['equals'] = ':';
+        }
+        if (empty($options['newline'])) {
+            $options['newline'] = '\\';
+        }
+        $this->options = $options;
+    } // end constructor
+
+    /**
     * Parses the data of the given configuration file
     *
     * @access public
     * @param string $datasrc    path to the configuration file
+    * @param object $obj        reference to a config object
     * @return mixed returns a PEAR_ERROR, if error occurs or true if ok
     */
     function &parseDatasrc($datasrc, &$obj)
     {
-        if (is_null($datasrc) || !is_readable($datasrc)) {
+        if (!is_readable($datasrc)) {
             return PEAR::raiseError("Datasource file cannot be read.", null, PEAR_ERROR_RETURN);
-        }
-        
-        // Set default options for parser
-        
-        if (empty($obj->parserOptions['comment'])) {
-            $obj->parserOptions['comment'] = '#';
-        }
-        if (empty($obj->parserOptions['equals'])) {
-            $obj->parserOptions['equals'] = ':';
-        }
-        if (empty($obj->parserOptions['newline'])) {
-            $obj->parserOptions['newline'] = '\\';
         }
 
         $lines = file($datasrc);
         $n = 0;
         $lastline = '';
-        $root =& $obj->container;
+        $currentSection =& $obj->container;
         foreach ($lines as $line) {
             $n++;
-            if (preg_match('/^\s*(.*)\s+'.$obj->parserOptions['newline'].'\s*$/', $line, $match)) {
+            if (!preg_match('/^\s*'.$this->options['comment'].'/', $line) && 
+                 preg_match('/^\s*(.*)\s+'.$this->options['newline'].'\s*$/', $line, $match)) {
                 // directive on more than one line
                 $lastline .= $match[1].' ';
                 continue;
             }
             if ($lastline != '') {
-                $line = $lastline.$line;
+                $line = $lastline.trim($line);
                 $lastline = '';
             }
-            if (preg_match('/^\s*'.$obj->parserOptions['comment'].'+\s*(.*?)\s*$/', $line, $match)) {
+            if (preg_match('/^\s*'.$this->options['comment'].'+\s*(.*?)\s*$/', $line, $match)) {
                 // a comment
-                $root->addComment($match[1]);
+                $currentSection->createComment($match[1]);
             } elseif (preg_match('/^\s*$/', $line)) {
                 // a blank line
-                $root->addBlank();
-            } elseif (preg_match('/^\s*(\w+)'.$obj->parserOptions['equals'].'\s*((.*?)|)\s*$/', $line, $match)) {
+                $currentSection->createBlank();
+            } elseif (preg_match('/^\s*(\w+)'.$this->options['equals'].'\s*((.*?)|)\s*$/', $line, $match)) {
                 // a directive
-                $root->addDirective($match[1], $match[2]);
+                $currentSection->createDirective($match[1], $match[2]);
             } else {
                 return PEAR::raiseError("Syntax error in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
             }
@@ -86,34 +104,26 @@ class Config_Container_GenericConf {
 
     /**
     * Returns a formatted string of the object
+    * @param    object  $obj    Container object to be output as string
     * @access public
     * @return string
     */
-    function toString($configType = 'genericconf', $options = array(), &$obj)
+    function toString(&$obj)
     {
-        if (empty($string)) {
-            $string = '';
-            if (empty($options['comment'])) {
-                $options['comment'] = '#';
-            }
-            if (empty($options['equals'])) {
-                $options['equals'] = ':';
-            }
-        }
         switch ($obj->type) {
             case 'blank':
                 $string = "\n";
                 break;
             case 'comment':
-                $string = $options['comment'].' '.$obj->content."\n";
+                $string = $this->options['comment'].' '.$obj->content."\n";
                 break;
             case 'directive':
-                $string = $obj->name.$options['equals'].' '.$obj->content."\n";
+                $string = $obj->name.$this->options['equals'].' '.$obj->content."\n";
                 break;
             case 'section':
                 if (count($obj->children) > 0) {
                     for ($i = 0; $i < count($obj->children); $i++) {
-                        $string .= $obj->children[$i]->toString($configType, $options);
+                        $string .= $this->toString($obj->getChild($i));
                     }
                 }
                 break;
