@@ -86,6 +86,7 @@ class Config_Container_XML extends XML_Parser {
     function &parseDatasrc($datasrc, &$obj)
     {
         $this->folding = false;
+        $this->cdata = null;
         $this->XML_Parser(null, 'event');
         $this->containers[0] =& $obj->container;
 
@@ -129,8 +130,13 @@ class Config_Container_XML extends XML_Parser {
         $count = count($this->containers);
         $container =& $this->containers[$count-1];
         $currentSection =& $this->containers[$count-2];
+        if (count($container->children) == 0) {
+            $container->setType('directive');
+            $container->setContent(trim($this->cdata));
+        }
         $currentSection->addItem($container);
         array_pop($this->containers);
+        $this->cdata = null;
         return null;
     } // end func endHandler
 
@@ -144,12 +150,7 @@ class Config_Container_XML extends XML_Parser {
     */
     function cdataHandler($xp, $cdata)
     {
-        $cdata = trim($cdata);
-        if ($cdata != '') {
-            $container =& $this->containers[count($this->containers)-1];
-            $container->setType('directive');
-            $container->setContent($container->getContent().$cdata);
-        }
+        $this->cdata .= $cdata;
     } //  end func cdataHandler
 
     /**
@@ -193,21 +194,20 @@ class Config_Container_XML extends XML_Parser {
                 $string .= $this->options['linebreak'];
                 break;
             case 'section':
-                $hasChildren = (count($obj->children) > 0) ? true : false;
                 if (!$obj->isRoot()) {
                     $string = $indent.'<'.$obj->name;
                     $string .= ($this->options['useAttr']) ? XML_Util::attributesToString($obj->attributes) : '';
                 }
-                if ($hasChildren) {
+                if ($children = count($obj->children)) {
                     if (!$obj->isRoot()) {
                         $string .= '>'.$this->options['linebreak'];
                     }
-                    for ($i = 0; $i < count($obj->children); $i++) {
+                    for ($i = 0; $i < $children; $i++) {
                         $string .= $this->toString($obj->getChild($i));
                     }
                 }
                 if (!$obj->isRoot()) {
-                    if ($hasChildren) {
+                    if ($children) {
                         $string .= $indent.'</'.$obj->name.'>'.$this->options['linebreak'];
                     } else {
                         $string .= '/>'.$this->options['linebreak'];
