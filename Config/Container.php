@@ -506,9 +506,6 @@ class Config_Container {
     */
     function writeDatasrc($datasrc, $configType = '', $options = array())
     {
-        // Check for a writeDatasrc($datasrc, $configType, $options, &$obj) method in plugin
-        // untested !
-
         $configType = strtolower($configType);
         if (!Config::isConfigTypeRegistered($configType)) {
             return PEAR::raiseError("Configuration type '$configType' is not registered in Config_Container::writeDatasrc.", null, PEAR_ERROR_RETURN);
@@ -524,7 +521,13 @@ class Config_Container {
         // Default behaviour
         $fp = @fopen($datasrc, 'w');
         if ($fp) {
-            $string = $this->toString($configType, $options);
+            switch ($configType) {
+                case 'phparray':
+                    $string = "<?php\n". $this->toString($configType, $options) ."?>";
+                    break;
+                default:
+                   $string = $this->toString($configType, $options);
+            }
             $len = strlen($string);
             @flock($fp, LOCK_EX);
             @fwrite($fp, $string, $len);
