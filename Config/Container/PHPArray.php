@@ -23,43 +23,55 @@ require_once('Config/Container.php');
 * Config parser for common PHP configuration array
 * such as found in the horde project.
 *
+* Options expected is:
+* 'name' => 'conf'
+* Name of the configuration array.
+* Default is $conf[].
+*
 * @author      Bertrand Mansion <bmansion@mamasam.com>
 * @package     Config
 */
-class Config_Container_PHPArray extends Config_Container {
-
-    /**
-    * Use options to specify the name of your configuration array.
-    * It defaults to $conf.
-    * @var array
-    */
-    var $options = array('name' => 'conf');
+class Config_Container_PHPArray {
 
     /**
     * Parses the data of the given configuration file
     *
     * @access public
     * @param string $datasrc    path to the configuration file
-    * @return mixed    returns a PEAR_ERROR, if error occurs or the container itsef
+    * @return mixed    returns a PEAR_ERROR, if error occurs or false if ok
     */
-    function &parseDatasrc($datasrc, $first = true)
+    function &parseDatasrc($datasrc)
     {
         if (is_null($datasrc)) {
             return PEAR::raiseError("Datasource file path cannot be null.", null, PEAR_ERROR_RETURN);
         }
-        if ($first) {
-            if (!file_exists($datasrc)) {
-                return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);        
-            } else {
-                include($datasrc);
-                if (!isset(${$this->options['name']}) || !is_array(${$this->options['name']})) {
-                    return PEAR::raiseError("File '$datasrc' does not contain a required '".$this->options['name']."' array.", null, PEAR_ERROR_RETURN);
-                }
-                $datasrc = ${$this->options['name']};
+        if (!file_exists($datasrc)) {
+            return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);        
+        } else {
+            if (empty($this->parserOptions['name'])) {
+                $this->parserOptions['name'] = 'conf';
             }
+            include($datasrc);
+            if (!isset(${$this->parserOptions['name']}) || !is_array(${$this->parserOptions['name']})) {
+                return PEAR::raiseError("File '$datasrc' does not contain a required '".$this->parserOptions['name']."' array.", null, PEAR_ERROR_RETURN);
+            }
+            $datasrc = ${$this->parserOptions['name']};
         }
-        foreach ($datasrc as $key => $value) {
-            $currentSection =& $this;
+        $root =& $this->container;
+        Config_Container_PHPArray::_parseArray($datasrc, $root);
+        return false;
+    } // end func parseDatasrc
+
+    /**
+    * Parses the PHP array recursively
+    * @param array $array    array values from the config file
+    * @param object $container    reference to the container object
+    * @access public
+    * @return void
+    */
+    function _parseArray($array, &$container)
+    {
+        foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $isArrayCnt = 0;
                 foreach ($value as $k => $v) {
@@ -68,43 +80,42 @@ class Config_Container_PHPArray extends Config_Container {
                     }
                 }
                 if ($isArrayCnt == count($value)) {
-                    $currentSection->addItem('directive', $key, $value);
+                    // 1 or more directives with the same name
+                    foreach ($value as $k => $v) {
+                        $container->createDirective("$key", $v);
+                    }
                 } else {
-                    $section =& $currentSection->addItem('section', $key, '');
-                    $section->parseDatasrc($value, false);
+                    // new section
+                    $section =& $container->createSection("$key");
+                    Config_Container_PHPArray::_parseArray($value, $section);
                 }
             } else {
-                // a directive
-                $currentSection->addItem('directive', "$key", $value);
+                // new directive
+                $container->createDirective("$key", $value);
             }
         }
-        return $this;
-    } // end func parseDatasrc
+    }
 
     /**
     * Returns a formatted string of the object
     * @access public
     * @return string
     */
-    function toString()
+    function toString($configType = 'phparray')
     {
         if (!isset($string)) {
             $string = '';
+            if (empty($this->parserOptions['name'])) {
+                $this->parserOptions['name'] = 'conf';
+            }
         }
         switch ($this->type) {
             case 'directive':
-                $string .= '$'.$this->options['name'];
-                $string .= $this->_getParentString();
+                $string .= '$'.$this->parserOptions['name'];
+                $string .= Config_Container_PHPArray::_getParentString($this);
                 $string .= ' = ';
                 if (is_string($this->content)) {
                     $string .= "'".$this->content."';\n";
-                } elseif (is_array($this->content)) {
-                    $string .= 'array(';
-                    foreach ($this->content as $value) {
-                        $string .= "'".$value."', ";
-                    }
-                    $string = substr($string, 0, -2);
-                    $string .= ");\n";
                 } elseif (is_int($this->content)) {
                     $string .= $this->content.";\n";
                 }
@@ -112,7 +123,7 @@ class Config_Container_PHPArray extends Config_Container {
             case 'section':
                 if (count($this->children) > 0) {
                     for ($i = 0; $i < count($this->children); $i++) {
-                        $string .= $this->children[$i]->toString();
+                        $string .= $this->children[$i]->toString($configType);
                     }
                 }
                 break;
@@ -127,11 +138,11 @@ class Config_Container_PHPArray extends Config_Container {
     * @access private
     * @return string
     */
-    function _getParentString()
+    function _getParentString(&$cont)
     {
-        $string = '['.$this->name.']';
-        if (!is_null($this->parent->parent)) {
-            $string = $this->parent->_getParentString().$string;
+        $string = '['.$cont->name.']';
+        if (!$cont->parent->isRoot()) {
+            $string = Config_Container_PHPArray::_getParentString($cont->parent).$string;
         }
         return $string;
     } // end func _getParentString
