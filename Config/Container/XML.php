@@ -18,6 +18,7 @@
 // $Id$
 
 require_once('XML/Parser.php');
+require_once('XML/Util.php');
 
 /**
 * Config parser for XML Files
@@ -31,11 +32,18 @@ class Config_Container_XML extends XML_Parser {
     * This class options:
     * version (1.0) : XML version
     * encoding (ISO-8859-1) : XML content encoding
-    * name (conf) : Like in phparray, name of your config global entity
+    * name : Like in phparray, name of your config global entity
+    * indent : char used for indentation
+    * linebreak : char used for linebreak
+    * addDecl : wether to add the xml declaration at beginning or not
     *
     * @var  array
     */
-    var $options = array();
+    var $options = array('version' => '1.0',
+                         'encoding' => 'ISO-8859-1',
+                         'indent' => '  ',
+                         'linebreak' => "\n",
+                         'addDecl' => true);
 
     /**
     * Container objects
@@ -52,16 +60,15 @@ class Config_Container_XML extends XML_Parser {
     *                               version: (1.0) XML version
     *                               encoding: (ISO-8859-1) XML content encoding
     *                               name: Like in phparray, name of your config global entity
+    *                               indent : char used for indentation
+    *                               linebreak : char used for linebreak
+    *                               addDecl : wether to add the xml declaration at beginning or not
     */
     function Config_Container_XML($options = array())
     {
-        if (empty($options['version'])) {
-            $options['version'] = '1.0';
+        if (!empty($options)) {
+            $this->options = array_merge($this->options, $options);
         }
-        if (empty($options['encoding'])) {
-            $options['encoding'] = 'ISO-8859-1';
-        }
-        $this->options = $options;
     } // end constructor
 
     /**
@@ -149,19 +156,22 @@ class Config_Container_XML extends XML_Parser {
     function toString(&$obj)
     {
         static $deep = -1;
-        $ident = '';
+        $indent = '';
         if (!$obj->isRoot()) {
             // no indent for root
             $deep++;
-            $ident = str_repeat('  ', $deep);
+            $indent = str_repeat($this->options['indent'], $deep);
         } else {
             // Initialize string with xml declaration
-            $string = '<?xml version="'.$this->options['version'].'" ';
-            $string .= 'encoding="'.$this->options['encoding']."\"?>\n"; // <? Fix coloring
+            $string = '';
+            if ($this->options['addDecl']) {
+                $string .= XML_Util::getXMLDeclaration($this->options['version'], $this->options['encoding']);
+                $string .= $this->options['linebreak'];
+            }
             if (isset($this->options['name'])) {
-                $string .= '<'.$this->options['name'].">\n";
+                $string .= '<'.$this->options['name'].'>'.$this->options['linebreak'];
                 $deep++;
-                $ident = str_repeat('  ', $deep);
+                $indent = str_repeat($this->options['indent'], $deep);
             }
         }
         if (!isset($string)) {
@@ -169,27 +179,18 @@ class Config_Container_XML extends XML_Parser {
         }
         switch ($obj->type) {
             case 'directive':
-                $string = $ident.'<'.$obj->name;
-                if (is_array($obj->attributes) && count($obj->attributes) > 0) {
-                    foreach ($obj->attributes as $name => $value) {
-                        $string .= ' ' . $name . '="' . $value . '"';
-                    }
-                }
-                $string .= '>'.$obj->content.'</'.$obj->name.">\n";
+                $string .= $indent.XML_Util::createTag($obj->name, $obj->attributes, $obj->content);
+                $string .= $this->options['linebreak'];
                 break;
             case 'section':
                 $hasChildren = (count($obj->children) > 0) ? true : false;
                 if (!$obj->isRoot()) {
-                    $string = $ident.'<'.$obj->name;
-                    if (is_array($obj->attributes) && count($obj->attributes) > 0) {
-                        foreach ($obj->attributes as $name => $value) {
-                            $string .= ' ' . $name . '="' . $value . '"';
-                        }
-                    }
+                    $string = $indent.'<'.$obj->name;
+                    $string .= XML_Util::attributesToString($obj->attributes);
                 }
                 if ($hasChildren) {
                     if (!$obj->isRoot()) {
-                        $string .= ">\n";
+                        $string .= '>'.$this->options['linebreak'];
                     }
                     for ($i = 0; $i < count($obj->children); $i++) {
                         $string .= $this->toString($obj->getChild($i));
@@ -197,13 +198,13 @@ class Config_Container_XML extends XML_Parser {
                 }
                 if (!$obj->isRoot()) {
                     if ($hasChildren) {
-                        $string .= $ident.'</'.$obj->name.">\n";
+                        $string .= $indent.'</'.$obj->name.'>'.$this->options['linebreak'];
                     } else {
-                        $string .= "/>\n";
+                        $string .= '/>'.$this->options['linebreak'];
                     }
                 } else {
                     if (isset($this->options['name'])) {
-                        $string .= '</'.$this->options['name'].">\n";
+                        $string .= '</'.$this->options['name'].'>'.$this->options['linebreak'];
                     }
                 }
                 break;
