@@ -11,7 +11,7 @@
 * Allows manipulation of sections, comments, directives...
 * Parses configurations into a tree structure
 * Provides XPath like access to directives
-</description>
+  </description>
   <maintainers>
     <maintainer>
       <user>mansion</user>
@@ -19,16 +19,25 @@
       <email>bmansion@mamasam.com</email>
       <role>lead</role>
     </maintainer>
+    <maintainer>
+      <user>ryansking</user>
+      <name>Ryan King</name>
+      <email>ryansking@mac.com</email>
+      <role>lead</role>
+    </maintainer>
   </maintainers>
- <license>PHP License</license>
+  <license>PHP License</license>
   <release>
-    <version>1.10.2</version>
-    <date>2004-06-14</date>
+    <version>1.10.3</version>
+    <date>2004-10-13</date>
     <state>stable</state> 
     <notes>
-* Fixed bug #1633 related to case-sensitivity of method names in PHP4.
-  causing PHPArray container not to work correctly. See also #1556.
-  Patch provided by m at tacker dotorg.
+    Changelog:
+        *Fixed bug #2179 which prevented URL's containting ~ in ini files to be parsed correctly
+        *Fixed bug #2439 which caused Config_Containter::countChildren() to return a PEAR_ERROR
+            object when called on a non-section Config_Container object.  This change brings
+            the object's behavior inline with the documentation. Beware, if your code relies
+            on the previous behavior, this change may break your code.
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -55,6 +64,16 @@
     </deps>
   </release>
 <changelog>
+<release>
+    <version>1.10.2</version>
+    <date>2004-06-14</date>
+    <state>stable</state> 
+    <notes>
+* Fixed bug #1633 related to case-sensitivity of method names in PHP4.
+  causing PHPArray container not to work correctly. See also #1556.
+  Patch provided by m at tacker dotorg.
+    </notes>
+</release>
   <release>
     <version>1.10.1</version>
     <date>2004-06-04</date>

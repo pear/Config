@@ -395,9 +395,6 @@ class Config_Container {
     */
     function countChildren($type = null, $name = null)
     {
-        if ($this->type != 'section') {
-            return PEAR::raiseError('Config_Container::getChildrenNum must be called on a section type object.', null, PEAR_ERROR_RETURN);
-        }
         if (is_null($type) && is_null($name)) {
             return count($this->children);
         }

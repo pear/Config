@@ -69,7 +69,7 @@ class Config_Container_IniCommented {
             } elseif (preg_match('/^\s*$/', $line)) {
                 // a blank line
                 $currentSection->createBlank();
-            } elseif (preg_match('/^\s*([a-zA-Z0-9_\-\.]*)\s*=\s*(.*)\s*$/', $line, $match)) {
+            } elseif (preg_match('/^\s*([a-zA-Z0-9_\-\.\s]*)\s*=\s*(.*)\s*$/', $line, $match)) {
                 // a directive
                 
                 $values = $this->_quoteAndCommaParser($match[2]);

@@ -120,7 +120,8 @@ class Config_Container_IniFile {
                           strpos($content, ',') !== false ||
                           strpos($content, ';') !== false ||
                           strpos($content, '"') !== false ||
-                          strpos($content, '%') !== false) {
+                          strpos($content, '%') !== false ||
+                          strpos($content, '~') !== false) {
                     $content = '"'.addslashes($content).'"';          
                 }
                 if ($count > 1) {
