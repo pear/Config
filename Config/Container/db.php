@@ -183,25 +183,20 @@ class Config_Container_db extends Config_Container {
         if (DB::isError($res)) {
            return new DB_Error($res->code, PEAR_ERROR_DIE);
         }
+        $query = 'INSERT INTO '.$this->feature['table'].' ('
+        		.$this->feature['datasrccol'].','.$this->feature['blockcol'].','
+                .$this->feature['namecol'].','.$this->feature['valuecol']
+                .') VALUES (?,?,?,?)';
+		$sthÊ=Ê$this->db->prepare($query);
         foreach ($this->data as $block => $blockarray) {
-            foreach ($blockarray as $name => $value) {
-                $query = sprintf("INSERT INTO %s (%s, %s, %s, %s) VALUES ('%s', '%s', '%s', '%s')",
-                                $this->feature['table'],
-                                $this->feature['datasrccol'],
-                                $this->feature['blockcol'],
-                                $this->feature['namecol'],
-                                $this->feature['valuecol'],
-                                $datasrc,
-                                $block,
-                                $name,
-                                $value
-                                );
-                $res = $this->query($query);
-                if (DB::isError($res)) {
-                    return new DB_Error($res->code, PEAR_ERROR_DIE);
-                }
-            }
-        }
+			foreach ($blockarray as $name => $value) {
+				$alldata[] = array($datasrc, $block, $name, $value);
+			}
+		}
+		$res = $this->db->executeMultiple($sth,Ê$alldata);
+		if (DB::isError($res)) {
+			return new DB_Error($res->code, PEAR_ERROR_DIE);
+		}
     } // end func writeInput
 } // end class Config_Container_db
 ?>
