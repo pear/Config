@@ -205,7 +205,7 @@ class Config {
     * @access public
     * @return mixed PEAR_Error on error or true if ok
     */
-    function writeConfig($datasrc = null, $configType = '')
+    function writeConfig($datasrc = null, $configType = '', $options = array())
     {
         if ($error = $this->_checkDatasrc($datasrc)) {
             return PEAR::raiseError($error.'::writeConfig.', null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
@@ -213,8 +213,11 @@ class Config {
         if ($error = $this->_checkConfigType($configType)) {
             return PEAR::raiseError($error.'::writeConfig.', null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
         }
+        if (count($options) > 0) {
+            $this->parserOptions = $options;
+        }
 
-        return $this->container->writeDatasrc($this->datasrc, $this->configType);
+        return $this->container->writeDatasrc($this->datasrc, $this->configType, $this->parserOptions);
     } // end func writeConfig
 } // end class Config
 ?>
