@@ -22,15 +22,13 @@
   </maintainers>
  <license>PHP License</license>
   <release>
-    <version>1.10.1</version>
-    <date>2004-06-04</date>
+    <version>1.10.2</version>
+    <date>2004-06-14</date>
     <state>stable</state> 
     <notes>
-* Fixed problems with PHP5 case sensitivity on class and method names.
-* Added possibility to actually replace the root container by using method
-Config::setRoot() with a container of type 'section' and name 'root'.
-* XML parser now makes use of the encoding specified in the options array.
-* Fixed a warning with array_splice() on an unset $children.
+* Fixed bug #1633 related to case-sensitivity of method names in PHP4.
+  causing PHPArray container not to work correctly. See also #1556.
+  Patch provided by m at tacker dotorg.
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -57,6 +55,18 @@ Config::setRoot() with a container of type 'section' and name 'root'.
     </deps>
   </release>
 <changelog>
+  <release>
+    <version>1.10.1</version>
+    <date>2004-06-04</date>
+    <state>stable</state> 
+    <notes>
+* Fixed problems with PHP5 case sensitivity on class and method names.
+* Added possibility to actually replace the root container by using method
+Config::setRoot() with a container of type 'section' and name 'root'.
+* XML parser now makes use of the encoding specified in the options array.
+* Fixed a warning with array_splice() on an unset $children.
+    </notes>
+  </release>
   <release>
     <version>1.10</version>
     <date>2003-11-29</date>
