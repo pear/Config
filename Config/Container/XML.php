@@ -29,8 +29,9 @@ class Config_Container_XML extends XML_Parser {
 
     /**
     * This class options:
-    * version (1.0)
-    * encoding (ISO-8859-1)
+    * version (1.0) : XML version
+    * encoding (ISO-8859-1) : XML content encoding
+    * name (conf) : Like in phparray, name of your config global entity
     *
     * @var  array
     */
@@ -56,6 +57,9 @@ class Config_Container_XML extends XML_Parser {
         }
         if (empty($options['encoding'])) {
             $options['encoding'] = 'ISO-8859-1';
+        }
+        if (empty($options['name'])) {
+            $options['name'] = 'conf';
         }
         $this->options = $options;
     } // end constructor
@@ -154,6 +158,7 @@ class Config_Container_XML extends XML_Parser {
             // Initialize string with xml declaration
             $string = '<?xml version="'.$this->options['version'].'" ';
             $string .= 'encoding="'.$this->options['encoding']."\"?>\n"; // <? Fix coloring
+            $string .= '<'.$this->options['name'].">\n";
         }
         if (!isset($string)) {
             $string = '';
@@ -189,6 +194,8 @@ class Config_Container_XML extends XML_Parser {
                     } else {
                         $string .= "/>\n";
                     }
+                } else {
+                    $sting .= '</'.$this->options['name'].">\n";
                 }
                 break;
             default:
