@@ -140,10 +140,11 @@ class Config_Container_XML extends XML_Parser {
     */
     function cdataHandler($xp, $cdata)
     {
-        if (trim($cdata) != '') {
+        $cdata = trim($cdata);
+        if ($cdata != '') {
             $container =& $this->containers[count($this->containers)-1];
             $container->setType('directive');
-            $container->setContent(trim($cdata));
+            $container->setContent($container->getContent().$cdata);
         }
     } //  end func cdataHandler
 
