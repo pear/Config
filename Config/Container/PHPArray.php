@@ -40,7 +40,7 @@ class Config_Container_PHPArray {
     * @param string $datasrc    path to the configuration file
     * @return mixed    returns a PEAR_ERROR, if error occurs or true if ok
     */
-    function &parseDatasrc($datasrc)
+    function &parseDatasrc($datasrc, &$obj)
     {
         if (is_null($datasrc)) {
             return PEAR::raiseError("Datasource file path cannot be null.", null, PEAR_ERROR_RETURN);
@@ -48,16 +48,16 @@ class Config_Container_PHPArray {
         if (!file_exists($datasrc)) {
             return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);        
         } else {
-            if (empty($this->parserOptions['name'])) {
-                $this->parserOptions['name'] = 'conf';
+            if (empty($obj->parserOptions['name'])) {
+                $obj->parserOptions['name'] = 'conf'; // default array is $conf
             }
             include($datasrc);
-            if (!isset(${$this->parserOptions['name']}) || !is_array(${$this->parserOptions['name']})) {
-                return PEAR::raiseError("File '$datasrc' does not contain a required '".$this->parserOptions['name']."' array.", null, PEAR_ERROR_RETURN);
+            if (!isset(${$obj->parserOptions['name']}) || !is_array(${$obj->parserOptions['name']})) {
+                return PEAR::raiseError("File '$datasrc' does not contain a required '".$obj->parserOptions['name']."' array.", null, PEAR_ERROR_RETURN);
             }
-            $datasrc = ${$this->parserOptions['name']};
+            $datasrc = ${$obj->parserOptions['name']};
         }
-        $root =& $this->container;
+        $root =& $obj->container;
         Config_Container_PHPArray::_parseArray($datasrc, $root);
         return true;
     } // end func parseDatasrc
@@ -75,7 +75,9 @@ class Config_Container_PHPArray {
             if (is_array($value)) {
                 $isArrayCnt = 0;
                 foreach ($value as $k => $v) {
-                    if (is_int($k)) {
+                    if (is_int($k) && (($k == 0 && $isArrayCnt == 0) || $isArrayCnt > 0)) {
+                        // some directives can be integers not starting from 0
+                        // this test will keep their current values. ex: $conf[11] = 'abc'
                         $isArrayCnt++;
                     }
                 }
@@ -101,7 +103,7 @@ class Config_Container_PHPArray {
     * @access public
     * @return string
     */
-    function toString($configType = 'phparray', $options = array())
+    function toString($configType = 'phparray', $options = array(), &$obj)
     {
         static $childrenCount;
 
@@ -111,30 +113,30 @@ class Config_Container_PHPArray {
                 $options['name'] = 'conf';
             }
         }
-        switch ($this->type) {
+        switch ($obj->type) {
             case 'directive':
                 $string .= '$'.$options['name'];
-                $string .= Config_Container_PHPArray::_getParentString($this);
-                if ($this->parent->countChildren('directive', $this->name) > 1) {
+                $string .= Config_Container_PHPArray::_getParentString($obj);
+                if ($obj->parent->countChildren('directive', $obj->name) > 1) {
                     // we need to take care of directive set more than once
-                    if (isset($childrenCount[$this->name])) {
-                        $childrenCount[$this->name]++;
+                    if (isset($childrenCount[$obj->name])) {
+                        $childrenCount[$obj->name]++;
                     } else {
-                        $childrenCount[$this->name] = 0;
+                        $childrenCount[$obj->name] = 0;
                     }
-                    $string .= '['.$childrenCount[$this->name].']';
+                    $string .= '['.$childrenCount[$obj->name].']';
                 }
                 $string .= ' = ';
-                if (is_string($this->content)) {
-                    $string .= "'".$this->content."';\n";
-                } elseif (is_int($this->content)) {
-                    $string .= $this->content.";\n";
+                if (is_string($obj->content)) {
+                    $string .= "'".$obj->content."';\n";
+                } elseif (is_int($obj->content)) {
+                    $string .= $obj->content.";\n";
                 }
                 break;
             case 'section':
-                if (count($this->children) > 0) {
-                    for ($i = 0; $i < count($this->children); $i++) {
-                        $string .= $this->children[$i]->toString($configType, $options);
+                if (count($obj->children) > 0) {
+                    for ($i = 0; $i < count($obj->children); $i++) {
+                        $string .= $obj->children[$i]->toString($configType, $options);
                     }
                 }
                 break;
