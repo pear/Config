@@ -105,7 +105,12 @@ class Config_Container_PHPArray {
                 if ($isArrayCnt == count($value)) {
                     // 1 or more directives with the same name
                     foreach ($value as $k => $v) {
-                        $container->createDirective("$key", $v);
+                        if (is_array($v) && count($v) > 0) {
+                            $section =& $container->createSection("$key");
+                            $this->_parseArray($v, $section);
+                        } else {
+                            $container->createDirective("$key", $v);
+                        }
                     }
                 } else {
                     if (isset($value['#'])) {
