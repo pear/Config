@@ -19,7 +19,8 @@
 
 /**
 * Config parser for PHP .ini files
-* Faster because it uses parse_ini_file() but get rid of comments.
+* Faster because it uses parse_ini_file() but get rid of comments,
+* quotes, types and converts On, Off, True, False, Yes, No to 0 and 1.
 *
 * @author      Bertrand Mansion <bmansion@mamasam.com>
 * @package     Config
@@ -67,7 +68,19 @@ class Config_Container_IniFile {
             if (is_array($value)) {
                 $currentSection =& $obj->container->createSection($key);
                 foreach ($value as $directive => $content) {
-                    $currentSection->createDirective($directive, $content);
+                    // try to split the value if comma found
+                    if (strpos($content, '"') === false) {
+                        $values = preg_split('/\s*,\s+/', $content);
+                        if (count($values) > 1) {
+                            foreach ($values as $k => $v) {
+                                $currentSection->createDirective($directive, $v);
+                            }
+                        } else {
+                            $currentSection->createDirective($directive, $content);
+                        }
+                    } else {
+                        $currentSection->createDirective($directive, $content);
+                    }
                 }
             } else {
                 $currentSection->createDirective($key, $value);
@@ -84,15 +97,53 @@ class Config_Container_IniFile {
     */
     function toString(&$obj)
     {
+        static $childrenCount, $commaString;
+
         if (!isset($string)) {
             $string = '';
         }
         switch ($obj->type) {
+            case 'blank':
+                $string = "\n";
+                break;
+            case 'comment':
+                $string = ';'.$obj->content."\n";
+                break;
             case 'directive':
-                $string = $obj->name.'='.$obj->content."\n";
+                $count = $obj->parent->countChildren('directive', $obj->name);
+                $content = $obj->content;
+                if ($content === false) {
+                    $content = '0';
+                } elseif ($content === true) {
+                    $content = '1';
+                } elseif ((strlen(trim($content)) < strlen($content) ||
+                          strpos($content, ',') !== false ||
+                          strpos($content, ';') !== false) &&
+                          strpos($content, '"') === false) {
+                    $content = '"'.$content.'"';          
+                }
+                if ($count > 1) {
+                    // multiple values for a directive are separated by a comma
+                    if (isset($childrenCount[$obj->name])) {
+                        $childrenCount[$obj->name]++;
+                    } else {
+                        $childrenCount[$obj->name] = 0;
+                        $commaString[$obj->name] = $obj->name.'=';
+                    }
+                    if ($childrenCount[$obj->name] == $count-1) {
+                        // Clean the static for future calls to toString
+                        $string .= $commaString[$obj->name].$content."\n";
+                        unset($childrenCount[$obj->name]);
+                        unset($commaString[$obj->name]);
+                    } else {
+                        $commaString[$obj->name] .= $content.', ';
+                    }
+                } else {
+                    $string = $obj->name.'='.$content."\n";
+                }
                 break;
             case 'section':
-                if (!is_null($obj->parent)) {
+                if (!$obj->isRoot()) {
                     $string = '['.$obj->name."]\n";
                 }
                 if (count($obj->children) > 0) {
