@@ -48,7 +48,7 @@ var $feature = array() ;
 *
 * The Data Source can be a string with the file or a array of strings with the files to read,
 * so datasrc requires a existing file.
-* The feature-array have to contain the comment char array("cc" => Comment char)
+* The feature-array has to contain the realm (default = '/') eg.  array("realm" => '/base/of/config/')
 *
 * @access public
 * @param string $datasrc  Name of the datasource to parse
@@ -56,7 +56,7 @@ var $feature = array() ;
 * @return mixed				returns a PEAR_ERROR, if error occurs
 */
 
-function parseInput( $datasrc = "", $feature = array( "cc" => ";") )
+function parseInput( $datasrc = "", $feature = array( "realm" => "/") )
 {
 
     // Checking if $datasrc is a array, then call parseInput with
@@ -75,16 +75,16 @@ function parseInput( $datasrc = "", $feature = array( "cc" => ";") )
     $this -> datasrc = $datasrc ;
     $this -> feature = $feature ;
     
-    if( !file_exists( $datasrc ) )
+    if( !file_exists( $datasrc ) ) {
         return new PEAR_Error( "File '".$datasrc."' doesn't exists!", 31, PEAR_ERROR_RETURN, null, null );
-        
+    }    
     $array = parse_ini_file($datasrc,TRUE);
-    if (!$array)           
+    if (!$array) {          
         return new PEAR_Error( "File '".$datasrc."' does not contain configuration data", 31, PEAR_ERROR_RETURN, null, null );
-
+    }
     foreach($array as $block => $items) {
         if (!$items) continue;
-	$this->data['/'.$block] = $items;
+	$this->data[$feature['realm'].$block] = $items;
     } 
 
 
