@@ -28,16 +28,14 @@
   </maintainers>
   <license>PHP License</license>
   <release>
-    <version>1.10.3</version>
-    <date>2004-10-13</date>
+    <version>1.10.4</version>
+    <date>2004-11-22</date>
     <state>stable</state> 
     <notes>
     Changelog:
-        *Fixed bug #2179 which prevented URL's containting ~ in ini files to be parsed correctly
-        *Fixed bug #2439 which caused Config_Containter::countChildren() to return a PEAR_ERROR
-            object when called on a non-section Config_Container object.  This change brings
-            the object's behavior inline with the documentation. Beware, if your code relies
-            on the previous behavior, this change may break your code.
+        *Fixed bug #2742 which didn't trim variable names in Inicommented file
+        *changed XML_Parser and XML_Util dependencies to optional, since they're only needed 
+        when parsing XML files (bug 2738)
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -57,6 +55,10 @@
         <file name="IniCommented.php"/>
         <file name="IniFromScratch.php"/>
       </dir>
+      <dir> name="tests" role="test">
+        <file name="bug2742.phpt" role="test" />
+        <file name="bug2742.ini" role="test" />
+      </dir>
     </filelist>
     <deps>
         <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
@@ -64,6 +66,19 @@
     </deps>
   </release>
 <changelog>
+  <release>
+    <version>1.10.3</version>
+    <date>2004-10-13</date>
+    <state>stable</state> 
+    <notes>
+    Changelog:
+        *Fixed bug #2179 which prevented URL's containting ~ in ini files to be parsed correctly
+        *Fixed bug #2439 which caused Config_Containter::countChildren() to return a PEAR_ERROR
+            object when called on a non-section Config_Container object.  This change brings
+            the object's behavior inline with the documentation. Beware, if your code relies
+            on the previous behavior, this change may break your code.
+    </notes>
+  </release>
 <release>
     <version>1.10.2</version>
     <date>2004-06-14</date>
