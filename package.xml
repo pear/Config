@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- do not use the "Type" attribute here, that one is only for
+     generated package.xml files -->
+<Package>
+  <Name>Config</Name>
+  <Summary>Class for reading and writing Config-"files"</Summary>
+  <Maintainer>
+    <Initials>AM</Initials>
+    <Name>Alexander Merz</Name>
+    <Email></Email>
+  </Maintainer>
+  <Release>
+    <Version>0.2</Version>
+    <Date>2001-06-23</Date>
+    <Notes>
+	Documentation is in README.Config.
+    </Notes>
+  </Release>
+  <FileList>
+    <Dir Name="/">
+        <File Role="php">Config.php</File>
+        <File Role="doc">README.Config</File>
+        <Dir Name="Config">
+            <File Role="php">Container.php</File>
+            <Dir Name="Container">
+               <File Role="php">db.php</File>
+               <File Role="php">IniFile.php</File>
+               <File Role="php">xml.php</File>
+             </Dir>
+        </Dir>
+    </Dir>
+  </FileList>
+</Package>
