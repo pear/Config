@@ -124,7 +124,7 @@ class Config_Container {
         if (is_null($target)) {
             $target =& $this;
         }
-        if (get_class($target) != 'config_container') {
+        if (strtolower(get_class($target)) != 'config_container') {
             return PEAR::raiseError('Target must be a Config_Container object in Config_Container::addItem.', null, PEAR_ERROR_RETURN);
         }
 
@@ -693,7 +693,7 @@ class Config_Container {
         $className = $GLOBALS['CONFIG_TYPES'][$configType][1];
         include_once($includeFile);
 
-        if (in_array('writedatasrc', get_class_methods($className))) {
+        if (in_array('writeDatasrc', get_class_methods($className))) {
             $writer = new $className($options);
             return $writer->writeDatasrc($datasrc, $this);
         }
