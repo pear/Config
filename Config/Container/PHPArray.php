@@ -106,29 +106,27 @@ class Config_Container_PHPArray {
                     // 1 or more directives with the same name
                     foreach ($value as $k => $v) {
                         if (is_array($v) && count($v) > 0) {
-                            $section =& $container->createSection("$key");
+                            $attr =& (isset($v['@'])) ? $v['@'] : null;
+                            if (isset($v['#'])) {
+                                $section =& $container->createItem('directive', $key, $v['#'], $attr);
+                            } else { 
+                                $section =& $container->createItem('section', $key, null, $attr);
+                            }
+                            unset($v['@']);
+                            unset($v['#']);
                             $this->_parseArray($v, $section);
                         } else {
                             $container->createDirective("$key", $v);
                         }
                     }
                 } else {
-                    if (isset($value['#'])) {
-                        $directive =& $container->createDirective("$key", $value['#']);
-                        if (isset($value['@']) && is_array($value['@'])) {
-                            $directive->setAttributes($value['@']);
-                        }
-                    } else {
-                        // new section
-                        $section =& $container->createSection("$key");
-                        if (isset($value['@']) && is_array($value['@'])) {
-                            $section->setAttributes($value['@']);
-                            unset($value['@']);
-                        }
-                        if (count($value) > 0) {
-                            $this->_parseArray($value, $section);
-                        }
-                    }
+                    // new section
+                    $attr =& (isset($value['@'])) ? $value['@'] : null;
+                    $text =& (isset($value['#'])) ? $value['#'] : null;
+                    $section =& $container->createItem('section', $key, $text, $attr);
+                    unset($value['@']);
+                    unset($value['#']);
+                    $this->_parseArray($value, $section);
                 }
             } else {
                 // new directive
@@ -164,15 +162,14 @@ class Config_Container_PHPArray {
                     $string .= $parentString."['#']";
                     foreach ($attributes as $attr => $val) {
                         $attrString .= $parentString."['@']"
-                                    ."['".$attr."'] = ".'"'.str_replace('"', '\"', $val)
-                                    .'"'.";\n";
+                                    ."['".$attr."'] = '".$val."';\n";
                     }
                 } else {
                     $string .= $parentString;
                 }
                 $string .= ' = ';
                 if (is_string($obj->content)) {
-                    $string .= '"'.str_replace('"', '\"', $obj->content).'"';
+                    $string .= "'".$obj->content."'";
                 } elseif (is_int($obj->content)) {
                     $string .= $obj->content;
                 } elseif (is_bool($obj->content)) {
@@ -188,8 +185,7 @@ class Config_Container_PHPArray {
                     $parentString = $this->_getParentString($obj);
                     foreach ($attributes as $attr => $val) {
                         $attrString .= $parentString."['@']"
-                                    ."['".$attr."'] = ".'"'.str_replace('"', '\"', $val)
-                                    .'"'.";\n";
+                                    ."['".$attr."'] = '".$val."';\n";
                     }
                 }
                 $string .= $attrString;
