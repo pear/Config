@@ -26,7 +26,15 @@ require_once('XML/Util.php');
 * @author      Bertrand Mansion <bmansion@mamasam.com>
 * @package     Config
 */
-class Config_Container_XML extends XML_Parser {
+class Config_Container_XML extends XML_Parser
+{
+    /**
+    * Deep level used for indentation
+    *
+    * @var  int
+    * @access private
+    */
+    var $_deep = -1;
 
     /**
     * This class options:
@@ -38,6 +46,7 @@ class Config_Container_XML extends XML_Parser {
     * addDecl   : whether to add the xml declaration at beginning or not
     * useAttr   : whether to use the attributes
     * isFile    : whether the given content is a file or an XML string
+    * useCData  : whether to surround data with <![CDATA[...]]>
     *
     * @var  array
     */
@@ -48,7 +57,8 @@ class Config_Container_XML extends XML_Parser {
                          'linebreak' => "\n",
                          'addDecl'   => true,
                          'useAttr'   => true,
-                         'isFile'    => true);
+                         'isFile'    => true,
+                         'useCData'  => false);
 
     /**
     * Container objects
@@ -172,12 +182,11 @@ class Config_Container_XML extends XML_Parser {
     */
     function toString(&$obj)
     {
-        static $deep = -1;
         $indent = '';
         if (!$obj->isRoot()) {
             // no indent for root
-            $deep++;
-            $indent = str_repeat($this->options['indent'], $deep);
+            $this->_deep++;
+            $indent = str_repeat($this->options['indent'], $this->_deep);
         } else {
             // Initialize string with xml declaration
             $string = '';
@@ -187,8 +196,8 @@ class Config_Container_XML extends XML_Parser {
             }
             if (!empty($this->options['name'])) {
                 $string .= '<'.$this->options['name'].'>'.$this->options['linebreak'];
-                $deep++;
-                $indent = str_repeat($this->options['indent'], $deep);
+                $this->_deep++;
+                $indent = str_repeat($this->options['indent'], $this->_deep);
             }
         }
         if (!isset($string)) {
@@ -197,7 +206,8 @@ class Config_Container_XML extends XML_Parser {
         switch ($obj->type) {
             case 'directive':
                 $attributes = ($this->options['useAttr']) ? $obj->attributes : array();
-                $string .= $indent.XML_Util::createTag($obj->name, $attributes, $obj->content);
+                $string .= $indent.XML_Util::createTag($obj->name, $attributes, $obj->content, null,
+                            ($this->options['useCData'] ? XML_UTIL_CDATA_SECTION : XML_UTIL_REPLACE_ENTITIES));
                 $string .= $this->options['linebreak'];
                 break;
             case 'comment':
@@ -233,7 +243,7 @@ class Config_Container_XML extends XML_Parser {
                 $string = '';
         }
         if (!$obj->isRoot()) {
-            $deep--;
+            $this->_deep--;
         }
         return $string;
     } // end func toString
