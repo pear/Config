@@ -34,7 +34,7 @@ class Config_Container_Apache {
     * @param string $datasrc    path to the configuration file
     * @return mixed returns a PEAR_ERROR, if error occurs or true if ok
     */
-    function &parseDatasrc($datasrc)
+    function &parseDatasrc($datasrc, &$obj)
     {
         if (!is_readable($datasrc)) {
             return PEAR::raiseError("Datasource file cannot be read.", null, PEAR_ERROR_RETURN);
@@ -42,7 +42,7 @@ class Config_Container_Apache {
         $lines = file($datasrc);
         $n = 0;
         $lastline = '';
-        $sections[0] =& $this->container;
+        $sections[0] =& $obj->container;
         foreach ($lines as $line) {
             $n++;
             if (preg_match('/^\s*[^#](.*)\s*\\$/', $line, $match)) {
@@ -91,11 +91,11 @@ class Config_Container_Apache {
     * @access public
     * @return string
     */
-    function toString($configType = 'apache')
+    function toString($configType = 'apache', $options = array(), &$obj)
     {
         static $deep = -1;
         $ident = '';
-        if (!$this->isRoot()) {
+        if (!$obj->isRoot()) {
             // no indent for root
             $deep++;
             $ident = str_repeat('  ', $deep);
@@ -103,36 +103,36 @@ class Config_Container_Apache {
         if (!isset($string)) {
             $string = '';
         }
-        switch ($this->type) {
+        switch ($obj->type) {
             case 'blank':
                 $string = "\n";
                 break;
             case 'comment':
-                $string = $ident.'# '.$this->content."\n";
+                $string = $ident.'# '.$obj->content."\n";
                 break;
             case 'directive':
-                $string = $ident.$this->name.' '.$this->content."\n";
+                $string = $ident.$obj->name.' '.$obj->content."\n";
                 break;
             case 'section':
-                if (!$this->isRoot()) {
-                    $string = $ident.'<'.$this->name;
-                    $string .= ($this->content != '') ? ' '.$this->content.'>' : ' >';
+                if (!$obj->isRoot()) {
+                    $string = $ident.'<'.$obj->name;
+                    $string .= ($obj->content != '') ? ' '.$obj->content.'>' : ' >';
                     $string .= "\n";
                 }
-                if (count($this->children) > 0) {
-                    for ($i = 0; $i < count($this->children); $i++) {
-                        $string .= $this->children[$i]->toString($configType);
+                if (count($obj->children) > 0) {
+                    for ($i = 0; $i < count($obj->children); $i++) {
+                        $string .= $obj->children[$i]->toString($configType, $options);
                     }
                 }
-                if (!$this->isRoot()) {
+                if (!$obj->isRoot()) {
                     // object is not root
-                    $string .= $ident.'</'.$this->name.">\n";
+                    $string .= $ident.'</'.$obj->name.">\n";
                 }
                 break;
             default:
                 $string = '';
         }
-        if (!$this->isRoot()) {
+        if (!$obj->isRoot()) {
             $deep--;
         }
         return $string;

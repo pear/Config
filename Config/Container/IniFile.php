@@ -35,19 +35,19 @@ class Config_Container_IniFile {
     * @param string $datasrc    path to the configuration file
     * @return mixed    returns a PEAR_ERROR, if error occurs or true if ok
     */
-    function &parseDatasrc($datasrc)
+    function &parseDatasrc($datasrc, &$obj)
     {
         if (!file_exists($datasrc)) {
             return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);
         }
-        $currentSection =& $this->container;
+        $currentSection =& $obj->container;
         $confArray = parse_ini_file($datasrc, true);
         if (!$confArray) {
             return PEAR::raiseError("File '$datasrc' does not contain configuration data.", null, PEAR_ERROR_RETURN);
         }
         foreach ($confArray as $key => $value) {
             if (is_array($value)) {
-                $currentSection =& $this->container->createSection($key);
+                $currentSection =& $obj->container->createSection($key);
                 foreach ($value as $directive => $content) {
                     $currentSection->createDirective($directive, $content);
                 }
@@ -63,22 +63,22 @@ class Config_Container_IniFile {
     * @access public
     * @return string
     */
-    function toString($configType = 'inifile')
+    function toString($configType = 'inifile', $options = array(), &$obj)
     {
         if (!isset($string)) {
             $string = '';
         }
-        switch ($this->type) {
+        switch ($obj->type) {
             case 'directive':
-                $string = $this->name.' = '.$this->content."\n";
+                $string = $obj->name.' = '.$obj->content."\n";
                 break;
             case 'section':
-                if (!is_null($this->parent)) {
-                    $string = '['.$this->name."]\n";
+                if (!is_null($obj->parent)) {
+                    $string = '['.$obj->name."]\n";
                 }
-                if (count($this->children) > 0) {
-                    for ($i = 0; $i < count($this->children); $i++) {
-                        $string .= $this->children[$i]->toString($configType);
+                if (count($obj->children) > 0) {
+                    for ($i = 0; $i < count($obj->children); $i++) {
+                        $string .= $obj->children[$i]->toString($configType, $options);
                     }
                 }
                 break;

@@ -35,7 +35,7 @@ class Config_Container_GenericConf {
     * @param string $datasrc    path to the configuration file
     * @return mixed returns a PEAR_ERROR, if error occurs or true if ok
     */
-    function &parseDatasrc($datasrc)
+    function &parseDatasrc($datasrc, &$obj)
     {
         if (is_null($datasrc) || !is_readable($datasrc)) {
             return PEAR::raiseError("Datasource file cannot be read.", null, PEAR_ERROR_RETURN);
@@ -43,23 +43,23 @@ class Config_Container_GenericConf {
         
         // Set default options for parser
         
-        if (empty($this->parserOptions['comment'])) {
-            $this->parserOptions['comment'] = '#';
+        if (empty($obj->parserOptions['comment'])) {
+            $obj->parserOptions['comment'] = '#';
         }
-        if (empty($this->parserOptions['equals'])) {
-            $this->parserOptions['equals'] = ':';
+        if (empty($obj->parserOptions['equals'])) {
+            $obj->parserOptions['equals'] = ':';
         }
-        if (empty($this->parserOptions['newline'])) {
-            $this->parserOptions['newline'] = '\\';
+        if (empty($obj->parserOptions['newline'])) {
+            $obj->parserOptions['newline'] = '\\';
         }
 
         $lines = file($datasrc);
         $n = 0;
         $lastline = '';
-        $root =& $this->container;
+        $root =& $obj->container;
         foreach ($lines as $line) {
             $n++;
-            if (preg_match('/^\s*(.*)\s+'.$this->parserOptions['newline'].'\s*$/', $line, $match)) {
+            if (preg_match('/^\s*(.*)\s+'.$obj->parserOptions['newline'].'\s*$/', $line, $match)) {
                 // directive on more than one line
                 $lastline .= $match[1].' ';
                 continue;
@@ -68,13 +68,13 @@ class Config_Container_GenericConf {
                 $line = $lastline.$line;
                 $lastline = '';
             }
-            if (preg_match('/^\s*'.$this->parserOptions['comment'].'+\s*(.*?)\s*$/', $line, $match)) {
+            if (preg_match('/^\s*'.$obj->parserOptions['comment'].'+\s*(.*?)\s*$/', $line, $match)) {
                 // a comment
                 $root->addComment($match[1]);
             } elseif (preg_match('/^\s*$/', $line)) {
                 // a blank line
                 $root->addBlank();
-            } elseif (preg_match('/^\s*(\w+)'.$this->parserOptions['equals'].'\s*((.*?)|)\s*$/', $line, $match)) {
+            } elseif (preg_match('/^\s*(\w+)'.$obj->parserOptions['equals'].'\s*((.*?)|)\s*$/', $line, $match)) {
                 // a directive
                 $root->addDirective($match[1], $match[2]);
             } else {
@@ -89,7 +89,7 @@ class Config_Container_GenericConf {
     * @access public
     * @return string
     */
-    function toString($configType = 'genericconf', $options = array())
+    function toString($configType = 'genericconf', $options = array(), &$obj)
     {
         if (empty($string)) {
             $string = '';
@@ -100,20 +100,20 @@ class Config_Container_GenericConf {
                 $options['equals'] = ':';
             }
         }
-        switch ($this->type) {
+        switch ($obj->type) {
             case 'blank':
                 $string = "\n";
                 break;
             case 'comment':
-                $string = $options['comment'].' '.$this->content."\n";
+                $string = $options['comment'].' '.$obj->content."\n";
                 break;
             case 'directive':
-                $string = $this->name.$options['equals'].' '.$this->content."\n";
+                $string = $obj->name.$options['equals'].' '.$obj->content."\n";
                 break;
             case 'section':
-                if (count($this->children) > 0) {
-                    for ($i = 0; $i < count($this->children); $i++) {
-                        $string .= $this->children[$i]->toString($configType, $options);
+                if (count($obj->children) > 0) {
+                    for ($i = 0; $i < count($obj->children); $i++) {
+                        $string .= $obj->children[$i]->toString($configType, $options);
                     }
                 }
                 break;
