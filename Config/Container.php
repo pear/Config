@@ -67,10 +67,11 @@ class Config_Container {
     /**
     * Constructor
     *
-    * @param  string  type       (optional)Type of container object
-    * @param  string  name       (optional)Name of container object
-    * @param  string  content    (optional)Content of container object
-    * @param  mixed   attributes (optional)Array of attributes for container object
+    * @param  string  $type       Type of container object
+    * @param  string  $name       Name of container object
+    * @param  string  $content    Content of container object
+    * @param  array   $attributes Array of attributes for container object
+    * @return object    reference to created container
     */
     function &Config_Container($type = '', $name = '', $content = '', $attributes = null)
     {
@@ -84,12 +85,12 @@ class Config_Container {
 
     /**
     * Create a child for this item.
-    * @param  string  type       type of item: directive, section, comment, blank...
-    * @param  mixed   item       item name
-    * @param  string  content    item content
-    * @param  array   attributes item attributes
-    * @param  string  where      choose a position 'bottom', 'top', 'after', 'before'
-    * @param  object  target     needed if you choose 'before' or 'after' for where
+    * @param  string  $type       type of item: directive, section, comment, blank...
+    * @param  mixed   $item       item name
+    * @param  string  $content    item content
+    * @param  array   $attributes item attributes
+    * @param  string  $where      choose a position 'bottom', 'top', 'after', 'before'
+    * @param  object  $target     needed if you choose 'before' or 'after' for where
     * @return object  reference to new item or Pear_Error
     */
     function &createItem($type, $item, $content, $attributes = null, $where = 'bottom', $target = null)
@@ -134,10 +135,10 @@ class Config_Container {
     
     /**
     * Adds an item to this item.
-    * @param  object   item      a container object
-    * @param  string   where     (optional)choose a position 'bottom', 'top', 'after', 'before'
-    * @param  object   target    (optional)needed if you choose 'before' or 'after' for where
-    * @return true on success, Pear_Error on error
+    * @param  object   $item      a container object
+    * @param  string   $where     choose a position 'bottom', 'top', 'after', 'before'
+    * @param  object   $target    needed if you choose 'before' or 'after' in $where
+    * @return mixed    reference to added container on success, Pear_Error on error
     */
     function &addItem(&$item, $where = 'bottom', $target = null)
     {
@@ -185,7 +186,9 @@ class Config_Container {
     * Adds a comment to this item.
     * This is a helper method that calls createItem
     *
-    * @param  string  content   object content
+    * @param  string    $content        Object content
+    * @param  string    $where          Position : 'top', 'bottom', 'before', 'after'
+    * @param  object    $target         Needed when $where is 'before' or 'after'
     * @return object  reference to new item or Pear_Error
     */
     function &createComment($content = '', $where = 'bottom', $target = null)
@@ -210,9 +213,11 @@ class Config_Container {
     * Adds a directive to this item.
     * This is a helper method that calls createItem
     *
-    * @param  string  name        Name of new directive
-    * @param  string  content     Content of new directive
-    * @param  mixed   attributes  (optional)Directive attributes
+    * @param  string    $name           Name of new directive
+    * @param  string    $content        Content of new directive
+    * @param  mixed     $attributes     Directive attributes
+    * @param  string    $where          Position : 'top', 'bottom', 'before', 'after'
+    * @param  object    $target         Needed when $where is 'before' or 'after'
     * @return object  reference to new item or Pear_Error
     */
     function &createDirective($name, $content, $attributes = null, $where = 'bottom', $target = null)
@@ -223,12 +228,15 @@ class Config_Container {
 
     /**
     * Adds a section to this item.
+    *
     * This is a helper method that calls createItem
     * If the section already exists, it won't create a new one. 
     * It will return reference to existing item.
     *
-    * @param  string  name        Name of new section
-    * @param  mixed   attributes  (optional)Section attributes
+    * @param  string    $name           Name of new section
+    * @param  array     $attributes     Section attributes
+    * @param  string    $where          Position : 'top', 'bottom', 'before', 'after'
+    * @param  object    $target         Needed when $where is 'before' or 'after'
     * @return object  reference to new item or Pear_Error
     */
     function &createSection($name, $attributes = null, $where = 'bottom', $target = null)
@@ -249,12 +257,11 @@ class Config_Container {
     * Note that root is a section.
     * This method is not recursive and tries to keep the current structure.
     *
-    * @param  string    type        type of item: directive, section, comment, blank...
-    * @param  mixed     name        (optional)item name
-    * @param  mixed     content     (optional)find item with this content
-    * @param  array     attributes  (optional)find item with attribute set to the given value
-    * @param  int       index       (optional)index of the item in the returned object list.
-    *                               If it is not set, will try to return the last item with this name.
+    * @param  string    $type        Type of item: directive, section, comment, blank...
+    * @param  mixed     $name        Item name
+    * @param  mixed     $content     Find item with this content
+    * @param  array     $attributes  Find item with attribute set to the given value
+    * @param  int       $index       Index of the item in the returned object list. If it is not set, will try to return the last item with this name.
     * @return mixed  reference to item found or false when not found
     */
     function &getItem($type, $name = null, $content = null, $attributes = null, $index = -1)
@@ -320,8 +327,8 @@ class Config_Container {
     /**
     * Returns how many children this container has
     *
-    * @param  string    type    (optional)type of children counted
-    * @param  string    type    (optional)name of children counted
+    * @param  string    $type    type of children counted
+    * @param  string    $name    name of children counted
     * @return int  number of children found
     */
     function countChildren($type = null, $name = null)
@@ -508,7 +515,7 @@ class Config_Container {
 
     /**
     * Set this item's attributes.
-    * @param  array    attributes        Array of attributes
+    * @param  array    $attributes        Array of attributes
     * @return void
     */
     function setAttributes($attributes)
@@ -518,7 +525,7 @@ class Config_Container {
 
     /**
     * Set this item's attributes.
-    * @param  array    attributes        Array of attributes
+    * @param  array    $attributes        Array of attributes
     * @return void
     */
     function updateAttributes($attributes)
@@ -541,7 +548,7 @@ class Config_Container {
     
     /**
     * Get one attribute value of this item
-    * @param  string   attribute        Attribute key
+    * @param  string   $attribute        Attribute key
     * @return mixed    item's attribute value
     */
     function getAttribute($attribute)
@@ -557,21 +564,20 @@ class Config_Container {
     * This is an helper method calling getItem and addItem or setContent for you.
     * If the directive does not exist, it will be created at the bottom.
     *
-    * @param  string    name        Name of the directive to look for
-    * @param  mixed     content     New content, a string or a container object
-    * @param  mixed     attributes  New content, a string or a container object
-    * @param  int       index       Index of the directive to set,
-    *                               in case there are more than one directive
-    *                               with the same name
+    * @param  string    $name        Name of the directive to look for
+    * @param  mixed     $content     New content
+    * @param  int       $index       Index of the directive to set,
+    *                                in case there are more than one directive
+    *                                with the same name
     * @return object    newly set directive
     */
     function &setDirective($name, $content, $index = -1)
     {
-        $item =& $this->getItem('directive', $name, null, $index);
-        if (PEAR::isError($item)) {
+        $item =& $this->getItem('directive', $name, null, null, $index);
+        if ($item === false || PEAR::isError($item)) {
             // Directive does not exist, will create one
             unset($item);
-            $item =& addItem('directive', $name, $content, null);
+            $item =& $this->createDirective($name, $content, null);
         } else {
             // Change existing directive value
             $item->setContent($content);
@@ -593,12 +599,11 @@ class Config_Container {
 
     /**
     * Call the toString methods in the container plugin
-    * @param    string  configType  Type of configuration used to generate the string
-    * @param    array   options     (optional)specify special options used by the parser
-    * @access   public
-    * @return true on success or PEAR_ERROR
+    * @param    string  $configType  Type of configuration used to generate the string
+    * @param    array   $options     Specify special options used by the parser
+    * @return   mixed   true on success or PEAR_ERROR
     */
-    function toString($configType = '', $options = array())
+    function toString($configType, $options = array())
     {
         $configType = strtolower($configType);
         if (!isset($GLOBALS['CONFIG_TYPES'][$configType])) {
@@ -613,10 +618,11 @@ class Config_Container {
 
     /**
     * Returns a key/value pair array of the container and its children.
+    *
     * Format : section[directive][index] = value
     * If the container has attributes, it will use '@' and '#'
     * index is here because multiple directives can have the same name.
-    * @access   public
+    *
     * @return array
     */
     function toArray()
@@ -661,11 +667,11 @@ class Config_Container {
     /**
     * Writes the configuration to a file
     * 
-    * @param  mixed  datasrc        info on datasource such as path to the configuraton file or dsn...
-    * @param  string configType     type of configuration
-    * @param  array  options        (optional) Options for writer
+    * @param  mixed  $datasrc        Info on datasource such as path to the configuraton file or dsn...
+    * @param  string $configType     Type of configuration
+    * @param  array  $options        Options for writer
     * @access public
-    * @return PEAR_ERROR or true
+    * @return mixed     true on success or PEAR_ERROR
     */
     function writeDatasrc($datasrc, $configType, $options = array())
     {
