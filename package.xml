@@ -10,10 +10,14 @@
     <email></email>
   </maintainer>
   <release>
-    <version>0.2</version>
-    <date>2001-06-23</date>
+    <version>0.2.1</version>
+    <date>2001-09-26</date>
     <notes>
 	Documentation is in README.Config.
+	0.2.1 :
+	- Bug fixed, when $feature in ParseInput was not set 
+	- some e_warnings fixed
+	(thanks to Markus Fischer for the reports)
     </notes>
   </release>
   <filelist>

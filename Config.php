@@ -238,13 +238,18 @@ class Config  {
     * @return mixed				returns a PEAR_ERROR, if error occurs
     */
 
-    function parseInput ($files ,$feature = array() )
+    function parseInput ($files ,$feature = Null )
     {
         if (is_array($files)) {
             $totaldata = array();
             foreach ($files as $datasrc)
             {
-                if (Pear::isError($error = $this->container->parseInput($datasrc,$feature)))
+                if (is_null($feature))
+                    $error = $this->container->parseInput($datasrc);
+                else 
+                    $error = $this->container->parseInput($datasrc,$feature);        
+                
+                if (Pear::isError($error))
                    return $error;
          
                 $totaldata = $this->array_merge_clobber($totaldata,$this->container->data);
@@ -255,7 +260,12 @@ class Config  {
         }
         else
         {
-            if (Pear::isError($error = $this->container->parseInput($files,$feature)))
+            if (is_null($feature))
+                $error = $this->container->parseInput($files);
+            else 
+                $error = $this->container->parseInput($files,$feature);                    
+            
+            if (Pear::isError($error))
                  return $error;
 
             $this->data = $this->container->data;

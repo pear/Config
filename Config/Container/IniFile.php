@@ -91,7 +91,7 @@ function parseInput( $datasrc = "", $feature = array( "cc" => ";") )
                      $char = substr( $line, 0, 1) ;
 
                      // a comment?
-                     if( $char == $this -> feature["cc"] )
+                     if( isset($this->feature["cc"]) && $char == $this -> feature["cc"] )
                      {
                          $found = 0 ;
                      }
@@ -130,7 +130,6 @@ function parseInput( $datasrc = "", $feature = array( "cc" => ";") )
                          $found = 2 ;
                      }
                  }
-
                  // creating the array
                  switch( $found )
                  {
@@ -138,10 +137,7 @@ function parseInput( $datasrc = "", $feature = array( "cc" => ";") )
                             $block = '/'.$block_found ;
                           break ;
                      case 2 :
-
-                            $aadd = $this -> data[ $block ] ;
-                            $aadd[ $key_found ] = (string)trim ((string)$value_found ) ;
-                            $this -> data[$block] = $aadd ;
+                            $this->data[$block][$key_found] = (string)trim ((string)$value_found);
                           break ;
                      case 0 :
                      default :
