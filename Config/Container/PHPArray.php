@@ -170,8 +170,8 @@ class Config_Container_PHPArray {
                     }
                 }
                 $string .= $attrString;
-                if (count($obj->children) > 0) {
-                    for ($i = 0; $i < count($obj->children); $i++) {
+                if ($count = count($obj->children)) {
+                    for ($i = 0; $i < $count; $i++) {
                         $string .= $this->toString($obj->getChild($i));
                     }
                 }
