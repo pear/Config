@@ -4,7 +4,7 @@ bug 2742 regression
 <?php
     set_include_path(dirname(dirname(__FILE__)) . ':' . get_include_path());
 
-    require_once '../Config.php' ;
+    require_once 'Config.php' ;
 
     $datasrc = dirname(__FILE__) . '/bug2742.ini';
     $phpIni = new Config();
