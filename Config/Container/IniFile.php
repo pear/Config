@@ -70,7 +70,7 @@ class Config_Container_IniFile {
         }
         switch ($obj->type) {
             case 'directive':
-                $string = $obj->name.' = '.$obj->content."\n";
+                $string = $obj->name.'='.$obj->content."\n";
                 break;
             case 'section':
                 if (!is_null($obj->parent)) {

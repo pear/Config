@@ -89,7 +89,7 @@ class Config_Container_IniCommented {
                 $string = ';'.$obj->content."\n";
                 break;
             case 'directive':
-                $string = $obj->name.' = '.$obj->content."\n";
+                $string = $obj->name.'='.$obj->content."\n";
                 break;
             case 'section':
                 if (!$obj->isRoot()) {
