@@ -18,8 +18,9 @@
 // $Id$
 
 require_once('PEAR.php');
+require_once('Config/Container.php');
 
-$GLOBALS['CONFIG_CONTAINERS'] = 
+$GLOBALS['CONFIG_TYPES'] = 
         array(
             'apache'        =>array('Config/Container/Apache.php','Config_Container_Apache'),
             'genericconf'   =>array('Config/Container/GenericConf.php','Config_Container_GenericConf'),
@@ -50,6 +51,19 @@ class Config {
     var $datasrc;
 
     /**
+    * Type of datasource for config
+    * Ex: IniCommented, Apache...
+    * @var string
+    */
+    var $configType = '';
+
+    /**
+    * Options for parser
+    * @var string
+    */
+    var $parserOptions = array();
+
+    /**
     * Container object
     * @var object
     */
@@ -65,41 +79,34 @@ class Config {
     * chosen container.
     *
     * @access public
-    * @param    string  $container  (optional)Container
-    * @param    array   $options    (optional)Array of options for the container
+    * @param    string  $configType     (optional)Type of configuration
     * @return   mixed   PEAR_Error on error or container root element
     */
-    function Config($container, $options = null)
+    function Config($configType = '', $options = array())
     {
-        $container = strtolower($container);
-        if (!Config::isContainerRegistered($container)) {
-            return PEAR::raiseError("Container '$container' is not registered in Config::Config.", null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
+        if ($configType != '' && $error = $this->_checkConfigType($configType)) {
+            return PEAR::raiseError($error.' constructor.', PEAR_ERROR_TRIGGER, E_USER_WARNING);
         }
-        $className = $GLOBALS['CONFIG_CONTAINERS'][$container][1];
-        $includeFile = $GLOBALS['CONFIG_CONTAINERS'][$container][0];
-        include_once ($includeFile);
-        $this->container =& new $className('section', 'root', '');
+        $this->parserOptions = $options;
+        $this->container =& new Config_Container('section', 'root', '');
         $this->container->parent = null;
-        if (is_array($options)) {
-            $this->container->setOptions($options);
-        }
     } // end constructor
 
     /**
     * Returns true if container is registered
     * @access public
-    * @param    string  $container  type of container
+    * @param    string  $configType  Type of config
     * @return   bool
     */
-    function isContainerRegistered($container)
+    function isConfigTypeRegistered($configType)
     {
-        return in_array($container, array_keys($GLOBALS['CONFIG_CONTAINERS']));
-    } // end func isContainerRegistered
+        return in_array($configType, array_keys($GLOBALS['CONFIG_TYPES']));
+    } // end func isConfigTypeRegistered
 
     /**
     * Returns the root container for this config object
     * @access public
-    * @return   object	root container object
+    * @return   object  root container object
     */
     function &getRoot()
     {
@@ -107,16 +114,88 @@ class Config {
     } // end func getRoot
 
     /**
+    * Reset the root container to accept the object passed as parameter as a child
+    * @param object  $rootContainer  container to be used as the first child to root
+    * @access public
+    * @return   true on success or PEAR_Error
+    */
+    function setRoot(&$rootContainer)
+    {
+        if (is_object($rootContainer) && is_a($rootContainer, 'config_container')) {
+            unset($this->container);
+            $this->container =& new Config_Container('section', 'root', '');
+            $this->container->parent = null;
+            $this->container->children[0] =& $rootContainer;
+            return true;
+        } else {
+            return PEAR::raiseError("Config::setRoot only accepts object of Config_Container type.", null, PEAR_ERROR_RETURN);
+        }
+    } // end func setRoot
+
+    /**
     * Parses the datasource contents
+    * This will set the root container for this config object
+    *
     * @param mixed  $datasrc  Datasource to work with
     * @access public
     * @return mixed PEAR_Error on error or Config_Container object
     */
-    function &parseConfig($datasrc)
+    function &parseConfig($datasrc, $configType = '', $options = array())
     {
         $this->datasrc = $datasrc;
-        return $this->container->parseDatasrc($datasrc);
+        if ($error = $this->_checkConfigType($configType)) {
+            return PEAR::raiseError($error.'::parseConfig.', PEAR_ERROR_TRIGGER, E_USER_WARNING);
+        }
+        if (count($options) > 0) {
+            $this->parserOptions = $options;
+        }
+        $className = $GLOBALS['CONFIG_TYPES'][$this->configType][1];
+        $includeFile = $GLOBALS['CONFIG_TYPES'][$this->configType][0];
+        include_once($includeFile);
+        if ($error = eval("return $className::parseDatasrc('".$this->datasrc."');")) {
+            return $error;
+        }
+        return $this->container;
     } // end func &parseConfig
+
+    /**
+    * Checks if config type can be used
+    * @param string  $configType  Config type to use (inicommented, apache, ...)
+    * @access public
+    * @return mixed string on error or false if ok
+    */
+    function _checkConfigType($configType)
+    {
+        if ($configType == '') {
+            if ($this->configType == '') {
+                return "You must specify a config type in Config";
+            }
+        } else {
+            $configType = strtolower($configType);
+            if (!Config::isConfigTypeRegistered($configType)) {
+                return "Configuration type '$configType' is not registered in Config";
+            }
+            $this->configType = $configType;
+        }
+        return false;
+    } // end func _checkConfigType
+
+    /**
+    * Checks if datasource can be set
+    * @param mixed  $datasrc  Datasource to write to
+    * @access public
+    * @return mixed string on error or false if ok
+    */
+    function _checkDatasrc($datasrc)
+    {
+        if (!is_null($datasrc)) {
+            $this->datasrc = $datasrc;
+        }
+        if (is_null($this->datasrc)) {
+            return "No datasource given in Config";
+        }
+        return false;
+    } // end func _checkDatasrc
 
     /**
     * Writes the container contents to datasource
@@ -124,15 +203,20 @@ class Config {
     * @access public
     * @return mixed PEAR_Error on error or true if ok
     */
-    function writeConfig($datasrc = null)
+    function writeConfig($datasrc = null, $configType = '')
     {
-        if (!is_null($datasrc)) {
-            $this->datasrc = $datasrc;
+        if ($error = $this->_checkDatasrc($datasrc)) {
+            return PEAR::raiseError($error.'::writeConfig.', null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
         }
-        if (is_null($this->datasrc)) {
-            return PEAR::raiseError("No datasource given for Config::writeConfig.", null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
+        if ($error = $this->_checkConfigType($configType)) {
+            return PEAR::raiseError($error.'::writeConfig.', null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
         }
-        if (!$this->container->writeDatasrc($this->datasrc)) {
+
+        $className = $GLOBALS['CONFIG_TYPES'][$this->configType][1];
+        $includeFile = $GLOBALS['CONFIG_TYPES'][$this->configType][0];
+        include_once($includeFile);
+
+        if (!eval("return $className::writeDatasrc('".$this->datasrc."');")) {
             return PEAR::raiseError("Unable to write to datasource in Config::writeConfig.", null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
         }
         return true;
