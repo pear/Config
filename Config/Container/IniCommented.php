@@ -71,25 +71,21 @@ class Config_Container_IniCommented {
                 $currentSection->createBlank();
             } elseif (preg_match('/^\s*([a-zA-Z1-9_\-\.]*)\s*=\s*(.*)\s*$/', $line, $match)) {
                 // a directive
-                if (preg_match('/^([^\s]*)\s*;(.*?)$/', $match[2], $tmp)) {
-                    // check for comments
-                    $value = $tmp[1];
-                    $comment = $tmp[2]; // not used yet
-                } else {
-                    $value = $match[2];
+                
+                $values = $this->_quoteAndCommaParser($match[2]);
+                if (PEAR::isError($values)) {
+                    return PEAR::raiseError($values);
                 }
-                // try to split the value if comma found
-                if (strpos($value, '"') === false) {
-                    $values = preg_split('/\s*,\s+/', $value);
-                    if (count($values) > 1) {
-                        foreach ($values as $k => $v) {
-                            $currentSection->createDirective($match[1], $v);
+                
+                if (count($values)) {
+                    foreach($values as $value) {
+                        if ($value[0] == 'normal') {
+                            $currentSection->createDirective($match[1], $value[1]);
                         }
-                    } else {
-                        $currentSection->createDirective($match[1], $value);
+                        if ($value[0] == 'comment') {
+                            $currentSection->createComment(substr($value[1], 1));
+                        }
                     }
-                } else {
-                    $currentSection->createDirective($match[1], $value);
                 }
             } elseif (preg_match('/^\s*\[\s*(.*)\s*\]\s*$/', $line, $match)) {
                 // a section
@@ -100,6 +96,169 @@ class Config_Container_IniCommented {
         }
         return true;
     } // end func parseDatasrc
+
+    /**
+     * Quote and Comma Parser for INI files
+     *
+     * This function allows complex values such as:
+     *
+     * <samp>
+     * mydirective = "Item, number \"1\"", Item 2 ; "This" is really, really tricky
+     * </samp>
+     * @param  string  $text    value of a directive to parse for quotes/multiple values
+     * @return array   The array returned contains multiple values, if any (unquoted literals
+     *                 to be used as is), and a comment, if any.  The format of the array is:
+     *
+     * <pre>
+     * array(array('normal', 'first value'),
+     *       array('normal', 'next value'),...
+     *       array('comment', '; comment with leading ;'))
+     * </pre>
+     * @author Greg Beaver <cellog@users.sourceforge.net>
+     * @access private
+     */
+    function _quoteAndCommaParser($text)
+    {
+    
+        // debugging
+        $debug = false;
+        
+        $text = trim($text);
+    
+        // states
+        // $states['normal'] = 0; // normal text
+        // $states['quote'] = 1; // in a quote
+        // $states['escape'] = 2; // encountered '\'
+        // $states['after_quote'] = 3; // after a quote - only valid tokens are ; and ,
+        
+        // tokens
+        $tokens['normal'] = array('"', ';', ',');
+        $tokens['quote'] = array('"', '\\');
+        $tokens['escape'] = false; // cycle
+        $tokens['after_quote'] = array(',', ';');
+        
+        // events
+        $events['normal'] = array('"' => 'quote', ';' => 'comment', ',' => 'normal');
+        $events['quote'] = array('"' => 'after_quote', '\\' => 'escape');
+        $events['after_quote'] = array(',' => 'normal', ';' => 'comment');
+        
+        // state stack
+        $stack = array();
+        // return information
+        $return = array();
+        $returnpos = 0;
+        $returntype = 'normal';
+        // initialize
+        array_push($stack, 'normal');
+        $pos = 0; // position in $text
+        do {
+            $char = $text{$pos};
+            $state = $this->_getQACEvent($stack);
+            
+            if ($debug) {
+                $indent = str_repeat('  ',count($return));
+                echo $indent . "------------------\n";
+                echo $indent . "CHAR: '$char'\n";
+                echo $indent . "STATE: $state\n";
+                if (isset($events[$state][$char])) {
+                    echo $indent . "EVENT: ".$events[$state][$char]."\n";
+                    var_dump($stack);
+                }
+                echo $indent . "RETURN:\n";
+                var_dump($return);
+                echo $indent . "------------------\n";
+            }
+            
+            if ($tokens[$state]) {
+                if (in_array($char, $tokens[$state])) {
+                    switch($events[$state][$char]) {
+                        case 'quote' :
+                            if ($state == 'normal' &&
+                                isset($return[$returnpos]) &&
+                                !empty($return[$returnpos][1])) {
+                                return PEAR::raiseError("invalid ini syntax, quotes cannot follow text '$text'",
+                                                        null, PEAR_ERROR_RETURN);
+                                }
+                            if ($returnpos >= 0) {
+                            // trim any unnecessary whitespace in earlier entries
+                                $return[$returnpos][1] = trim($return[$returnpos][1]);
+                            } else {
+                                $returnpos++;
+                            }
+                            $return[$returnpos] = array('normal', '');
+                            array_push($stack, 'quote');
+                            continue 2;
+                        break;
+                        case 'comment' :
+                            // comments go to the end of the line, so we are done
+                            $return[++$returnpos] = array('comment', substr($text, $pos));
+                            return $return;
+                        break;
+                        case 'after_quote' :
+                            array_push($stack, 'after_quote');
+                        break;
+                        case 'escape' :
+                            // don't save the first slash
+                            array_push($stack, 'escape');
+                            continue 2;
+                        break;
+                        case 'normal' :
+                        // start a new segment
+                            if ($state == 'normal') {
+                                $returnpos++;
+                                continue 2;
+                            } else {
+                                while ($state != 'normal') {
+                                    array_pop($stack);
+                                    $state = $this->_getQACEvent($stack);
+                                }
+                            }
+                        break;
+                        default :
+                            PEAR::raiseError("::_quoteAndCommaParser oops, state missing", null, PEAR_ERROR_DIE);
+                        break;
+                    }
+                } else {
+                    if ($state != 'after_quote') {
+                        if (!isset($return[$returnpos])) {
+                            $return[$returnpos] = array('normal', '');
+                        }
+                        // add this character to the current ini segment if non-empty, or if in a quote
+                        if ($state == 'quote') {
+                            $return[$returnpos][1] .= $char;
+                        } elseif (!empty($return[$returnpos][1]) ||
+                                 (empty($return[$returnpos][1]) && trim($char) != '')) {
+                            if (!isset($return[$returnpos])) {
+                                $return[$returnpos] = array('normal', '');
+                            }
+                            $return[$returnpos][1] .= $char;
+                        }
+                    } else {
+                        if (trim($char) != '') {
+                            return PEAR::raiseError("invalid ini syntax, text after a quote not allowed '$text'",
+                                                    null, PEAR_ERROR_RETURN);
+                        }
+                    }
+                }
+            } else {
+                // no tokens, so add this one and cycle to previous state
+                $return[$returnpos][1] .= $char;
+                array_pop($stack);
+            }
+        } while (++$pos < strlen($text));
+        return $return;
+    } // end func _quoteAndCommaParser
+    
+    /**
+     * Retrieve the state off of a state stack for the Quote and Comma Parser
+     * @param  array  $stack    The parser state stack
+     * @author Greg Beaver <cellog@users.sourceforge.net>
+     * @access private
+     */
+    function _getQACEvent($stack)
+    {
+        return array_pop($stack);
+    } // end func _getQACEvent
 
     /**
     * Returns a formatted string of the object
@@ -128,11 +287,11 @@ class Config_Container_IniCommented {
                     $content = '0';
                 } elseif ($content === true) {
                     $content = '1';
-                } elseif ((strlen(trim($content)) < strlen($content) ||
+                } elseif (strlen(trim($content)) < strlen($content) ||
                           strpos($content, ',') !== false ||
-                          strpos($content, ';') !== false) &&
-                          strpos($content, '"') === false) {
-                    $content = '"'.$content.'"';          
+                          strpos($content, ';') !== false ||
+                          strpos($content, '"') !== false) {
+                    $content = '"'.addslashes($content).'"';          
                 }
                 if ($count > 1) {
                     // multiple values for a directive are separated by a comma
