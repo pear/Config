@@ -12,7 +12,7 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Authors: Bertrand Mansion <bmansion@mamasam.com>                     |
+// | Author: Bertrand Mansion <bmansion@mamasam.com>                      |
 // +----------------------------------------------------------------------+
 //
 // $Id$
@@ -20,39 +20,45 @@
 require_once('Config/Container.php');
 
 /**
-* Config parser for PHP .ini files
-* Faster because it uses parse_ini_file() but get rid of comments.
+* Config parser for PHP .ini files with comments
 *
 * @author      Bertrand Mansion <bmansion@mamasam.com>
 * @package     Config
 */
-class Config_Container_IniFile extends Config_Container {
+class Config_Container_IniCommented extends Config_Container {
 
     /**
     * Parses the data of the given configuration file
     *
     * @access public
     * @param string $datasrc    path to the configuration file
-    * @return mixed    returns a PEAR_ERROR, if error occurs or the container itsef
+    * @return mixed returns a PEAR_ERROR, if error occurs or the container itsef
     */
     function &parseDatasrc($datasrc)
     {
         if (is_null($datasrc) || !file_exists($datasrc)) {
             return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);
         }
+        $lines = file($datasrc);
+        $n = 0;
+        $lastline = '';
         $currentSection =& $this;
-        $confArray = parse_ini_file($datasrc, true);
-        if (!$confArray) {
-            return PEAR::raiseError("File '$datasrc' does not contain configuration data.", null, PEAR_ERROR_RETURN);
-        }
-        foreach ($confArray as $key => $value) {
-            if (is_array($value)) {
-                $currentSection =& $this->addItem('section', $key, '');
-                foreach ($value as $directive => $content) {
-                    $currentSection->addItem('directive', $directive, $content);
-                }
+        foreach ($lines as $line) {
+            $n++;
+            if (preg_match('/^\s*;(.*?)\s*$/', $line, $match)) {
+                // a comment
+                $currentSection->addItem('comment', '', $match[1]);
+            } elseif (preg_match('/^\s*$/', $line)) {
+                // a blank line
+                $currentSection->addItem('blank', '', '');
+            } elseif (preg_match('/^([a-zA-Z1-9_\-\.]*)\s*=(\s*(.*))$/', $line, $match)) {
+                // a directive
+                $currentSection->addItem('directive', $match[1], $match[3]);
+            } elseif (preg_match('/^\s*\[\s*(.*)\s*\]\s*$/', $line, $match)) {
+                // a section
+                $currentSection =& $this->addItem('section', $match[1], '');
             } else {
-                $currentSection->addItem('directive', $key, $value);
+                return PEAR::raiseError("Syntax error in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
             }
         }
         return $this;
@@ -69,6 +75,12 @@ class Config_Container_IniFile extends Config_Container {
             $string = '';
         }
         switch ($this->type) {
+            case 'blank':
+                $string = "\n";
+                break;
+            case 'comment':
+                $string = ';'.$this->content."\n";
+                break;
             case 'directive':
                 $string = $this->name.' = '.$this->content."\n";
                 break;
@@ -87,5 +99,5 @@ class Config_Container_IniFile extends Config_Container {
         }
         return $string;
     } // end func toString
-} // end class Config_Container_IniFile
+} // end class Config_Container_Apache
 ?>
