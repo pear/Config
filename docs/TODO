@@ -20,16 +20,3 @@ TODO List for Config
 
 - Container for .plist
 
-- Fixes to ini and ini commented:
-  + Multiple values for a key are separated by a comma
-    followed by at least one spacing character.
-  + String values may optionally be enclosed in quote characters
-    (", decimal code 34). 
-  + String values beginning or ending with spaces,
-    or containing commas or semicolons, must be enclosed in quotes.
-  + Quote and backslash ("\", decimal code 92) characters,
-    as well as binary characters (decimal ranges 0..31, 127..159)
-    appearing inside strings must be encoded.
-  + A backslash followed by any combination of CR and LF
-    characters is considered a continuation character.
-
