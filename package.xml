@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE package SYSTEM "../package.dtd">
 <!-- do not use the "Type" attribute here, that one is only for
      generated package.xml files -->
-<package>
+<package version="1.0">
   <name>Config</name>
   <summary>Class for reading and writing Config-"files"</summary>
-  <maintainer>
-    <user>alexmerz</user>
-    <name>Alexander Merz</name>
-    <email>alexander.merz@t-online.de</email>
-  </maintainer>
+  <maintainers>
+    <maintainer>
+      <user>alexmerz</user>
+      <name>Alexander Merz</name>
+      <email>alexander.merz@t-online.de</email>
+    </maintainer>
+  </maintainers>
   <release>
     <version>0.2.2</version>
     <date>2001-09-22</date>
@@ -27,19 +30,19 @@
 	- some e_warnings fixed
 	(thanks to Markus Fischer for the reports)
     </notes>
-  </release>
-  <filelist>
-    <dir name="/">
+    <filelist>
+      <dir name="/">
         <file role="php">Config.php</file>
         <file role="doc">README.Config</file>
         <dir name="Config">
-            <file role="php">Container.php</file>
-            <dir name="Container">
-               <file role="php">db.php</file>
-               <file role="php">IniFile.php</file>
-               <file role="php">xml.php</file>
-             </dir>
+	  <file role="php">Container.php</file>
+	  <dir name="Container">
+	    <file role="php">db.php</file>
+	    <file role="php">IniFile.php</file>
+	    <file role="php">xml.php</file>
+	  </dir>
         </dir>
-    </dir>
-  </filelist>
+      </dir>
+    </filelist>
+  </release>
 </package>
