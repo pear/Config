@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE package SYSTEM "../../php4/pear/package.dtd">
+<!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
 <package version="1.0">
   <name>Config</name>
   <summary>Your configurations swiss-army knife.</summary>
@@ -22,17 +22,15 @@
   </maintainers>
  <license>PHP License</license>
   <release>
-    <version>1.10</version>
-    <date>2003-11-29</date>
+    <version>1.10.1</version>
+    <date>2004-06-04</date>
     <state>stable</state> 
     <notes>
-* Added 'isFile' option to XML container
-* Fix a bug when a directive has no content in XML configurations
-* Fix slowdown caused by uniqid() on Linux
-* Fix regular expression for directives in .ini files (Emil Biserov)
-* Fix bug #132 concerning % in .ini files (Wagner netsols.de)
-* Fix possible warning if text is empty in .ini commented (Dean Urmson)
-* Small speed optimizations
+* Fixed problems with PHP5 case sensitivity on class and method names.
+* Added possibility to actually replace the root container by using method
+Config::setRoot() with a container of type 'section' and name 'root'.
+* XML parser now makes use of the encoding specified in the options array.
+* Fixed a warning with array_splice() on an unset $children.
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -59,6 +57,20 @@
     </deps>
   </release>
 <changelog>
+  <release>
+    <version>1.10</version>
+    <date>2003-11-29</date>
+    <state>stable</state> 
+    <notes>
+* Added 'isFile' option to XML container
+* Fix a bug when a directive has no content in XML configurations
+* Fix slowdown caused by uniqid() on Linux
+* Fix regular expression for directives in .ini files (Emil Biserov)
+* Fix bug #132 concerning % in .ini files (Wagner netsols.de)
+* Fix possible warning if text is empty in .ini commented (Dean Urmson)
+* Small speed optimizations
+    </notes>
+  </release>
   <release>
     <version>1.9</version>
     <date>2003-09-21</date>
