@@ -118,16 +118,13 @@ class Config_Container {
     */
     function &addItem(&$item, $where = 'bottom', $target = null)
     {
-        if (!is_object($item) || get_class($item) != 'config_container') {
-            return PEAR::raiseError('Config_Container::addItem must be called with a Config_Container item.', null, PEAR_ERROR_RETURN);
-        }
         if ($this->type != 'section') {
             return PEAR::raiseError('Config_Container::addItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
         }
         if (is_null($target)) {
             $target =& $this;
         }
-        if (!is_object($target) || get_class($target) != 'config_container') {
+        if (get_class($target) != 'config_container') {
             return PEAR::raiseError('Target must be a Config_Container object in Config_Container::addItem.', null, PEAR_ERROR_RETURN);
         }
 
@@ -150,7 +147,7 @@ class Config_Container {
         if (isset($index) && $index >= 0) {
             array_splice($this->children, $index, 0, 'tmp');
         } else {
-            $index = sizeof($this->children);
+            $index = count($this->children);
         }
         $this->children[$index] =& $item;
         $this->children[$index]->parent =& $this;
@@ -258,7 +255,7 @@ class Config_Container {
 
         $itemsArr = array();
         $fieldsToMatch = count($testFields);
-        for ($i = 0; $i < count($this->children); $i++) {
+        for ($i = 0, $count = count($this->children); $i < $count; $i++) {
             $match = 0;
             reset($testFields);
             foreach ($testFields as $field) {
@@ -292,8 +289,8 @@ class Config_Container {
                 return false;
             }
         } else {
-            if (count($itemsArr) > 0) {
-                return $itemsArr[count($itemsArr)-1];
+            if ($count = count($itemsArr)) {
+                return $itemsArr[$count-1];
             } else {
                 return false;
             }
@@ -357,7 +354,7 @@ class Config_Container {
         }
         $count = 0;
         if (isset($name) && isset($type)) {
-            for ($i = 0; $i < count($this->children); $i++) {
+            for ($i = 0, $children = count($this->children); $i < $children; $i++) {
                 if ($this->children[$i]->name == $name && 
                     $this->children[$i]->type == $type) {
                     $count++;
@@ -366,7 +363,7 @@ class Config_Container {
             return $count;
         }
         if (isset($type)) {
-            for ($i = 0; $i < count($this->children); $i++) {
+            for ($i = 0, $children = count($this->children); $i < $children; $i++) {
                 if ($this->children[$i]->type == $type) {
                     $count++;
                 }
@@ -375,7 +372,7 @@ class Config_Container {
         }
         if (isset($name)) {
             // Some directives can have the same name
-            for ($i = 0; $i < count($this->children); $i++) {
+            for ($i = 0, $children = count($this->children); $i < $children; $i++) {
                 if ($this->children[$i]->name == $name) {
                     $count++;
                 }
@@ -411,7 +408,7 @@ class Config_Container {
         if (is_object($this->parent)) {
             // This will be optimized with Zend Engine 2
             $pchildren =& $this->parent->children;
-            for ($i = 0; $i < count($pchildren); $i++) {
+            for ($i = 0, $count = count($pchildren); $i < $count; $i++) {
                 if ($pchildren[$i]->_id == $this->_id) {
                     return $i;
                 }
@@ -429,13 +426,13 @@ class Config_Container {
     {
         if (is_object($this->parent)) {
             $pchildren =& $this->parent->children;
-            for ($i = 0; $i < count($pchildren); $i++) {
+            for ($i = 0, $count = count($pchildren); $i < $count; $i++) {
                 if ($pchildren[$i]->name == $this->name &&
                     $pchildren[$i]->type == $this->type) {
                     $obj[] =& $pchildren[$i];
                 }
             }
-            for ($i = 0; $i < count($obj); $i++) {
+            for ($i = 0, $count = count($obj); $i < $count; $i++) {
                 if ($obj[$i]->_id == $this->_id) {
                     return $i;
                 }
@@ -649,8 +646,8 @@ class Config_Container {
                 if ($useAttr && count($this->attributes) > 0) {
                     $array[$this->name]['@'] = $this->attributes;
                 }
-                if (count($this->children) > 0) {
-                    for ($i = 0; $i < count($this->children); $i++) {
+                if ($count = count($this->children)) {
+                    for ($i = 0; $i < $count; $i++) {
                         $newArr = $this->children[$i]->toArray($useAttr);
                         if (!is_null($newArr)) {
                             foreach ($newArr as $key => $value) {
