@@ -83,7 +83,7 @@ class Config_Container {
     * @param  array   $attributes Array of attributes for container object
     * @return object    reference to created container
     */
-    function &Config_Container($type = 'section', $name = '', $content = '', $attributes = null)
+    function Config_Container($type = 'section', $name = '', $content = '', $attributes = null)
     {
         $this->type       = $type;
         $this->name       = $name;
@@ -91,7 +91,6 @@ class Config_Container {
         $this->attributes = $attributes;
         $this->parent     = null;
         $this->_id        = uniqid($name.$type);
-        return $this;
     } // end constructor
 
     /**
