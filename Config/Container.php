@@ -65,6 +65,16 @@ class Config_Container {
     var $attributes;
 
     /**
+    * Unique id to differenciate nodes
+    *
+    * This is used to compare nodes
+    * Will not be needed anymore when this class will use ZendEngine 2
+    *
+    * @var  int
+    */
+    var $_id;
+
+    /**
     * Constructor
     *
     * @param  string  $type       Type of container object
@@ -80,6 +90,7 @@ class Config_Container {
         $this->content    = $content;
         $this->attributes = $attributes;
         $this->parent     = null;
+        $this->_id        = uniqid($name.$type);
         return $this;
     } // end constructor
 
@@ -393,16 +404,10 @@ class Config_Container {
     function getItemIndex()
     {
         if (is_object($this->parent)) {
-            // I couldn't think of a better way to compare object references
-            // so I compare object contents for now.
-            // Maybe I should use an ID or a flag ?
-            // This will be fixed with Zend Engine 2
+            // This will be optimized with Zend Engine 2
             $pchildren =& $this->parent->children;
             for ($i = 0; $i < count($pchildren); $i++) {
-                if ($pchildren[$i]->name == $this->name &&
-                    $pchildren[$i]->content == $this->content &&
-                    $pchildren[$i]->type == $this->type &&
-                    $pchildren[$i]->attributes == $this->attributes) {
+                if ($pchildren[$i]->_id == $this->_id) {
                     return $i;
                 }
             }
@@ -426,10 +431,7 @@ class Config_Container {
                 }
             }
             for ($i = 0; $i < count($obj); $i++) {
-                if ($obj[$i]->name == $this->name &&
-                    $obj[$i]->content == $this->content &&
-                    $obj[$i]->type == $this->type &&
-                    $obj[$i]->attributes == $this->attributes) {
+                if ($obj[$i]->_id == $this->_id) {
                     return $i;
                 }
             }
@@ -644,12 +646,18 @@ class Config_Container {
                 if (count($this->children) > 0) {
                     for ($i = 0; $i < count($this->children); $i++) {
                         $newArr = $this->children[$i]->toArray();
-                        
                         if (!is_null($newArr)) {
                             foreach ($newArr as $key => $value) {
                                 if (isset($array[$this->name][$key])) {
                                     // duplicate name/type
-                                    $array[$this->name][$key] = array($array[$this->name][$key], $value);
+                                    if (!isset($array[$this->name][$key][0])) {
+                                        $old = $array[$this->name][$key];
+                                        unset($array[$this->name][$key]);
+                                        $array[$this->name][$key][0] = $old;
+                                    }
+                                    $array[$this->name][$key][] = $value;
+                                } elseif (isset($array[$this->name][$key][0])) {
+                                    $array[$this->name][$key][] = $value;
                                 } else {
                                     $array[$this->name][$key] = $value;
                                 }
