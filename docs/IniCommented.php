@@ -13,11 +13,13 @@ require_once('Config.php');
 
 $datasrc = '/path/to/php.ini';
 
-$conf =& new Config('inicommented');
-$content =& $conf->parseConfig($datasrc);
-if (PEAR::isError($content)) {
-	die($content->getMessage());
+$phpIni = new Config();
+$root =& $phpIni->parseConfig($datasrc, 'inicommented');
+if (PEAR::isError($root)) {
+	die($root->getMessage());
 }
 
-echo '<pre>'.htmlspecialchars($content->toString('phparray')).'</pre>';
+// Convert your ini file to a php array config
+
+echo '<pre>'.$root->toString('phparray', array('name' => 'php_ini')).'</pre>';
 ?>
