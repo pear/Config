@@ -84,8 +84,7 @@ function parseInput( $datasrc = "", $feature = array( "cc" => ";") )
 
     foreach($array as $block => $items) {
         if (!$items) continue;
-        foreach ($items as $key => $value)
-        $this->data['/'.$block][$key] = $value;
+	$this->data['/'.$block] = $items;
     } 
 
 
