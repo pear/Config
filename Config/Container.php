@@ -67,18 +67,13 @@ class Config_Container {
     * @param  string  type      (optional)Type of container object
     * @param  string  name      (optional)Name of container object
     * @param  string  content   (optional)Content of container object
-    * @param  object  parent    Reference to parent object, is null for root element.
     */
-    function Config_Container($type = '', $name = '', $content = '', &$parent)
+    function Config_Container($type = '', $name = '', $content = '')
     {
         $this->type       = $type;
         $this->name       = $name;
         $this->content    = $content;
-        if (is_object($parent) && is_a($parent, 'config_container')) {
-            $this->parent =& $parent;
-        } else {
-            $this->parent = null;
-        }
+        $this->parent     = null;
     } // end constructor
 
     /**
@@ -98,7 +93,8 @@ class Config_Container {
             $this->children[$index]->parent =& $this;
         } elseif (is_string($item)) {
             $currentContainer = get_class($this);
-            $this->children[$index] = new $currentContainer($type, $item, $content, $this);
+            $this->children[$index] = new $currentContainer($type, $item, $content);
+            $this->children[$index]->parent =& $this;
         } else {
             return PEAR::raiseError('Cannot add child in Config_Container::addItem.', null, PEAR_ERROR_RETURN);
         }
@@ -106,11 +102,63 @@ class Config_Container {
     } // end func &addItem
 
     /**
+    * Adds a comment to this item.
+    * This is a helper method that calls addItem
+    *
+    * @param  string  content   object content
+    * @return object  reference to new item
+    */
+    function &addComment($content = '')
+    {
+        $item =& $this->addItem('comment', '', $content);
+        return $item;
+    } // end func &addComment
+
+    /**
+    * Adds a blank line to this item.
+    * This is a helper method that calls addItem
+    *
+    * @return object  reference to new item
+    */
+    function &addBlank()
+    {
+        $item =& $this->addItem('blank');
+        return $item;
+    } // end func &addBlank
+
+    /**
+    * Adds a directive to this item.
+    * This is a helper method that calls addItem
+    *
+    * @param  string  name      Name of new directive
+    * @param  string  content   Content of new directive
+    * @return object  reference to new item
+    */
+    function &addDirective($name, $content)
+    {
+        $item =& $this->addItem('directive', $name, $content);
+        return $item;
+    } // end func &addDirective
+
+    /**
+    * Adds a section to this item.
+    * This is a helper method that calls addItem
+    *
+    * @param  mixed   name      Name of new section or container object
+    * @return object  reference to new item
+    */
+    function &addSection($section)
+    {
+        $item =& $this->addItem('section', $section);
+        return $item;
+    } // end func &addSection
+
+    /**
     * Tries to find the specified item(s) and returns the objects.
     *
     * Examples:
     * $directives =& $obj->getItem('directive');
-    * $directive_bar_4 =& $obj->getItem('directive', 'bar', '', 4);
+    * $directive_bar_4 =& $obj->getItem('directive', 'bar', null, 4);
     * $section_foo =& $obj->getItem('section', 'foo');
     *
     * This method can only be called on an object of type 'section'.
@@ -119,6 +167,7 @@ class Config_Container {
     *
     * @param  string    type    type of item: directive, section, comment, blank...
     * @param  mixed     name    (optional)item name
+    * @param  mixed     content (optional)find item with this content
     * @param  int       index   (optional)index of the item in the returned object list.
     *                           If it is not set, will try to return the last item with this name.
     * @return mixed  reference to item found or false when not found
@@ -126,11 +175,11 @@ class Config_Container {
     function &getItem($type, $name = null, $content = null, $index = -1)
     {
         if ($this->type != 'section') {
-            return PEAR::raiseError('Config_Container::selectItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
+            return PEAR::raiseError('Config_Container::getItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
         }
         $testFields = array();
         if ($type == '') {
-            return PEAR::raiseError('You must specify an existing type in Config_Container::selectItem.', null, PEAR_ERROR_RETURN);
+            return PEAR::raiseError('You must specify an existing type in Config_Container::getItem.', null, PEAR_ERROR_RETURN);
         } else {
             $testFields[] = 'type';
         }
@@ -222,8 +271,9 @@ class Config_Container {
                 $this->children[$index] =& $item;
             } elseif (is_string($item)) {
                 $currentContainer = get_class($this);
-                $itemObj = new $currentContainer($type, $item, $content, $this);
+                $itemObj = new $currentContainer($type, $item, $content);
                 $this->children[$index] =& $itemObj;
+                $this->children[$index]->parent =& $this; 
             }
             return $this->children[$index];
         } else {
@@ -306,6 +356,32 @@ class Config_Container {
     {
         $this->content = $content;
     } // end func setContent
+
+    /**
+    * Set a children directive content.
+    * This is an helper method calling getItem and insertItem or setContent for you.
+    * If the directive does not exist, it will be created at the bottom.
+    *
+    * @param  string    name    Name of the directive to look for
+    * @param  mixed     content New content, a string or a container object
+    * @param  int       index   Index of the directive to set,
+    *                           in case there are more than one directive
+    *                           with the same name
+    * @return object    newly set directive
+    */
+    function &setDirective($name, $content, $index = -1)
+    {
+        $item =& $this->getItem('directive', $name, null, $index);
+        if (PEAR::isError($item)) {
+            // Directive does not exist, will create one
+            unset($item);
+            $item =& addItem('directive', $name, $content);
+        } else {
+            // Change existing directive value
+            $item->setContent($content);
+        }
+        return $item;
+    } // end func setDirective
 
     /**
     * Get this item's content.
