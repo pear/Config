@@ -10,10 +10,18 @@
     <email></email>
   </maintainer>
   <release>
-    <version>0.2.1</version>
-    <date>2001-09-26</date>
+    <version>0.2.2</version>
+    <date>2001-09-22</date>
     <notes>
 	Documentation is in README.Config.
+	0.2.2 :
+	- Only the first char of ->feature['cc'] is taken as a comment deliminator
+	- quoting supports both methods:
+	  [bla]
+	  foo = "'bar'"
+	  bar = '"foo"'
+	- Value parser only parser until first comment-char or the end of the string, therefore spaces surrounded by nonspaces don't have to be quoted.
+
 	0.2.1 :
 	- Bug fixed, when $feature in ParseInput was not set 
 	- some e_warnings fixed
