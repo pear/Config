@@ -24,7 +24,7 @@ require_once('DB.php');
 * Config-API-Implemtentation for DB-Ini-Entries
 *
 * This class implements the Config-API based on ConfigDefault
-* The Table structure should be as follows by default:
+* The Table structure should be as follow by default:
 * CREATE TABLE config (
 *   datasrc varchar(50) NOT NULL,
 *   block varchar(50) NOT NULL,
@@ -32,7 +32,7 @@ require_once('DB.php');
 *   value varchar(50)
 * );
 * You can name the table and fields as you prefer, but you have to supply
-* these values in the $options array as parameter for the constructor.
+* these values in the $feature array as parameter for the constructor.
 *
 * @author      Christian Stocker <chregu@phant.ch>
 * @access      public
@@ -42,9 +42,8 @@ require_once('DB.php');
 class Config_Container_db extends Config_Container {
 
     /**
-    * Contains the features given by parseInput
+    * Contains the features given by parseInput or the constructor
     * @var array
-    * @see parseInput()
     */
     var $feature = array(
         'table'      => 'config',
