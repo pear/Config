@@ -1,14 +1,9 @@
 TODO List for Config
 --------------------
 
-- I will move the logic for parsing and writing to the conf object.
-  The container will then be a generic tree object that conf objects
-  will be able to share. This way, it will be possible to parse a 
-  PHP ini file and write it back as a PHP array.
-
 - Use a flag to compare object references
   This will fix the bug I have with finding index for comments or blank
-  elements.
+  elements. (ZE2)
 
 - Support comments for directives
   Example:
@@ -17,17 +12,24 @@ TODO List for Config
   Use the same name for the directive as for the comment (usually,
   they don't have names). Could maybe do the same for sections, then ?
 
-- Recursively remove elements
+- Recursively remove elements (use getItem ?)
 
 - Container for XML
 
 - Container for DB
 
-- Is there an interest for multiline values in .ini files ?
-  What kind of line separator then ?
-
 - Container for .plist
 
-- Finish DTD for form generator
+- Fixes to ini and ini commented:
+  + Multiple values for a key are separated by a comma
+    followed by at least one spacing character.
+  + String values may optionally be enclosed in quote characters
+    (", decimal code 34). 
+  + String values beginning or ending with spaces,
+    or containing commas or semicolons, must be enclosed in quotes.
+  + Quote and backslash ("\", decimal code 92) characters,
+    as well as binary characters (decimal ranges 0..31, 127..159)
+    appearing inside strings must be encoded.
+  + A backslash followed by any combination of CR and LF
+    characters is considered a continuation character.
 
-- Finish form generation with HTML_QuickForm
