@@ -160,8 +160,7 @@ class Config {
     {
         if (is_object($rootContainer) && get_class($rootContainer) == 'config_container') {
             $this->container =& new Config_Container('section', 'root');
-            $rootContainer->parent =& $this->container;
-            $this->container->children[0] =& $rootContainer;
+            $this->container->addItem($rootContainer);
             return true;
         } else {
             return PEAR::raiseError("Config::setRoot only accepts object of Config_Container type.", null, PEAR_ERROR_RETURN);
