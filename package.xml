@@ -12,33 +12,30 @@ This package is not intended for reading configuration data only, but for editin
       <user>mansion</user>
       <name>Bertrand Mansion</name>
       <email>bmansion@mamasam.com</email>
-	  <role>lead</role>
+      <role>lead</role>
     </maintainer>
   </maintainers>
  <license>PHP License</license>  
   <release>
-    <version>1.0</version>
-    <date>2002-10-05</date>
-    <state>beta</state>	
+    <version>1.1</version>
+    <date>2002-10-08</date>
+    <state>beta</state> 
     <notes>
-Complete rewrite : API has changed.
-The class now uses a tree structure of container objects.
-As a consequence, backward compatibility is not provided !!!
-Look at the Apache.php and IniCommented.php scripts in 'docs' for usage examples.
-Some containers are still missing : XML and DB.
+Fix bug in toArray().
+Thanks to Mark Polsen for noticing it.
     </notes>
     <filelist>
       <dir name="/">
         <file role="php">Config.php</file>
         <dir name="Config">
-	      <file role="php">Container.php</file>
-	      <dir name="Container">
-	        <file role="php">Apache.php</file>
-	        <file role="php">GenericConf.php</file>
-	        <file role="php">IniCommented.php</file>
-	        <file role="php">IniFile.php</file>
-	        <file role="php">PHPArray.php</file>
-	      </dir>
+          <file role="php">Container.php</file>
+          <dir name="Container">
+            <file role="php">Apache.php</file>
+            <file role="php">GenericConf.php</file>
+            <file role="php">IniCommented.php</file>
+            <file role="php">IniFile.php</file>
+            <file role="php">PHPArray.php</file>
+          </dir>
         </dir>
         <dir name="docs" role="doc">
           <file>Apache.php</file>
@@ -49,40 +46,50 @@ Some containers are still missing : XML and DB.
     </filelist>
   </release>
 <changelog>
-	<release>
-    	<version>0.3.1</version>
-		<notes>
+    <release>
+        <version>1.0</version>
+        <notes>
+Complete rewrite : API has changed.
+The class now uses a tree structure of container objects.
+As a consequence, backward compatibility is not provided !!!
+Look at the Apache.php and IniCommented.php scripts in 'docs' for usage examples.
+Some containers are still missing : XML and DB.
+        </notes>
+    </release>
+    <release>
+        <version>0.3.1</version>
+        <notes>
 Documentation is in README.Config.
 0.3.1
 -  E_ALL fixes
-		</notes>
-	</release>
-	<release>
-    	<version>0.3</version>
-		<notes>
+        </notes>
+    </release>
+    <release>
+        <version>0.3</version>
+        <notes>
 - some fixes
 - add WDDX-Container for config data in WDDX-files
 - add phpIniFile, does the same like IniFile but based on the PHP build-in function parse_ini_file()
-		</notes>
-	</release>
-	<release>
-    	<version>0.2.2</version>
-	    <notes>
+        </notes>
+    </release>
+    <release>
+        <version>0.2.2</version>
+        <notes>
 - Only the first char of ->feature['cc'] is taken as a comment deliminator
 - quoting supports both methods:
   [bla]
   foo = "'bar'"
   bar = '"foo"'
 - Value parser only parser until first comment-char or the end of the string, therefore spaces surrounded by nonspaces don't have to be quoted.
-		</notes>
-	</release>
-	<release>
-    	<version>0.2.1</version>
-	    <notes>
+        </notes>
+    </release>
+    <release>
+        <version>0.2.1</version>
+        <notes>
 - Bug fixed, when $feature in ParseInput was not set 
 - some e_warnings fixed
-(thanks to Markus Fischer for the reports)		
-		</notes>
-	</release>
-</changelog>		
+(thanks to Markus Fischer for the reports)      
+        </notes>
+    </release>
+</changelog>        
 </package>
