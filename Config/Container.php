@@ -89,7 +89,7 @@ class Config_Container {
         $this->content    = $content;
         $this->attributes = $attributes;
         $this->parent     = null;
-        $this->_id        = uniqid($name.$type);
+        $this->_id        = uniqid($name.$type, true);
     } // end constructor
 
     /**
