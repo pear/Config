@@ -18,7 +18,6 @@
 // $Id$
 
 require_once('Config.php');
-require_once('HTML/Common.php');
 
 /**
 * Interface for Config containers
@@ -26,7 +25,7 @@ require_once('HTML/Common.php');
 * @author   Bertrand Mansion <bmansion@mamasam.com>
 * @package  Config
 */
-class Config_Container extends HTML_Common {
+class Config_Container {
 
     /**
     * Container object type
@@ -58,6 +57,12 @@ class Config_Container extends HTML_Common {
     * @var  object
     */
     var $parent;
+    
+    /**
+    * Array of attributes for this item
+    * @var  array
+    */
+    var $attributes;
 
     /**
     * Constructor
@@ -65,14 +70,14 @@ class Config_Container extends HTML_Common {
     * @param  string  type       (optional)Type of container object
     * @param  string  name       (optional)Name of container object
     * @param  string  content    (optional)Content of container object
-    * @param  mixed   attributes (optional)String or array of attributes for container object
+    * @param  mixed   attributes (optional)Array of attributes for container object
     */
     function &Config_Container($type = '', $name = '', $content = '', $attributes = null)
     {
-        HTML_Common::HTML_Common($attributes);
         $this->type       = $type;
         $this->name       = $name;
         $this->content    = $content;
+        $this->attributes = $attributes;
         $this->parent     = null;
         return $this;
     } // end constructor
@@ -355,7 +360,7 @@ class Config_Container extends HTML_Common {
     } // end func removeItem
 
     /**
-    * Returns the item position in its parent children array.
+    * Returns the item index in its parent children array.
     * @return int  returns int or null if root object
     */
     function getItemIndex()
@@ -369,13 +374,41 @@ class Config_Container extends HTML_Common {
             for ($i = 0; $i < count($pchildren); $i++) {
                 if ($pchildren[$i]->name == $this->name &&
                     $pchildren[$i]->content == $this->content &&
-                    $pchildren[$i]->type == $this->type) {
+                    $pchildren[$i]->type == $this->type &&
+                    $pchildren[$i]->attributes == $this->attributes) {
                     return $i;
                 }
             }
         }
-        return; 
+        return;
     } // end func getItemIndex
+
+    /**
+    * Returns the item rank in its parent children array
+    * according to other items with same type and name.
+    * @return int  returns int or null if root object
+    */
+    function getItemPosition()
+    {
+        if (is_object($this->parent)) {
+            $pchildren =& $this->parent->children;
+            for ($i = 0; $i < count($pchildren); $i++) {
+                if ($pchildren[$i]->name == $this->name &&
+                    $pchildren[$i]->type == $this->type) {
+                    $obj[] =& $pchildren[$i];
+                }
+            }
+            for ($i = 0; $i < count($obj); $i++) {
+                if ($obj[$i]->name == $this->name &&
+                    $obj[$i]->content == $this->content &&
+                    $obj[$i]->type == $this->type &&
+                    $obj[$i]->attributes == $this->attributes) {
+                    return $i;
+                }
+            }
+        }
+        return;
+    } // end func getItemPosition
 
     /**
     * Returns the item parent object.
@@ -454,6 +487,25 @@ class Config_Container extends HTML_Common {
     } // end func getType
 
     /**
+    * Set this item's attributes.
+    * @param  array    attributes        Array of attributes
+    * @return void
+    */
+    function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
+    } // end func setAttributes
+
+    /**
+    * Get this item's attributes.
+    * @return array    item's attributes
+    */
+    function getAttributes()
+    {
+        return $this->attributes;
+    } // end func getAttributes 
+
+    /**
     * Set a children directive content.
     * This is an helper method calling getItem and addItem or setContent for you.
     * If the directive does not exist, it will be created at the bottom.
@@ -525,28 +577,26 @@ class Config_Container extends HTML_Common {
         $array[$this->name] = array();
         switch ($this->type) {
             case 'directive':
-                if (count($this->_attributes) > 0) {
+                if (count($this->attributes) > 0) {
                     $array[$this->name]['#'] = $this->content;
-                    $array[$this->name]['@'] = $this->_attributes;
+                    $array[$this->name]['@'] = $this->attributes;
                 } else {
                     $array[$this->name] = $this->content;
                 }
                 break;
             case 'section':
-                if (count($this->_attributes) > 0) {
-                    $array[$this->name]['@'] = $this->_attributes;
+                if (count($this->attributes) > 0) {
+                    $array[$this->name]['@'] = $this->attributes;
                 }
                 if (count($this->children) > 0) {
                     for ($i = 0; $i < count($this->children); $i++) {
                         $newArr = $this->children[$i]->toArray();
+                        
                         if (!is_null($newArr)) {
                             foreach ($newArr as $key => $value) {
                                 if (isset($array[$this->name][$key])) {
-                                    if (!is_array($array[$this->name][$key])) {
-                                        $array[$this->name][$key] = array($array[$this->name][$key], $value);
-                                    } else {
-                                        array_push($array[$this->name][$key], $value);
-                                    }
+                                    // duplicate name/type
+                                    $array[$this->name][$key] = array($array[$this->name][$key], $value);
                                 } else {
                                     $array[$this->name][$key] = $value;
                                 }
