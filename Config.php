@@ -152,7 +152,8 @@ class Config {
         $className = $GLOBALS['CONFIG_TYPES'][$this->configType][1];
         $includeFile = $GLOBALS['CONFIG_TYPES'][$this->configType][0];
         include_once($includeFile);
-        if ($error = eval("return $className::parseDatasrc('".$this->datasrc."');")) {
+        $error = eval("return $className::parseDatasrc('".$this->datasrc."');");
+        if ($error !== true) {
             return $error;
         }
         return $this->container;
@@ -212,14 +213,7 @@ class Config {
             return PEAR::raiseError($error.'::writeConfig.', null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
         }
 
-        $className = $GLOBALS['CONFIG_TYPES'][$this->configType][1];
-        $includeFile = $GLOBALS['CONFIG_TYPES'][$this->configType][0];
-        include_once($includeFile);
-
-        if (!eval("return $className::writeDatasrc('".$this->datasrc."');")) {
-            return PEAR::raiseError("Unable to write to datasource in Config::writeConfig.", null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
-        }
-        return true;
+        return $this->container->writeDatasrc($this->datasrc, $this->configType);
     } // end func writeConfig
 } // end class Config
 ?>
