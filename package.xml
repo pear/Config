@@ -21,11 +21,17 @@
   </maintainers>
  <license>PHP License</license>  
   <release>
-    <version>1.6</version>
-    <date>2003-05-20</date>
+    <version>1.7</version>
+    <date>2003-06-16</date>
     <state>stable</state> 
     <notes>
-* Fix bug #23690 in toArray reported by Rob Halff
+* Added new method registerConfigType() (Greg Beaver)
+* Root containers are not named 'root' anymore (Bertrand Mansion)
+* IniCommented handles comma, quotes, slashes (Greg Beaver)
+* IniFile and IniCommented take care of slashes (Greg Beaver)
+* Method _parseArray() in PHPArray refactored and much faster (Bertrand Mansion)
+* Fix bugs with certain type of arrays with PHPArray (Bertrand Mansion)
+* PHPArray now returns values between single quotes (Jean-Marc Fontaine)
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -51,6 +57,14 @@
     </deps>
   </release>
 <changelog>
+  <release>
+    <version>1.6</version>
+    <date>2003-05-20</date>
+    <state>stable</state> 
+    <notes>
+* Fix bug #23690 in toArray reported by Rob Halff
+    </notes>
+  </release>
   <release>
     <version>1.5</version>
     <date>2003-04-14</date>
