@@ -44,6 +44,7 @@ class Config_Container_xml extends Config_Container {
         "IncludeChildren" => True
     );
 
+    var $tagname = "tagname";
     /**
     * parses the input of the given data source
     *
@@ -63,10 +64,20 @@ class Config_Container_xml extends Config_Container {
         $this->setFeatures($feature,  array_merge($this->allowed_options, array('IncludeContent', 'MasterAttribute','IncludeMasterAttribute','IncludeChildren')));
         if( file_exists( $datasrc ) )
         {
-            $xml = xmldocfile($datasrc);
-            $root = domxml_root($xml);
+            //xmldocfile is broken in 4.0.7RC1
+            $fd = fopen( $datasrc, "r" );
+            $xmlstring = fread( $fd, filesize( $datasrc ) );
+            fclose( $fd );
+            $xml = xmldoc($xmlstring);
+
+            $root = $xml->root();
+            //PHP 4.0.6 had $root->name as tagname, check for that here...            
+            if (!isset($root->{$this->tagname}))
+            {
+                $this->tagname = "name";
+            }
             $this->addAttributes($root);
-            $this->parseElement($root,"/".$root->name);
+            $this->parseElement($root,"/".$root->{$this->tagname});
         }
         else
         {
@@ -85,14 +96,14 @@ class Config_Container_xml extends Config_Container {
 
     function parseElement ($element,$parent = "/") {
 
-        foreach(domxml_children($element) as $tag => $value)
+        foreach($element->children() as $tag => $value)
         {
             if (XML_ELEMENT_NODE == $value->type)
             {
                 $this->addAttributes($value,$parent);
-                if (domxml_children($value))
+                if ($value->children())
                 {
-                    $this->parseElement($value,$parent."/".$value->name);
+                    $this->parseElement($value,$parent."/".$value->{$this->tagname});
                 }
             }
         }
@@ -117,32 +128,50 @@ class Config_Container_xml extends Config_Container {
 
         if ($this->feature["IncludeChildren"] )
         {
-            $this->data["$parent"."$parentslash"]["children"][] = $element->name;
+            $this->data["$parent"."$parentslash"]["children"][] = $element->{$this->tagname};
 
         }
+        // PHP-4.0.7 has a different style for content.
+        if (!isset($element->content) )
+        {
+            if (is_array($element->children()))
+            {
+                $element->content ="";
+                foreach ($element->children() as $children)
+                {
+                   if (isset($children->content))
+                   {
+                        $element->content .= $children->content;
+                   }
+                }
+            }
+         }
+
         if (($this->feature["IncludeContent"]|| $this->feature["MasterAttribute"] == "content") && $element->content)
         {
+                   
             if ($this->feature["MasterAttribute"] == "content")
             {
-                   $this->data["$parent"."$parentslash"][$element->name] =$element->content;
+                   $this->data["$parent"."$parentslash"][$element->{$this->tagname}] =$element->content;
             }
             if ($this->feature["IncludeMasterAttribute"] || $this->feature["MasterAttribute"] != "content")
             {
-                $this->data["$parent/".$element->name]["content"] =$element->content;
+                $this->data["$parent/".$element->{$this->tagname}]["content"] =$element->content;
             }
         }
-        if (domxml_attributes($element) )
+        if ($element->attributes() )
         {
-            foreach (domxml_attributes($element) as $attribute =>
-                     $attributeObject)
+         
+            foreach ($element->attributes() as $attribute => $attributeObject)
             {
+                
                 if ($this->feature["MasterAttribute"] && $attributeObject->name == $this->feature["MasterAttribute"])
                 {
-                    $this->data[$parent."$parentslash"][$element->name] = domxml_get_attribute($element,$attributeObject->name);
+                    $this->data[$parent."$parentslash"][$element->{$this->tagname}] = $element->get_attribute($attributeObject->name);
                 }
                 if ($this->feature["IncludeMasterAttribute"] || $attributeObject->name != $this->feature["MasterAttribute"])
                 {
-                    $this->data["$parent/".$element->name][$attributeObject->name] = domxml_get_attribute($element,$attributeObject->name);
+                    $this->data["$parent/".$element->{$this->tagname}][$attributeObject->name] = $element->get_attribute($attributeObject->name);
                 }
             }
         }
