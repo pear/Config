@@ -188,7 +188,6 @@ class Config_Container_PHPArray {
         $string = '';
         if (!$obj->isRoot()) {
             if (!$obj->parent->isRoot()) {
-                if ((int)$obj->name == 
                 $string = "['".$obj->name."']";
             } else {
                 if (empty($this->options['name'])) {
