@@ -1,7 +1,9 @@
 <?php
 /**
-* Config.php example with IniCommented container
-* This time, we will create a new config file from scratch.
+* Config.php example
+* 
+* Lots of different manipulations to show Config features.
+*
 * @author 	Bertrand Mansion <bmansion@mamasam.com>
 * @package	Config
 */
@@ -9,61 +11,70 @@
 
 require_once('Config.php');
 
-$file = '/tmp/myconf.ini';
+// Creates a PHPArray config with attributes, from scratch
 
-// 1. We create a new config container
+$dsn = array('type' => 'mysql',
+             'host' => 'localhost',
+             'user' => 'mamasam',
+             'pass' => 'foobar');
 
-$conf =& new Config('inicommented');
-$root =& $conf->getRoot();
+$c = new Config_Container('section', 'root');
+  $c->createComment('DB Config');
+  $db =& $c->createSection('DB', $dsn);
+    $fields =& $db->createSection('fields');
+    $fields->createDirective('username', 'USERNAME', array('type' => 'varchar', 'size' => 32));
+    $fields->createDirective('password', 'PASSWD', array('type' => 'varchar', 'size' => 32));
+  $c->createBlank();
+  $c->createComment('Support config');
+  $c->createDirective('support', 'See my wishlist...');
 
-// 2. We use addItem() helper methods to fill the container
+echo '<pre>'. $c->toString('phparray') .'</pre>';
+unset($c);
 
-$root->addComment('Test for Config with IniCommented container');
-$root->addBlank();
+// Parses and writes an existing php array $conf
 
-// 3. We create a new section called 'DBConf' in our container
+$conf['storage']['driver'] = 'sql';
+$conf['storage']['params']['phptype']  = 'mysql';
+$conf['storage']['params']['hostspec'] = 'localhost';
+$conf['storage']['params']['username'] = 'mamasam';
+$conf['storage']['params']['password'] = 'foobar';
+$conf['menu']['apps'] = array('imp', 'turba');
+$conf['stdcontent']['para'][0] = 'This is really cool !';
+$conf['stdcontent']['para'][1] = 'It just rocks...';
 
-$DBConf =& $root->addSection('DBConf');
-$DBConf->addComment('DB configuration options');
-$DBConf->addDirective('type', 'mysql');
-$DBConf->addDirective('login', 'root');
-$DBConf->addDirective('db', 'test');
-$DBConf->addDirective('host', 'localhost');
-$DBConf->addBlank();
+$c = new Config();
+$root =& $c->parseConfig($conf, 'phparray');
 
-// 4. We create another section 'colors' from scratch this time
+$storage =& $root->getItem('section', 'storage');
+$storage->removeItem();
+$root->addItem($storage);
 
-$colors =& new Config_Container_IniCommented('section', 'colors');
-$colors->addComment('Color configuration');
-$colors->addDirective('bgcolor', '#FFFFFF');
-$colors->addDirective('rows', '#CCCCCC');
-$colors->addDirective('lines', '#FF0000');
-$colors->addBlank();
+echo '<pre>'. $root->toString('phparray', array('name' => 'test')) .'</pre>';
 
-// 4. We add the new 'colors' section to our current config
-
-$ConfColors =& $root->addSection($colors);
-
-// 5. Oops, our 'DBConf' login has changed !
-
-$DBConf_login =& $DBConf->setDirective('login', 'mysql_user');
-
-// 6. Oops, we forgot to set the 'DBConf' password directive after 'login' !
-
-$DBConf->insertItem('directive', 'password', 'mysql_pass', 'after', $DBConf_login);
-
-// 7. Will add a new bgcolor color after the first one
-
-$bgcolor =& $ConfColors->getItem('directive', 'bgcolor');
-$ConfColors->insertItem('directive', 'bgcolor2', '#00FF00', 'after', $bgcolor);
-
-// 8. That's it. Now save and display
-
-echo '<pre>'.htmlspecialchars($root->toString()).'</pre>';
-
-if (!PEAR::isError($write = $conf->writeConfig($file))) {
-	echo "Done writing config in $file.<br />";
-} else {
-	die($write->getMessage());
+if ($c->writeConfig('/tmp/Config_Test.php', 'phparray', array('name' => 'test')) === true) {
+    echo 'Config written into /tmp/Config_Test.php';
 }
+
+// Making a php ini file with $storage only
+
+$ini = new Config();
+$iniRoot =& $ini->getRoot();
+$iniRoot->addItem($storage);
+
+$comment =& new Config_Container('comment', null, 'This is the php ini version of storage');
+$iniRoot->addItem($comment, 'top');
+$iniRoot->createBlank('after', $comment);
+echo '<pre>'. $iniRoot->toString('inicommented') .'</pre>';
+
+// Gonna make an array with it
+
+echo '<pre>'; var_dump($iniRoot->toArray()); echo '</pre>';
+
+// Now, I'll parse you php.ini file and make it a php array
+
+$phpIni = new Config();
+$phpIni->parseConfig('/usr/local/lib/php.ini', 'inifile');
+$root =& $phpIni->getRoot();
+echo '<pre>'.$root->toString('phparray', array('name' => 'php_ini')).'</pre>';
+
 ?>
