@@ -82,7 +82,7 @@ class Config_Container_IniCommented {
                 if (strpos($value, '"') === false) {
                     $values = preg_split('/\s*,\s+/', $value);
                     if (count($values) > 1) {
-                        foreach ($value as $k => $v) {
+                        foreach ($values as $k => $v) {
                             $currentSection->createDirective($match[1], $v);
                         }
                     } else {
@@ -93,7 +93,7 @@ class Config_Container_IniCommented {
                 }
             } elseif (preg_match('/^\s*\[\s*(.*)\s*\]\s*$/', $line, $match)) {
                 // a section
-                $currentSection =& $currentSection->createSection($match[1]);
+                $currentSection =& $obj->container->createSection($match[1]);
             } else {
                 return PEAR::raiseError("Syntax error in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
             }
@@ -134,7 +134,6 @@ class Config_Container_IniCommented {
                           strpos($content, '"') === false) {
                     $content = '"'.$content.'"';          
                 }
-
                 if ($count > 1) {
                     // multiple values for a directive are separated by a comma
                     if (isset($childrenCount[$obj->name])) {
