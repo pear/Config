@@ -29,6 +29,7 @@
 * Added a new boolean option/parameter in XML, PHPArray and toArray() to set
   whether attributes should be rendered.
 * Added comments rendering in XML.
+* Fix typo in PHPArray when setting the configuration array name (Laurent Laville)
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
