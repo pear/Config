@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE package SYSTEM "../package.dtd">
+<!DOCTYPE package SYSTEM "../../php4/pear/package.dtd">
 <package version="1.0">
   <name>Config</name>
-  <summary>The Config package provides methods for editing configuration datasources</summary>
-  <description>The Config package provides methods for editing configuration datasources.
-It does so in an object oriented manner, defining each and every items found in the config datasource as a Config_Container of various types (comments, sections, directives, blanks, ...).
-Items can then be edited, added, removed, inserted.
-This package is not intended for reading configuration data only, but for editing them. If you only want to read your configuration data, use functions like parse_ini_file() and the like instead, they are much faster.</description>
+  <summary>Your configurations swiss-army knife.</summary>
+  <description>The Config package provides methods for configuration manipulation.
+* Creates configurations from scratch
+* Parses and outputs different formats (XML, PHP, INI, Apache...).
+* Edits existing configurations
+* Converts configurations to other formats
+* Allows manipulation of sections, comments, directives...
+* Parses configurations into a tree structure
+</description>
   <maintainers>
     <maintainer>
       <user>mansion</user>
@@ -17,6 +21,42 @@ This package is not intended for reading configuration data only, but for editin
   </maintainers>
  <license>PHP License</license>  
   <release>
+    <version>1.2</version>
+    <date>2003-03-24</date>
+    <state>stable</state> 
+    <notes>
+First stable release.
+* Added an XML container (uses XML_Parser),
+* Possibility to convert from one format to another,
+* Fixes in toArray(),
+* Added attributes to containers,
+* New methods for item manipulation.
+    </notes>
+    <filelist>
+      <file role="php" baseinstalldir="/" name="Config.php"/>
+      <dir name="Config" role="php">
+        <file name="Container.php"/>
+        <dir name="Container" role="php">
+          <file name="Apache.php"/>
+          <file name="GenericConf.php"/>
+          <file name="IniCommented.php"/>
+          <file name="IniFile.php"/>
+          <file name="PHPArray.php"/>
+          <file name="XML.php"/>
+        </dir>
+      </dir>
+      <dir name="docs" role="doc">
+        <file name="Apache.php"/>
+        <file name="IniCommented.php"/>
+        <file name="IniFromScratch.php"/>
+      </dir>
+    </filelist>
+    <deps>
+        <dep type="pkg" rel="has">XML_Parser</dep>
+    </deps>
+  </release>
+<changelog>
+  <release>
     <version>1.1</version>
     <date>2002-10-08</date>
     <state>beta</state> 
@@ -24,72 +64,51 @@ This package is not intended for reading configuration data only, but for editin
 Fix bug in toArray().
 Thanks to Mark Polsen for noticing it.
     </notes>
-    <filelist>
-      <dir name="/">
-        <file role="php">Config.php</file>
-        <dir name="Config">
-          <file role="php">Container.php</file>
-          <dir name="Container">
-            <file role="php">Apache.php</file>
-            <file role="php">GenericConf.php</file>
-            <file role="php">IniCommented.php</file>
-            <file role="php">IniFile.php</file>
-            <file role="php">PHPArray.php</file>
-          </dir>
-        </dir>
-        <dir name="docs" role="doc">
-          <file>Apache.php</file>
-          <file>IniCommented.php</file>
-          <file>TODO</file>
-        </dir>
-      </dir>
-    </filelist>
   </release>
-<changelog>
-    <release>
-        <version>1.0</version>
-        <notes>
+  <release>
+    <version>1.0</version>
+    <notes>
 Complete rewrite : API has changed.
 The class now uses a tree structure of container objects.
 As a consequence, backward compatibility is not provided !!!
 Look at the Apache.php and IniCommented.php scripts in 'docs' for usage examples.
 Some containers are still missing : XML and DB.
-        </notes>
-    </release>
-    <release>
-        <version>0.3.1</version>
-        <notes>
+    </notes>
+  </release>
+  <release>
+    <version>0.3.1</version>
+    <notes>
 Documentation is in README.Config.
 0.3.1
 -  E_ALL fixes
-        </notes>
-    </release>
-    <release>
-        <version>0.3</version>
-        <notes>
+    </notes>
+  </release>
+  <release>
+    <version>0.3</version>
+    <notes>
 - some fixes
 - add WDDX-Container for config data in WDDX-files
 - add phpIniFile, does the same like IniFile but based on the PHP build-in function parse_ini_file()
-        </notes>
-    </release>
-    <release>
-        <version>0.2.2</version>
-        <notes>
+    </notes>
+  </release>
+  <release>
+    <version>0.2.2</version>
+    <notes>
 - Only the first char of ->feature['cc'] is taken as a comment deliminator
 - quoting supports both methods:
   [bla]
   foo = "'bar'"
   bar = '"foo"'
 - Value parser only parser until first comment-char or the end of the string, therefore spaces surrounded by nonspaces don't have to be quoted.
-        </notes>
-    </release>
-    <release>
-        <version>0.2.1</version>
-        <notes>
+    </notes>
+  </release>
+  <release>
+    <version>0.2.1</version>
+    <notes>
 - Bug fixed, when $feature in ParseInput was not set 
 - some e_warnings fixed
 (thanks to Markus Fischer for the reports)      
-        </notes>
-    </release>
+    </notes>
+  </release>
 </changelog>        
 </package>
