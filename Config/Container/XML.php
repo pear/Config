@@ -32,18 +32,21 @@ class Config_Container_XML extends XML_Parser {
     * This class options:
     * version (1.0) : XML version
     * encoding (ISO-8859-1) : XML content encoding
-    * name : Like in phparray, name of your config global entity
-    * indent : char used for indentation
+    * name      : like in phparray, name of your config global entity
+    * indent    : char used for indentation
     * linebreak : char used for linebreak
-    * addDecl : wether to add the xml declaration at beginning or not
+    * addDecl   : whether to add the xml declaration at beginning or not
+    * useAttr   : whether to use the attributes
     *
     * @var  array
     */
-    var $options = array('version' => '1.0',
-                         'encoding' => 'ISO-8859-1',
-                         'indent' => '  ',
+    var $options = array('version'   => '1.0',
+                         'encoding'  => 'ISO-8859-1',
+                         'name'      => '',
+                         'indent'    => '  ',
                          'linebreak' => "\n",
-                         'addDecl' => true);
+                         'addDecl'   => true,
+                         'useAttr'   => true);
 
     /**
     * Container objects
@@ -56,18 +59,19 @@ class Config_Container_XML extends XML_Parser {
     * Constructor
     *
     * @access public
-    * @param    string  $options    (optional)Options to be used by renderer
-    *                               version: (1.0) XML version
-    *                               encoding: (ISO-8859-1) XML content encoding
-    *                               name: Like in phparray, name of your config global entity
-    *                               indent : char used for indentation
-    *                               linebreak : char used for linebreak
-    *                               addDecl : wether to add the xml declaration at beginning or not
+    * @param    string  $options    Options to be used by renderer
+    *                               version     : (1.0) XML version
+    *                               encoding    : (ISO-8859-1) XML content encoding
+    *                               name        : like in phparray, name of your config global entity
+    *                               indent      : char used for indentation
+    *                               linebreak   : char used for linebreak
+    *                               addDecl     : whether to add the xml declaration at beginning or not
+    *                               useAttr     : whether to use the attributes
     */
     function Config_Container_XML($options = array())
     {
-        if (!empty($options)) {
-            $this->options = array_merge($this->options, $options);
+        foreach ($options as $key => $value) {
+            $this->options[$key] = $value;
         }
     } // end constructor
 
@@ -169,7 +173,7 @@ class Config_Container_XML extends XML_Parser {
                 $string .= XML_Util::getXMLDeclaration($this->options['version'], $this->options['encoding']);
                 $string .= $this->options['linebreak'];
             }
-            if (isset($this->options['name'])) {
+            if (!empty($this->options['name'])) {
                 $string .= '<'.$this->options['name'].'>'.$this->options['linebreak'];
                 $deep++;
                 $indent = str_repeat($this->options['indent'], $deep);
@@ -180,14 +184,19 @@ class Config_Container_XML extends XML_Parser {
         }
         switch ($obj->type) {
             case 'directive':
-                $string .= $indent.XML_Util::createTag($obj->name, $obj->attributes, $obj->content);
+                $attributes = ($this->options['useAttr']) ? $obj->attributes : array();
+                $string .= $indent.XML_Util::createTag($obj->name, $attributes, $obj->content);
+                $string .= $this->options['linebreak'];
+                break;
+            case 'comment':
+                $string .= $indent.'<!-- '.$obj->content.' -->';
                 $string .= $this->options['linebreak'];
                 break;
             case 'section':
                 $hasChildren = (count($obj->children) > 0) ? true : false;
                 if (!$obj->isRoot()) {
                     $string = $indent.'<'.$obj->name;
-                    $string .= XML_Util::attributesToString($obj->attributes);
+                    $string .= ($this->options['useAttr']) ? XML_Util::attributesToString($obj->attributes) : '';
                 }
                 if ($hasChildren) {
                     if (!$obj->isRoot()) {
@@ -204,7 +213,7 @@ class Config_Container_XML extends XML_Parser {
                         $string .= '/>'.$this->options['linebreak'];
                     }
                 } else {
-                    if (isset($this->options['name'])) {
+                    if (!empty($this->options['name'])) {
                         $string .= '</'.$this->options['name'].'>'.$this->options['linebreak'];
                     }
                 }
