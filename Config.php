@@ -38,8 +38,6 @@ $GLOBALS['CONFIG_TYPES'] =
 * it creates to keep track of the configuration structure.
 *
 * @author   Bertrand Mansion <bmansion@mamasam.com>
-* @credit   Alexander Merz <alexander.merz@t-online.de>
-* @credit   Christian Stocker <chregu@phant.ch>
 * @package  Config
 */
 class Config {
@@ -75,7 +73,6 @@ class Config {
     * Creates a root container
     *
     * @access public
-    * @return   object  reference to config's root container object
     */
     function Config()
     {
@@ -106,10 +103,14 @@ class Config {
     } // end func getRoot
 
     /**
-    * Reset the root container to accept the object passed as parameter as a child
+    * Sets the content of the root Config_container object.
+    *
+    * This method will replace the current child of the root
+    * Config_Container object by the given object.
+    *
     * @param object  $rootContainer  container to be used as the first child to root
     * @access public
-    * @return   true on success or PEAR_Error
+    * @return   mixed    true on success or PEAR_Error
     */
     function setRoot(&$rootContainer)
     {
@@ -125,11 +126,13 @@ class Config {
 
     /**
     * Parses the datasource contents
-    * This will set the root container for this config object
     *
-    * @param mixed   $datasrc     Datasource to write to
+    * This method will parse the datasource given and fill the root 
+    * Config_Container object with other Config_Container objects.
+    *
+    * @param mixed   $datasrc     Datasource to parse
     * @param string  $configType  Type of configuration
-    * @param array   $options     (optional)Options for config container
+    * @param array   $options     Options for the parser
     * @access public
     * @return mixed PEAR_Error on error or Config_Container object
     */
@@ -155,10 +158,11 @@ class Config {
     } // end func &parseConfig
 
     /**
-    * Writes the container contents to datasource
-    * @param mixed   $datasrc     (optional)Datasource to write to
-    * @param string  $configType  (optional)Type of configuration
-    * @param array   $options     (optional)Options for config container
+    * Writes the container contents to the datasource.
+    *
+    * @param mixed   $datasrc     Datasource to write to
+    * @param string  $configType  Type of configuration
+    * @param array   $options     Options for config container
     * @access public
     * @return mixed PEAR_Error on error or true if ok
     */
