@@ -105,7 +105,7 @@ class Config_Container {
     function &createItem($type, $name, $content, $attributes = null, $where = 'bottom', $target = null)
     {
         $item =& new Config_Container($type, $name, $content, $attributes);
-		$result =& $this->addItem($item, $where, $target);
+        $result =& $this->addItem($item, $where, $target);
         return $result;
     } // end func &createItem
     
@@ -630,7 +630,7 @@ class Config_Container {
     * If the container has attributes, it will use '@' and '#'
     * index is here because multiple directives can have the same name.
     *
-    * @param	bool	$useAttr		Whether to return the attributes too
+    * @param    bool    $useAttr        Whether to return the attributes too
     * @return array
     */
     function toArray($useAttr = true)
