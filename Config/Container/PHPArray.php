@@ -72,7 +72,7 @@ class Config_Container_PHPArray {
             } else {
                 include($datasrc);
                 if (empty($this->options['name'])) {
-                    $this->options['name'] == 'conf';
+                    $this->options['name'] = 'conf';
                 }
                 if (!isset(${$this->options['name']}) || !is_array(${$this->options['name']})) {
                     return PEAR::raiseError("File '$datasrc' does not contain a required '".$this->options['name']."' array.", null, PEAR_ERROR_RETURN);
