@@ -90,7 +90,7 @@ class Config_Container_XML extends XML_Parser {
     {
         $this->folding = false;
         $this->cdata = null;
-        $this->XML_Parser(null, 'event');
+        $this->XML_Parser($this->options['encoding'], 'event');
         $this->containers[0] =& $obj->container;
         if (is_string($datasrc)) {
             if ($this->options['isFile']) {
