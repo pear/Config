@@ -505,7 +505,7 @@ class Config_Container {
     * @access   public
     * @return null
     */
-    function toString($configType = '')
+    function toString($configType = '', $options = array())
     {
         $configType = strtolower($configType);
         if (!Config::isConfigTypeRegistered($configType)) {
@@ -514,7 +514,7 @@ class Config_Container {
         $className = $GLOBALS['CONFIG_TYPES'][$configType][1];
         $includeFile = $GLOBALS['CONFIG_TYPES'][$configType][0];
         include_once($includeFile);
-        return eval("return $className::toString('$configType');");
+        return call_user_func(array($className, 'toString'), $configType, $options, $this);
     } // end func toString
 
     /**

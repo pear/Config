@@ -152,7 +152,8 @@ class Config {
         $className = $GLOBALS['CONFIG_TYPES'][$this->configType][1];
         $includeFile = $GLOBALS['CONFIG_TYPES'][$this->configType][0];
         include_once($includeFile);
-        $error = eval("return $className::parseDatasrc('".$this->datasrc."');");
+
+        $error = call_user_func(array($className, 'parseDatasrc'), $this->datasrc, $this);
         if ($error !== true) {
             return $error;
         }
