@@ -14,8 +14,6 @@ TODO List for Config
 
 - Recursively remove elements (use getItem ?)
 
-- Container for XML
-
 - Container for DB
 
 - Container for .plist
