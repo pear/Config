@@ -48,10 +48,6 @@ class Config_Container_PHPArray {
     */
     function Config_Container_PHPArray($options = array())
     {
-        if (empty($options['name'])) {
-             // default array is $conf
-            $options['name'] = 'conf';
-        }
         $this->options = $options;
     } // end constructor
 
@@ -75,6 +71,9 @@ class Config_Container_PHPArray {
                 return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);        
             } else {
                 include($datasrc);
+                if (empty($this->options['name'])) {
+                    $this->options['name'] == 'conf';
+                }
                 if (!isset(${$this->options['name']}) || !is_array(${$this->options['name']})) {
                     return PEAR::raiseError("File '$datasrc' does not contain a required '".$this->options['name']."' array.", null, PEAR_ERROR_RETURN);
                 }
@@ -153,14 +152,13 @@ class Config_Container_PHPArray {
                 break;
             case 'directive':
                 $attrString = '';
-                $string .= '$'.$this->options['name'];
                 $parentString = $this->_getParentString($obj);
                 $attributes = $obj->getAttributes();
                 if (count($attributes) > 0) {
                     // Directive with attributes '@' and value '#'
                     $string .= $parentString."['#']";
                     foreach ($attributes as $attr => $val) {
-                        $attrString .= '$'.$this->options['name'].$parentString."['@']"
+                        $attrString .= $parentString."['@']"
                                     ."['".$attr."'] = ".'"'.str_replace('"', '\"', $val)
                                     .'"'.";\n";
                     }
@@ -184,7 +182,7 @@ class Config_Container_PHPArray {
                 if (count($attributes) > 0) {
                     $parentString = $this->_getParentString($obj);
                     foreach ($attributes as $attr => $val) {
-                        $attrString .= '$'.$this->options['name'].$parentString."['@']"
+                        $attrString .= $parentString."['@']"
                                     ."['".$attr."'] = ".'"'.str_replace('"', '\"', $val)
                                     .'"'.";\n";
                     }
@@ -209,8 +207,17 @@ class Config_Container_PHPArray {
     */
     function _getParentString(&$obj)
     {
-        $string = "['".$obj->name."']";
-        if (!$obj->parent->isRoot()) {
+        $string = '';
+        if (!$obj->isRoot()) {
+            if (!$obj->parent->isRoot()) {
+                $string = "['".$obj->name."']";
+            } else {
+                if (empty($this->options['name'])) {
+                    $string .= '$'.$obj->name;
+                } else {
+                    $string .= '$'.$this->options['name']."['".$obj->name."']";
+                }
+            }
             $string = $this->_getParentString($obj->parent).$string;
             $count = $obj->parent->countChildren(null, $obj->name);
             if ($count > 1) {
