@@ -143,14 +143,14 @@ class Config_Container_PHPArray {
                     $string .= $parentString."['#']";
                     foreach ($attributes as $attr => $val) {
                         $attrString .= $parentString."['@']"
-                                    ."['".$attr."'] = '".$val."';\n";
+                                    ."['".$attr."'] = '".addslashes($val)."';\n";
                     }
                 } else {
                     $string .= $parentString;
                 }
                 $string .= ' = ';
                 if (is_string($obj->content)) {
-                    $string .= "'".$obj->content."'";
+                    $string .= "'".addslashes($obj->content)."'";
                 } elseif (is_int($obj->content) || is_float($obj->content)) {
                     $string .= $obj->content;
                 } elseif (is_bool($obj->content)) {
@@ -166,7 +166,7 @@ class Config_Container_PHPArray {
                     $parentString = $this->_getParentString($obj);
                     foreach ($attributes as $attr => $val) {
                         $attrString .= $parentString."['@']"
-                                    ."['".$attr."'] = '".$val."';\n";
+                                    ."['".$attr."'] = '".addslashes($val)."';\n";
                     }
                 }
                 $string .= $attrString;
