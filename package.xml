@@ -21,13 +21,12 @@
   </maintainers>
  <license>PHP License</license>  
   <release>
-    <version>1.4</version>
-    <date>2003-04-02</date>
+    <version>1.5</version>
+    <date>2003-04-14</date>
     <state>stable</state> 
     <notes>
-* Fix setDirective method in Container
-* Fix warnings in foreach loop when attributes are not set
-* Added phpdoc comments
+* Added an id private property for each node
+* Fix a bug in toArray when items are duplicates
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -52,7 +51,16 @@
         <dep type="pkg" rel="has">XML_Parser</dep>
     </deps>
   </release>
-<changelog>
+<changelog>  <release>
+    <version>1.4</version>
+    <date>2003-04-02</date>
+    <state>stable</state> 
+    <notes>
+* Fix setDirective method in Container
+* Fix warnings in foreach loop when attributes are not set
+* Added phpdoc comments
+    </notes>
+  </release>
   <release>
     <version>1.3</version>
     <date>2003-03-26</date>
