@@ -7,10 +7,8 @@ TODO List for Config
   How ? Set comment as child of directive.
   Use the same name for the directive as for the comment (usually,
   they don't have names). Could maybe do the same for sections, then ?
-
 - Recursively remove elements (use getItem ?)
-
 - Container for DB
-
 - Container for .plist
-
+- Unit test everything
+- make sure all operations perserve as much as possible (semantically)
