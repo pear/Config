@@ -17,7 +17,7 @@
 //
 // $Id$
 
-require_once('Config/Container.php');
+require_once('Config.php');
 
 /**
 * Config parser for PHP .ini files
@@ -26,36 +26,36 @@ require_once('Config/Container.php');
 * @author      Bertrand Mansion <bmansion@mamasam.com>
 * @package     Config
 */
-class Config_Container_IniFile extends Config_Container {
+class Config_Container_IniFile {
 
     /**
     * Parses the data of the given configuration file
     *
     * @access public
     * @param string $datasrc    path to the configuration file
-    * @return mixed    returns a PEAR_ERROR, if error occurs or the container itsef
+    * @return mixed    returns a PEAR_ERROR, if error occurs or false if ok
     */
     function &parseDatasrc($datasrc)
     {
-        if (is_null($datasrc) || !file_exists($datasrc)) {
+        if (!file_exists($datasrc)) {
             return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);
         }
-        $currentSection =& $this;
+        $currentSection =& $this->container;
         $confArray = parse_ini_file($datasrc, true);
         if (!$confArray) {
             return PEAR::raiseError("File '$datasrc' does not contain configuration data.", null, PEAR_ERROR_RETURN);
         }
         foreach ($confArray as $key => $value) {
             if (is_array($value)) {
-                $currentSection =& $this->addItem('section', $key, '');
+                $currentSection =& $this->container->createSection($key);
                 foreach ($value as $directive => $content) {
-                    $currentSection->addItem('directive', $directive, $content);
+                    $currentSection->createDirective($directive, $content);
                 }
             } else {
-                $currentSection->addItem('directive', $key, $value);
+                $currentSection->createDirective($key, $value);
             }
         }
-        return $this;
+        return false;
     } // end func parseDatasrc
 
     /**
@@ -63,7 +63,7 @@ class Config_Container_IniFile extends Config_Container {
     * @access public
     * @return string
     */
-    function toString()
+    function toString($configType = 'inifile')
     {
         if (!isset($string)) {
             $string = '';
@@ -78,7 +78,7 @@ class Config_Container_IniFile extends Config_Container {
                 }
                 if (count($this->children) > 0) {
                     for ($i = 0; $i < count($this->children); $i++) {
-                        $string .= $this->children[$i]->toString();
+                        $string .= $this->children[$i]->toString($configType);
                     }
                 }
                 break;
