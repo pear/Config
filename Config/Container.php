@@ -83,7 +83,7 @@ class Config_Container {
     * @param  array   $attributes Array of attributes for container object
     * @return object    reference to created container
     */
-    function &Config_Container($type = '', $name = '', $content = '', $attributes = null)
+    function &Config_Container($type = 'section', $name = '', $content = '', $attributes = null)
     {
         $this->type       = $type;
         $this->name       = $name;
@@ -593,7 +593,7 @@ class Config_Container {
     */
     function isRoot()
     {
-        if (is_null($this->parent) && $this->name == 'root') {
+        if (is_null($this->parent)) {
             return true;
         }
         return false;
