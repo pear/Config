@@ -105,12 +105,13 @@ class Config_Container_wddx extends Config_Container {
     
     function convertFromInput($data, $level = '') {
         if(!is_array($data)) $data = array();
-        while(list($key, $val) = each($data)) {
-            if(substr($key, 0, 1) == '/') {
+
+        foreach($data as $key => $val) {
+			if(substr($key, 0, 1) == '/') {
                 $children[] = $key;
                 $this->convertFromInput($val, $level.$key);
             } else {
-                $values[$key] = $val;
+				$values[$key] = $val;
             }            
         }
         
@@ -138,21 +139,22 @@ class Config_Container_wddx extends Config_Container {
     
     function convertForOutput() {
         $out = array();
-        
+        		
         if(!is_array($this->data)) $this->data = array();
+		
         foreach ($this->data as $path => $files) {
             $path = explode('/', substr($path, 1));
             $tmp =& $out;
-            foreach ($path as $dir) {                
-                if($dir == '') continue;
+            foreach ($path as $dir) { 
+                if($dir === '') continue;
                 if (!isset($tmp['/'.$dir])) {
                     $tmp['/'.$dir] = array();
                 }
                 $tmp =& $tmp['/'.$dir];            
             }
             
-            while(list($key, $val) = each($files)) {
-                if($key != 'children') {
+            foreach($files as $key => $val) {
+			    if($key !== 'children') {
                     $tmp[$key] = $val;
                 }
             }
