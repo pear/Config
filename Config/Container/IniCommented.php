@@ -118,18 +118,8 @@ class Config_Container_IniCommented {
      * @access private
      */
     function _quoteAndCommaParser($text)
-    {
-    
-        // debugging
-        $debug = false;
-        
+    {   
         $text = trim($text);
-    
-        // states
-        // $states['normal'] = 0; // normal text
-        // $states['quote'] = 1; // in a quote
-        // $states['escape'] = 2; // encountered '\'
-        // $states['after_quote'] = 3; // after a quote - only valid tokens are ; and ,
         
         // tokens
         $tokens['normal'] = array('"', ';', ',');
@@ -154,20 +144,6 @@ class Config_Container_IniCommented {
         do {
             $char = $text{$pos};
             $state = $this->_getQACEvent($stack);
-            
-            if ($debug) {
-                $indent = str_repeat('  ',count($return));
-                echo $indent . "------------------\n";
-                echo $indent . "CHAR: '$char'\n";
-                echo $indent . "STATE: $state\n";
-                if (isset($events[$state][$char])) {
-                    echo $indent . "EVENT: ".$events[$state][$char]."\n";
-                    var_dump($stack);
-                }
-                echo $indent . "RETURN:\n";
-                var_dump($return);
-                echo $indent . "------------------\n";
-            }
             
             if ($tokens[$state]) {
                 if (in_array($char, $tokens[$state])) {
