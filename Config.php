@@ -71,15 +71,9 @@ class Config {
 
     /**
     * Constructor
-    * Initializes a container and returns its root element.
-    *
-    * Requires the type of data container. If the container needs
-    * special parameters upon initialization, set them in $options.
-    * The format and required content of object 'datasrc' depend on the
-    * chosen container.
+    * Creates a root container
     *
     * @access public
-    * @param    string  $configType     (optional)Type of configuration
     * @return   object  reference to config's root container object
     */
     function Config()
@@ -89,8 +83,9 @@ class Config {
 
     /**
     * Returns true if container is registered
-    * @access public
+    *
     * @param    string  $configType  Type of config
+    * @access public
     * @return   bool
     */
     function isConfigTypeRegistered($configType)
@@ -100,6 +95,7 @@ class Config {
 
     /**
     * Returns the root container for this config object
+    *
     * @access public
     * @return   object  reference to config's root container object
     */
@@ -130,7 +126,9 @@ class Config {
     * Parses the datasource contents
     * This will set the root container for this config object
     *
-    * @param mixed  $datasrc  Datasource to work with
+    * @param mixed   $datasrc     Datasource to write to
+    * @param string  $configType  Type of configuration
+    * @param array   $options     (optional)Options for config container
     * @access public
     * @return mixed PEAR_Error on error or Config_Container object
     */
@@ -157,7 +155,9 @@ class Config {
 
     /**
     * Writes the container contents to datasource
-    * @param mixed  $datasrc  (optional)Datasource to write to
+    * @param mixed   $datasrc     (optional)Datasource to write to
+    * @param string  $configType  (optional)Type of configuration
+    * @param array   $options     (optional)Options for config container
     * @access public
     * @return mixed PEAR_Error on error or true if ok
     */
