@@ -29,10 +29,11 @@
   <license>PHP License</license>
   <release>
     <version>1.10.4</version>
-    <date>2005-01-01</date>
+    <date>2005-02-10<date>
     <state>stable</state> 
     <notes>
     Changelog:
+        * Fixed bug #3298 which wouldn't parse arrays with numerical indexes correctly.
         *Fixed bug #2742 which didn't trim variable names in Inicommented file
         *changed XML_Parser and XML_Util dependencies to optional, since they're only needed 
         when parsing XML files (bug #2738)
@@ -65,6 +66,8 @@
         <file name="bug3051.phpt" role="test" />
         <file name="bug3051.xml" role="test" />
         <file name="setup.php.inc" role="test" />
+        <file name="bug3298.php" role="test" />
+        <file name="bug3298.xml" role="test" />
     </dir>
     </filelist>
     <deps>
