@@ -106,7 +106,7 @@ class Config_Container {
                 $index = -1;
                 break;
             default:
-                return PEAR::raiseError('Use only top, bottom, before or after in Config_Container::insertItem.', null, PEAR_ERROR_RETURN);
+                return PEAR::raiseError('Use only top, bottom, before or after in Config_Container::createItem.', null, PEAR_ERROR_RETURN);
         }
         if (isset($index) && $index >= 0) {
             array_splice($this->children, $index, 0, 'tmp');
@@ -128,7 +128,6 @@ class Config_Container {
     */
     function addItem(&$item, $where = 'bottom', $target = null)
     {
-
         $index = sizeof($this->children);
         if (is_object($item) && is_a($item, 'config_container')) {
             $this->children[$index] =& $item;
@@ -144,7 +143,7 @@ class Config_Container {
     * This is a helper method that calls createItem
     *
     * @param  string  content   object content
-    * @return object  reference to new item
+    * @return object  reference to new item or Pear_Error
     */
     function &createComment($content = '', $where = 'bottom', $target = null)
     {
@@ -156,7 +155,7 @@ class Config_Container {
     * Adds a blank line to this item.
     * This is a helper method that calls createItem
     *
-    * @return object  reference to new item
+    * @return object  reference to new item or Pear_Error
     */
     function &createBlank($where = 'bottom', $target = null)
     {
@@ -170,7 +169,7 @@ class Config_Container {
     *
     * @param  string  name      Name of new directive
     * @param  string  content   Content of new directive
-    * @return object  reference to new item
+    * @return object  reference to new item or Pear_Error
     */
     function &createDirective($name, $content, $where = 'bottom', $target = null)
     {
