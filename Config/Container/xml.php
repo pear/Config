@@ -24,7 +24,7 @@ require_once( "Config/Container.php" ) ;
 *
 * This class implements the Config-API based on ConfigDefault
 *
-* @author      Christian Stocker <chregu@nomad.ch>
+* @author      Christian Stocker <chregu@phant.ch>
 * @access      public
 * @version     Config_xml.php, 2000/04/16
 * @package     Config
