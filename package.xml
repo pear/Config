@@ -4,34 +4,31 @@
      generated package.xml files -->
 <package version="1.0">
   <name>Config</name>
+  <description>Class for reading and writing Config-"files"</description>
   <summary>Class for reading and writing Config-"files"</summary>
   <maintainers>
     <maintainer>
       <user>alexmerz</user>
       <name>Alexander Merz</name>
       <email>alexmerz@php.net</email>
+	  <role>lead</role>
     </maintainer>
+	 <maintainer>
+    	<user>chregu</user>
+      	<name>Christian Stocker</name>
+      	<email>chregu@php.net</email>
+    	<role>developer</role>
+    </maintainer>	
   </maintainers>
+ <license>PHP License</license>  
   <release>
-    <version>0.3.0</version>
-    <date>2002-6-23</date>
+    <version>0.3.1</version>
+    <date>2002-06-25</date>
+    <state>stable</state>	
     <notes>
 	Documentation is in README.Config.
-	0.3.0 :
- 	- some fixes
-	- add WDDX-Container for config data in WDDX-files
-	- add phpIniFile, does the same like IniFile but based on the PHP build-in function parse_ini_file()
-	0.2.2 :
-	- Only the first char of ->feature['cc'] is taken as a comment deliminator
-	- quoting supports both methods:
-	  [bla]
-	  foo = "'bar'"
-	  bar = '"foo"'
-	- Value parser only parser until first comment-char or the end of the string, therefore spaces surrounded by nonspaces don't have to be quoted.
-	0.2.1 :
-	- Bug fixed, when $feature in ParseInput was not set 
-	- some e_warnings fixed
-	(thanks to Markus Fischer for the reports)
+	0.3.1
+	-  E_ALL fixes
     </notes>
     <filelist>
       <dir name="/">
@@ -50,4 +47,34 @@
       </dir>
     </filelist>
   </release>
+<changelog>
+	<release>
+    	<version>0.3</version>
+		<notes>
+- some fixes
+- add WDDX-Container for config data in WDDX-files
+- add phpIniFile, does the same like IniFile but based on the PHP build-in function parse_ini_file()
+		</notes>
+	</release>
+	<release>
+    	<version>0.2.2</version>
+	    <notes>
+- Only the first char of ->feature['cc'] is taken as a comment deliminator
+- quoting supports both methods:
+  [bla]
+  foo = "'bar'"
+  bar = '"foo"'
+- Value parser only parser until first comment-char or the end of the string, therefore spaces surrounded by nonspaces don't have to be quoted.
+		</notes>
+	</release>
+	<release>
+    	<version>0.2.1</version>
+	    <notes>
+- Bug fixed, when $feature in ParseInput was not set 
+- some e_warnings fixed
+(thanks to Markus Fischer for the reports)		
+		</notes>
+	</release>
+
+</changelog>		
 </package>
