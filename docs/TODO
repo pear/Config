@@ -1,26 +1,30 @@
 TODO List for Config
 --------------------
 
+- I will move the logic for parsing and writing to the conf object.
+  The container will then be a generic tree object that conf objects
+  will be able to share. This way, it will be possible to parse a 
+  PHP ini file and write it back as a PHP array.
+
+- Use a flag to compare object references
+  This will fix the bug I have with finding index for comments or blank
+  elements.
+
 - Support comments for directives
   Example:
     myDirective = myValue ; My comment here
   How ? Set comment as child of directive.
   Use the same name for the directive as for the comment (usually,
   they don't have names). Could maybe do the same for sections, then ?
-  
-- Is there an interest for multiline values in ini files ?
-  What kind of line separator then ?
 
 - Recursively remove elements
-
-- Use a parser from one container and a toString from another
-  (overload ?)
-
-- Use a flag to compare object references
 
 - Container for XML
 
 - Container for DB
+
+- Is there an interest for multiline values in .ini files ?
+  What kind of line separator then ?
 
 - Container for .plist
 
