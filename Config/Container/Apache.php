@@ -66,7 +66,7 @@ class Config_Container_Apache {
         foreach ($lines as $line) {
             $n++;
             if (!preg_match('/^\s*#/', $line) && 
-            	 preg_match('/^\s*(.*)\s+\\\$/', $line, $match)) {
+                 preg_match('/^\s*(.*)\s+\\\$/', $line, $match)) {
                 // directive on more than one line
                 $lastline .= $match[1].' ';
                 continue;
@@ -139,7 +139,7 @@ class Config_Container_Apache {
             case 'section':
                 if (!$obj->isRoot()) {
                     $string = $ident.'<'.$obj->name;
-                    if (count($obj->attributes) > 0) {
+                    if (is_array($obj->attributes) && count($obj->attributes) > 0) {
                         while (list(,$val) = each($obj->attributes)) {
                             $string .= ' '.$val;
                         }

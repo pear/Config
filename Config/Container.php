@@ -62,7 +62,7 @@ class Config_Container {
     * Array of attributes for this item
     * @var  array
     */
-    var $attributes = array();
+    var $attributes;
 
     /**
     * Constructor

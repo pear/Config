@@ -160,6 +160,8 @@ class Config_Container_XML extends XML_Parser {
             $string .= 'encoding="'.$this->options['encoding']."\"?>\n"; // <? Fix coloring
             if (isset($this->options['name'])) {
                 $string .= '<'.$this->options['name'].">\n";
+                $deep++;
+                $ident = str_repeat('  ', $deep);
             }
         }
         if (!isset($string)) {
@@ -168,18 +170,21 @@ class Config_Container_XML extends XML_Parser {
         switch ($obj->type) {
             case 'directive':
                 $string = $ident.'<'.$obj->name;
-                foreach ($obj->attributes as $name => $value) {
-                    $string .= ' ' . $name . '="' . $value . '"';
+                if (is_array($obj->attributes) && count($obj->attributes) > 0) {
+                    foreach ($obj->attributes as $name => $value) {
+                        $string .= ' ' . $name . '="' . $value . '"';
+                    }
                 }
-                
                 $string .= '>'.$obj->content.'</'.$obj->name.">\n";
                 break;
             case 'section':
                 $hasChildren = (count($obj->children) > 0) ? true : false;
                 if (!$obj->isRoot()) {
                     $string = $ident.'<'.$obj->name;
-                    foreach ($obj->attributes as $name => $value) {
-                        $string .= ' ' . $name . '="' . $value . '"';
+                    if (is_array($obj->attributes) && count($obj->attributes) > 0) {
+                        foreach ($obj->attributes as $name => $value) {
+                            $string .= ' ' . $name . '="' . $value . '"';
+                        }
                     }
                 }
                 if ($hasChildren) {
