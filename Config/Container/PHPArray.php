@@ -103,6 +103,8 @@ class Config_Container_PHPArray {
     */
     function toString($configType = 'phparray')
     {
+        static $childrenCount;
+
         if (!isset($string)) {
             $string = '';
             if (empty($this->parserOptions['name'])) {
@@ -113,6 +115,15 @@ class Config_Container_PHPArray {
             case 'directive':
                 $string .= '$'.$this->parserOptions['name'];
                 $string .= Config_Container_PHPArray::_getParentString($this);
+                if ($this->parent->countChildren('directive', $this->name) > 1) {
+                    // we need to take care of directive set more than once
+                    if (isset($childrenCount[$this->name])) {
+                        $childrenCount[$this->name]++;
+                    } else {
+                        $childrenCount[$this->name] = 0;
+                    }
+                    $string .= '['.$childrenCount[$this->name].']';
+                }
                 $string .= ' = ';
                 if (is_string($this->content)) {
                     $string .= "'".$this->content."';\n";
