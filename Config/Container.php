@@ -438,10 +438,11 @@ class Config_Container {
     } // end func isRoot
 
     /**
-    * Interface method
+    * Call the toString methods in the container plugin
     * @param    string  configType  Type of configuration used to generate the string
+    * @param    array   options     (optional)specify special options used by the parser
     * @access   public
-    * @return null
+    * @return true on success or PEAR_ERROR
     */
     function toString($configType = '', $options = array())
     {
@@ -503,10 +504,11 @@ class Config_Container {
     * @access public
     * @return PEAR_ERROR or true
     */
-    function writeDatasrc($datasrc, $configType = '')
+    function writeDatasrc($datasrc, $configType = '', $options = array())
     {
-        // Check for a writeDatasrc method in plugin
-        /* NOT YET FULLY IMPLEMENTED
+        // Check for a writeDatasrc($datasrc, $configType, $options, &$obj) method in plugin
+        // untested !
+
         $configType = strtolower($configType);
         if (!Config::isConfigTypeRegistered($configType)) {
             return PEAR::raiseError("Configuration type '$configType' is not registered in Config_Container::writeDatasrc.", null, PEAR_ERROR_RETURN);
@@ -516,14 +518,13 @@ class Config_Container {
         include_once($includeFile);
 
         if (in_array('writeDatasrc', get_class_methods($className))) {
-            return eval("return $className::writeDatasrc('$configType');");
+            return call_user_func(array($className, 'writeDatasrc'), $datasrc, $configType, $options, $this);
         }
-        */
 
         // Default behaviour
         $fp = @fopen($datasrc, 'w');
         if ($fp) {
-            $string = $this->toString($configType);
+            $string = $this->toString($configType, $options);
             $len = strlen($string);
             @flock($fp, LOCK_EX);
             @fwrite($fp, $string, $len);
