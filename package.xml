@@ -22,14 +22,17 @@
   </maintainers>
  <license>PHP License</license>
   <release>
-    <version>1.9</version>
-    <date>2003-09-21</date>
+    <version>1.10</version>
+    <date>2003-11-29</date>
     <state>stable</state> 
     <notes>
-* Added a new boolean option/parameter in XML, PHPArray and toArray() to set
-  whether attributes should be rendered.
-* Added comments rendering in XML.
-* Fix typo in PHPArray when setting the configuration array name (Laurent Laville)
+* Added 'isFile' option to XML container
+* Fix a bug when a directive has no content in XML configurations
+* Fix slowdown caused by uniqid() on Linux
+* Fix regular expression for directives in .ini files (Emil Biserov)
+* Fix bug #132 concerning % in .ini files (Wagner netsols.de)
+* Fix possible warning if text is empty in .ini commented (Dean Urmson)
+* Small speed optimizations
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -56,6 +59,17 @@
     </deps>
   </release>
 <changelog>
+  <release>
+    <version>1.9</version>
+    <date>2003-09-21</date>
+    <state>stable</state> 
+    <notes>
+* Added a new boolean option/parameter in XML, PHPArray and toArray() to set
+  whether attributes should be rendered.
+* Added comments rendering in XML.
+* Fix typo in PHPArray when setting the configuration array name (Laurent Laville)
+    </notes>
+  </release>
   <release>
     <version>1.8.1</version>
     <date>2003-09-07</date>
