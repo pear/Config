@@ -112,13 +112,13 @@ class Config_Container_PHPArray {
                     if (isset($value['#'])) {
                         $directive =& $container->createDirective("$key", $value['#']);
                         if (isset($value['@']) && is_array($value['@'])) {
-                            $directive->updateAttributes($value['@']);
+                            $directive->setAttributes($value['@']);
                         }
                     } else {
                         // new section
                         $section =& $container->createSection("$key");
                         if (isset($value['@']) && is_array($value['@'])) {
-                            $section->updateAttributes($value['@']);
+                            $section->setAttributes($value['@']);
                             unset($value['@']);
                         }
                         if (count($value) > 0) {
@@ -141,8 +141,6 @@ class Config_Container_PHPArray {
     */
     function toString(&$obj)
     {
-        static $childrenCount;
-
         if (!isset($string)) {
             $string = '';
         }
@@ -163,28 +161,15 @@ class Config_Container_PHPArray {
                     $string .= $parentString."['#']";
                     foreach ($attributes as $attr => $val) {
                         $attrString .= '$'.$this->options['name'].$parentString."['@']"
-                                    ."['".$attr."'] = ".'"'.$val.'"'.";\n";
+                                    ."['".$attr."'] = ".'"'.str_replace('"', '\"', $val)
+                                    .'"'.";\n";
                     }
                 } else {
                     $string .= $parentString;
-                    $count = $obj->parent->countChildren('directive', $obj->name);
-                    if ($count > 1) {
-                        // we need to take care of directive set more than once
-                        if (isset($childrenCount[$obj->name])) {
-                            $childrenCount[$obj->name]++;
-                        } else {
-                            $childrenCount[$obj->name] = 0;
-                        }
-                        $string .= '['.$childrenCount[$obj->name].']';
-                        if ($childrenCount[$obj->name] == $count-1) {
-                            // Clean the static for future calls to toString
-                            unset($childrenCount[$obj->name]);
-                        }
-                    }
                 }
                 $string .= ' = ';
                 if (is_string($obj->content)) {
-                    $string .= '"'.$obj->content.'"';
+                    $string .= '"'.str_replace('"', '\"', $obj->content).'"';
                 } elseif (is_int($obj->content)) {
                     $string .= $obj->content;
                 } elseif (is_bool($obj->content)) {
@@ -200,7 +185,8 @@ class Config_Container_PHPArray {
                     $parentString = $this->_getParentString($obj);
                     foreach ($attributes as $attr => $val) {
                         $attrString .= '$'.$this->options['name'].$parentString."['@']"
-                                    ."['".$attr."'] = ".'"'.$val.'"'.";\n";
+                                    ."['".$attr."'] = ".'"'.str_replace('"', '\"', $val)
+                                    .'"'.";\n";
                     }
                 }
                 $string .= $attrString;
@@ -226,6 +212,10 @@ class Config_Container_PHPArray {
         $string = "['".$obj->name."']";
         if (!$obj->parent->isRoot()) {
             $string = $this->_getParentString($obj->parent).$string;
+            $count = $obj->parent->countChildren(null, $obj->name);
+            if ($count > 1) {
+                $string .= '['.$obj->getItemPosition().']';
+            }
         }
         return $string;
     } // end func _getParentString
