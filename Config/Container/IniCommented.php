@@ -137,17 +137,20 @@ class Config_Container_IniCommented {
         
         // state stack
         $stack = array();
+
         // return information
         $return = array();
         $returnpos = 0;
         $returntype = 'normal';
+
         // initialize
         array_push($stack, 'normal');
         $pos = 0; // position in $text
+
         do {
             $char = $text{$pos};
             $state = $this->_getQACEvent($stack);
-            
+
             if ($tokens[$state]) {
                 if (in_array($char, $tokens[$state])) {
                     switch($events[$state][$char]) {
@@ -157,9 +160,9 @@ class Config_Container_IniCommented {
                                 !empty($return[$returnpos][1])) {
                                 return PEAR::raiseError("invalid ini syntax, quotes cannot follow text '$text'",
                                                         null, PEAR_ERROR_RETURN);
-                                }
-                            if ($returnpos >= 0) {
-                            // trim any unnecessary whitespace in earlier entries
+                            }
+                            if ($returnpos >= 0 && isset($return[$returnpos])) {
+                                // trim any unnecessary whitespace in earlier entries
                                 $return[$returnpos][1] = trim($return[$returnpos][1]);
                             } else {
                                 $returnpos++;
