@@ -92,6 +92,50 @@ class Config {
     } // end func isConfigTypeRegistered
 
     /**
+     * Register a new container
+     *
+     * @param    string       $configType  Type of config
+     * @param    array|false  $configInfo  Array of format:
+     *           array('path/to/Name.php',
+     *                 'Config_Container_Class_Name').
+     *
+     *           If left false, defaults to:
+     *           array('Config/Container/$configType.php',
+     *                 'Config_Container_$configType')
+     * @access   public
+     * @static
+     * @author   Greg Beaver <cellog@users.sourceforge.net>
+     * @return   true|PEAR_Error  true on success
+     */
+    function registerConfigType($configType, $configInfo = false)
+    {
+        if (Config::isConfigTypeRegistered($configType)) {
+            $info = $GLOBALS['CONFIG_TYPES'][strtolower($configType)];
+            if ($info[0] == $configInfo[0] &&
+                $info[1] == $configInfo[1]) {
+                return true;
+            } else {
+                return PEAR::raiseError("Config::registerConfigType registration of existing $configType failed.", null, PEAR_ERROR_RETURN);
+            }
+        }
+        if (!is_array($configInfo)) {
+            // make the normal assumption, that this is a standard config container added in at runtime
+            $configInfo = array('Config/Container/' . $configType . '.php',
+                                'Config_Container_'. $configType);
+        }
+        $file_exists = @include_once($configInfo[0]);
+        if ($file_exists) {
+            if (!class_exists($configInfo[1])) {
+                return PEAR::raiseError("Config::registerConfigType class '$configInfo[1]' not found in $configInfo[0]", null, PEAR_ERROR_RETURN);
+            }
+        } else {
+            return PEAR::raiseError("Config::registerConfigType file $configInfo[0] not found", null, PEAR_ERROR_RETURN);
+        }
+        $GLOBALS['CONFIG_TYPES'][strtolower($configType)] = $configInfo;
+        return true;
+    } // end func registerConfigType
+
+    /**
     * Returns the root container for this config object
     *
     * @access public
