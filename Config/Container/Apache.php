@@ -139,8 +139,8 @@ class Config_Container_Apache {
             case 'section':
                 if (!$obj->isRoot()) {
                     $string = $ident.'<'.$obj->name;
-                    if (count($obj->_attributes) > 0) {
-                        while (list(,$val) = each($obj->_attributes)) {
+                    if (count($obj->attributes) > 0) {
+                        while (list(,$val) = each($obj->attributes)) {
                             $string .= ' '.$val;
                         }
                     }
