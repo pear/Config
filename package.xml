@@ -22,20 +22,21 @@
     <maintainer>
       <user>ryansking</user>
       <name>Ryan King</name>
-      <email>ryansking@mac.com</email>
+      <email>ryansking@php.net</email>
       <role>lead</role>
     </maintainer>
   </maintainers>
   <license>PHP License</license>
   <release>
     <version>1.10.4</version>
-    <date>2004-11-22</date>
+    <date>2005-01-01</date>
     <state>stable</state> 
     <notes>
     Changelog:
         *Fixed bug #2742 which didn't trim variable names in Inicommented file
         *changed XML_Parser and XML_Util dependencies to optional, since they're only needed 
-        when parsing XML files (bug 2738)
+        when parsing XML files (bug #2738)
+        *added a new container for editing files of php constants, courtesy of philip ortel [me@phillipoertel.com] (beta)
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -47,6 +48,7 @@
           <file name="IniCommented.php"/>
           <file name="IniFile.php"/>
           <file name="PHPArray.php"/>
+          <file name="PHPConstants.php"/>
           <file name="XML.php"/>
         </dir>
       </dir>
@@ -55,10 +57,15 @@
         <file name="IniCommented.php"/>
         <file name="IniFromScratch.php"/>
       </dir>
-      <dir> name="tests" role="test">
+      <dir name="test" role="test">
         <file name="bug2742.phpt" role="test" />
         <file name="bug2742.ini" role="test" />
-      </dir>
+        <file name="bug2780.phpt" role="test" />
+        <file name="phpt_test.php.inc" role="test" />
+        <file name="bug3051.phpt" role="test" />
+        <file name="bug3051.xml" role="test" />
+        <file name="setup.php.inc" role="test" />
+    </dir>
     </filelist>
     <deps>
         <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
