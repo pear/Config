@@ -129,7 +129,6 @@ class Config_Container_xml extends Config_Container {
         //if feature KeyAttribute is set and the name is an attribute in the xml, take this as key for the array
         if ($this->feature["KeyAttribute"] && $element->get_attribute($this->feature["KeyAttribute"]))
         {
-            print "here";
             $element->{$this->tagname} = $element->get_attribute($this->feature["KeyAttribute"]);
         }
 
