@@ -153,7 +153,7 @@ class Config_Container_PHPArray {
     */
     function _getParentString(&$cont)
     {
-        $string = '['.$cont->name.']';
+        $string = "['".$cont->name."']";
         if (!$cont->parent->isRoot()) {
             $string = Config_Container_PHPArray::_getParentString($cont->parent).$string;
         }
