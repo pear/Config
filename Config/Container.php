@@ -62,7 +62,7 @@ class Config_Container {
     * Array of attributes for this item
     * @var  array
     */
-    var $attributes;
+    var $attributes = array();
 
     /**
     * Constructor
@@ -497,13 +497,40 @@ class Config_Container {
     } // end func setAttributes
 
     /**
+    * Set this item's attributes.
+    * @param  array    attributes        Array of attributes
+    * @return void
+    */
+    function updateAttributes($attributes)
+    {
+        if (is_array($attributes)) {
+            foreach ($attributes as $key => $value) {
+                $this->attributes[$key] = $value;
+            }
+        }
+    } // end func updateAttributes
+
+    /**
     * Get this item's attributes.
     * @return array    item's attributes
     */
     function getAttributes()
     {
         return $this->attributes;
-    } // end func getAttributes 
+    } // end func getAttributes
+    
+    /**
+    * Get one attribute value of this item
+    * @param  string   attribute        Attribute key
+    * @return mixed    item's attribute value
+    */
+    function getAttribute($attribute)
+    {
+        if (isset($this->attributes[$attribute])) {
+            return $this->attributes[$attribute];
+        }
+        return null;
+    } // end func getAttribute
 
     /**
     * Set a children directive content.
