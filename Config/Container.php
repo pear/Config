@@ -102,44 +102,11 @@ class Config_Container {
     * @param  object  $target     needed if you choose 'before' or 'after' for where
     * @return object  reference to new item or Pear_Error
     */
-    function &createItem($type, $item, $content, $attributes = null, $where = 'bottom', $target = null)
+    function &createItem($type, $name, $content, $attributes = null, $where = 'bottom', $target = null)
     {
-        if ($this->type != 'section') {
-            return PEAR::raiseError('Config_Container::createItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
-        }
-        if (is_null($target)) {
-            $target =& $this;
-        }
-        if (!is_object($target) || get_class($target) != 'config_container') {
-            return PEAR::raiseError('Target must be a Config_Container object in Config_Container::createItem.', null, PEAR_ERROR_RETURN);
-        }
-
-        switch ($where) {
-            case 'before':
-                $index = $target->getItemIndex();
-                break;
-            case 'after':
-                $index = $target->getItemIndex()+1;
-                break;
-            case 'top':
-                $index = 0;
-                break;
-            case 'bottom':
-                $index = -1;
-                break;
-            default:
-                return PEAR::raiseError('Use only top, bottom, before or after in Config_Container::createItem.', null, PEAR_ERROR_RETURN);
-        }
-        if (isset($index) && $index >= 0) {
-            array_splice($this->children, $index, 0, 'tmp');
-        } else {
-            $index = sizeof($this->children);
-        }
-        $itemObj =& new Config_Container($type, $item, $content, $attributes);
-        $this->children[$index] =& $itemObj;
-        $this->children[$index]->parent =& $this;
-
-        return $this->children[$index];
+        $item =& new Config_Container($type, $name, $content, $attributes);
+		$result =& $this->addItem($item, $where, $target);
+        return $result;
     } // end func &createItem
     
     /**
@@ -346,7 +313,6 @@ class Config_Container {
     * @return   mixed   Config_Container object, array of Config_Container objects or false on failure.
     * @access   public
     */
-  
     function &searchPath($args)
     {
         if ($this->type != 'section') {
@@ -664,14 +630,15 @@ class Config_Container {
     * If the container has attributes, it will use '@' and '#'
     * index is here because multiple directives can have the same name.
     *
+    * @param	bool	$useAttr		Whether to return the attributes too
     * @return array
     */
-    function toArray()
+    function toArray($useAttr = true)
     {
         $array[$this->name] = array();
         switch ($this->type) {
             case 'directive':
-                if (count($this->attributes) > 0) {
+                if ($useAttr && count($this->attributes) > 0) {
                     $array[$this->name]['#'] = $this->content;
                     $array[$this->name]['@'] = $this->attributes;
                 } else {
@@ -679,12 +646,12 @@ class Config_Container {
                 }
                 break;
             case 'section':
-                if (count($this->attributes) > 0) {
+                if ($useAttr && count($this->attributes) > 0) {
                     $array[$this->name]['@'] = $this->attributes;
                 }
                 if (count($this->children) > 0) {
                     for ($i = 0; $i < count($this->children); $i++) {
-                        $newArr = $this->children[$i]->toArray();
+                        $newArr = $this->children[$i]->toArray($useAttr);
                         if (!is_null($newArr)) {
                             foreach ($newArr as $key => $value) {
                                 if (isset($array[$this->name][$key])) {
