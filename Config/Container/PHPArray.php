@@ -114,6 +114,12 @@ class Config_Container_PHPArray {
             }
         }
         switch ($obj->type) {
+            case 'blank':
+                $string .= "\n";
+                break;
+            case 'comment':
+                $string .= '// '.$obj->content."\n";
+                break;
             case 'directive':
                 $string .= '$'.$options['name'];
                 $string .= Config_Container_PHPArray::_getParentString($obj);
