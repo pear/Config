@@ -51,9 +51,16 @@ class Config_Container_IniCommented {
             } elseif (preg_match('/^\s*$/', $line)) {
                 // a blank line
                 $currentSection->createBlank();
-            } elseif (preg_match('/^([a-zA-Z1-9_\-\.]*)\s*=(\s*(.*))$/', $line, $match)) {
+            } elseif (preg_match('/^\s*([a-zA-Z1-9_\-\.]*)\s*=\s*(.*)\s*$/', $line, $match)) {
                 // a directive
-                $currentSection->createDirective($match[1], $match[3]);
+                if (preg_match('/^([^\s]*)\s*;(.*?)$/', $match[2], $tmp)) {
+                    // check for comments
+                    $value = $tmp[1];
+                    $comment = $tmp[2]; // not used yet
+                } else {
+                    $value = $match[2];
+                }
+                $currentSection->createDirective($match[1], $value);
             } elseif (preg_match('/^\s*\[\s*(.*)\s*\]\s*$/', $line, $match)) {
                 // a section
                 $currentSection =& $this->container->createSection($match[1]);
