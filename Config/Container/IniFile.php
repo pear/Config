@@ -33,7 +33,7 @@ class Config_Container_IniFile {
     *
     * @access public
     * @param string $datasrc    path to the configuration file
-    * @return mixed    returns a PEAR_ERROR, if error occurs or false if ok
+    * @return mixed    returns a PEAR_ERROR, if error occurs or true if ok
     */
     function &parseDatasrc($datasrc)
     {
@@ -55,7 +55,7 @@ class Config_Container_IniFile {
                 $currentSection->createDirective($key, $value);
             }
         }
-        return false;
+        return true;
     } // end func parseDatasrc
 
     /**

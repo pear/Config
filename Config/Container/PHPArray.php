@@ -38,7 +38,7 @@ class Config_Container_PHPArray {
     *
     * @access public
     * @param string $datasrc    path to the configuration file
-    * @return mixed    returns a PEAR_ERROR, if error occurs or false if ok
+    * @return mixed    returns a PEAR_ERROR, if error occurs or true if ok
     */
     function &parseDatasrc($datasrc)
     {
@@ -59,7 +59,7 @@ class Config_Container_PHPArray {
         }
         $root =& $this->container;
         Config_Container_PHPArray::_parseArray($datasrc, $root);
-        return false;
+        return true;
     } // end func parseDatasrc
 
     /**
@@ -101,19 +101,19 @@ class Config_Container_PHPArray {
     * @access public
     * @return string
     */
-    function toString($configType = 'phparray')
+    function toString($configType = 'phparray', $options = array())
     {
         static $childrenCount;
 
         if (!isset($string)) {
             $string = '';
-            if (empty($this->parserOptions['name'])) {
-                $this->parserOptions['name'] = 'conf';
+            if (empty($options['name'])) {
+                $options['name'] = 'conf';
             }
         }
         switch ($this->type) {
             case 'directive':
-                $string .= '$'.$this->parserOptions['name'];
+                $string .= '$'.$options['name'];
                 $string .= Config_Container_PHPArray::_getParentString($this);
                 if ($this->parent->countChildren('directive', $this->name) > 1) {
                     // we need to take care of directive set more than once
@@ -134,7 +134,7 @@ class Config_Container_PHPArray {
             case 'section':
                 if (count($this->children) > 0) {
                     for ($i = 0; $i < count($this->children); $i++) {
-                        $string .= $this->children[$i]->toString($configType);
+                        $string .= $this->children[$i]->toString($configType, $options);
                     }
                 }
                 break;

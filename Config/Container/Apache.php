@@ -32,7 +32,7 @@ class Config_Container_Apache {
     *
     * @access public
     * @param string $datasrc    path to the configuration file
-    * @return mixed returns a PEAR_ERROR, if error occurs or false if ok
+    * @return mixed returns a PEAR_ERROR, if error occurs or true if ok
     */
     function &parseDatasrc($datasrc)
     {
@@ -83,7 +83,7 @@ class Config_Container_Apache {
                 return PEAR::raiseError("Syntax error in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
             }
         }
-        return false;
+        return true;
     } // end func parseDatasrc
 
     /**
