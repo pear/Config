@@ -1,10 +1,6 @@
 TODO List for Config
 --------------------
 
-- Use a flag to compare object references
-  This will fix the bug I have with finding index for comments or blank
-  elements. (ZE2)
-
 - Support comments for directives
   Example:
     myDirective = myValue ; My comment here
