@@ -693,7 +693,8 @@ class Config_Container {
         $className = $GLOBALS['CONFIG_TYPES'][$configType][1];
         include_once($includeFile);
 
-        if (in_array('writeDatasrc', get_class_methods($className))) {
+        $writeMethodName = (version_compare(phpversion(), '5', '<')) ? 'writedatasrc' : 'writeDatasrc';
+        if (in_array($writeMethodName, get_class_methods($className))) {
             $writer = new $className($options);
             return $writer->writeDatasrc($datasrc, $this);
         }
