@@ -120,7 +120,10 @@ class Config_Container_IniCommented {
     function _quoteAndCommaParser($text)
     {   
         $text = trim($text);
-        
+        if ($text == '') {
+            return array();
+        }
+
         // tokens
         $tokens['normal'] = array('"', ';', ',');
         $tokens['quote'] = array('"', '\\');
