@@ -1,4 +1,4 @@
-<?php
+    <?php
 //+----------------------------------------------------------------------+
 // | PHP version 4.0                                                     |
 //+----------------------------------------------------------------------+
@@ -41,7 +41,8 @@ class Config_Container_xml extends Config_Container {
     var $feature = array ("IncludeContent" => True,
         "MasterAttribute" => False,
         "IncludeMasterAttribute" => True,
-        "IncludeChildren" => True
+        "IncludeChildren" => True,
+        "KeyAttribute" => False      
     );
 
     var $tagname = "tagname";
@@ -61,7 +62,7 @@ class Config_Container_xml extends Config_Container {
     {
 
         $this -> datasrc = $datasrc ;
-        $this->setFeatures($feature,  array_merge($this->allowed_options, array('IncludeContent', 'MasterAttribute','IncludeMasterAttribute','IncludeChildren')));
+        $this->setFeatures($feature,  array_merge($this->allowed_options, array('IncludeContent', 'MasterAttribute','IncludeMasterAttribute','IncludeChildren','KeyAttribute')));
         if( file_exists( $datasrc ) )
         {
             //xmldocfile is broken in 4.0.7RC1
@@ -125,6 +126,13 @@ class Config_Container_xml extends Config_Container {
                        //this is only for the root element
                         $parentslash ="/";
         }
+        //if feature KeyAttribute is set and the name is an attribute in the xml, take this as key for the array
+        if ($this->feature["KeyAttribute"] && $element->get_attribute($this->feature["KeyAttribute"]))
+        {
+            print "here";
+            $element->{$this->tagname} = $element->get_attribute($this->feature["KeyAttribute"]);
+        }
+
 
         if ($this->feature["IncludeChildren"] )
         {
@@ -146,7 +154,7 @@ class Config_Container_xml extends Config_Container {
                 }
             }
          }
-
+            
         if (($this->feature["IncludeContent"]|| $this->feature["MasterAttribute"] == "content") && $element->content)
         {
                    
