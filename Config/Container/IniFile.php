@@ -91,7 +91,7 @@ function parseInput( $datasrc = "", $feature = array( "cc" => ";") )
                      $char = substr( $line, 0, 1) ;
 
                      // a comment?
-                     if( isset($this->feature["cc"]) && $char == $this -> feature["cc"] )
+                     if( isset($this->feature['cc']) && $char == $this->feature['cc'][0] )
                      {
                          $found = 0 ;
                      }
@@ -119,11 +119,18 @@ function parseInput( $datasrc = "", $feature = array( "cc" => ";") )
                              $value_found = substr( $value, 0, strpos( substr( $value, 1 ), '"' ) + 1) ;
                              $value_found = substr( $value_found, 1, strlen( $value_found) ) ;
                          }
+                         // checking for single quotes
+                         elseif ( "'" == substr( $value, 0, 1))
+                         {
+                             // value = all until next '
+                             $value_found = substr($value, 0, strpos(substr($value, 1 ), "'") + 1);
+                             $value_found = substr($value_found, 1, strlen($value_found));
+                         }
                          else
                          {
-                            // value = all until next space, eol or comment
-                            preg_match( "/([^\s".$this -> feature["cc"]."]*)[\s]*[".$this -> feature["cc"]."]*[\s]*[\S]*[\s]*/", trim( $value ), $match) ;
-                            $value_found = $match[1] ;
+                            // value = all until eol or comment
+                            preg_match( '/^([^' . preg_quote($this->feature['cc'][0], '/') . ']*)/', trim($value), $match);
+                            $value_found = trim($match[1]);
                          }
 
                          $key_found = trim( $key ) ;
