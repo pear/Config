@@ -249,14 +249,15 @@ class Config_Container {
     * Note that root is a section.
     * This method is not recursive and tries to keep the current structure.
     *
-    * @param  string    type    type of item: directive, section, comment, blank...
-    * @param  mixed     name    (optional)item name
-    * @param  mixed     content (optional)find item with this content
-    * @param  int       index   (optional)index of the item in the returned object list.
-    *                           If it is not set, will try to return the last item with this name.
+    * @param  string    type        type of item: directive, section, comment, blank...
+    * @param  mixed     name        (optional)item name
+    * @param  mixed     content     (optional)find item with this content
+    * @param  array     attributes  (optional)find item with attribute set to the given value
+    * @param  int       index       (optional)index of the item in the returned object list.
+    *                               If it is not set, will try to return the last item with this name.
     * @return mixed  reference to item found or false when not found
     */
-    function &getItem($type, $name = null, $content = null, $index = -1)
+    function &getItem($type, $name = null, $content = null, $attributes = null, $index = -1)
     {
         if ($this->type != 'section') {
             return PEAR::raiseError('Config_Container::getItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
@@ -268,14 +269,33 @@ class Config_Container {
         if (!is_null($content)) {
             $testFields[] = 'content';
         }
+        if (!is_null($attributes) && is_array($attributes)) {
+            $testFields[] = 'attributes';
+        }
+
         $itemsArr = array();
         $fieldsToMatch = count($testFields);
         for ($i = 0; $i < count($this->children); $i++) {
             $match = 0;
             reset($testFields);
             foreach($testFields as $field) {
-                if ($this->children[$i]->$field == ${$field}) {
-                    $match++;
+                if ($field != 'attributes') {
+                    if ($this->children[$i]->$field == ${$field}) {
+                        $match++;
+                    }
+                } else {
+                    // Look for attributes in array
+                    $attrToMatch = count($attributes);
+                    $attrMatch = 0;
+                    foreach ($attributes as $key => $value) {
+                        if (isset($this->children[$i]->attributes[$key]) &&
+                            $this->children[$i]->attributes[$key] == $value) {
+                            $attrMatch++;
+                        }
+                    }
+                    if ($attrMatch == $attrToMatch) {
+                        $match++;
+                    }
                 }
             }
             if ($match == $fieldsToMatch) {
