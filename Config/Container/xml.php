@@ -24,7 +24,7 @@ require_once( "Config/Container.php" ) ;
 *
 * This class implements the Config-API based on ConfigDefault
 *
-* @author      Christian Stocker <chregu@phant.ch>
+* @author      Christian Stocker <chregu@nomad.ch>
 * @access      public
 * @version     Config_xml.php, 2000/04/16
 * @package     Config
@@ -46,6 +46,8 @@ class Config_Container_xml extends Config_Container {
     );
 
     var $tagname = "tagname";
+    
+    var $allowed_options = array();
     /**
     * parses the input of the given data source
     *
@@ -99,7 +101,7 @@ class Config_Container_xml extends Config_Container {
 
         foreach($element->children() as $tag => $value)
         {
-            if (XML_ELEMENT_NODE == $value->type)
+            if (isset($value->type) && XML_ELEMENT_NODE == $value->type)
             {
                 //if feature KeyAttribute is set and the name is an attribute in the xml, take this as key for the array
                 if ($this->feature["KeyAttribute"] && $value->get_attribute($this->feature["KeyAttribute"]))
@@ -129,20 +131,23 @@ class Config_Container_xml extends Config_Container {
 
     function addAttributes($element,$parent="")
     {
+        $parentslash =""; //E_ALL fix
         if ($parent=="") {
                        //this is only for the root element
                         $parentslash ="/";
         }
 
 
-        if ($this->feature["IncludeChildren"] )
-        {
+        if ($this->feature["IncludeChildren"] ) {
             $this->data["$parent"."$parentslash"]["children"][] = $element->{$this->tagname};
 
         }
-        // PHP-4.0.7 has a different style for content.
-        if (!isset($element->content) )
-        {
+        //php-4.0.7 gets the content differently than 4.0.6 (the second one in the elseif)
+        //php 4.2 does it another way again, it has finally the method get_content
+        if (method_exists($element,"get_content")) {
+            $element->content = $element->get_content();
+        } elseif (!isset($element->content)) {
+            $element->content = ""; //E_ALL fix
             if (is_array($element->children()))
             {
                 $element->content ="";
