@@ -110,17 +110,19 @@ class Config_Container_GenericConf {
     */
     function toString(&$obj)
     {
+        $string = '';
         switch ($obj->type) {
             case 'blank':
                 $string = "\n";
                 break;
             case 'comment':
-                $string = $this->options['comment'].' '.$obj->content."\n";
+                $string = $this->options['comment'].$obj->content."\n";
                 break;
             case 'directive':
-                $string = $obj->name.$this->options['equals'].' '.$obj->content."\n";
+                $string = $obj->name.$this->options['equals'].$obj->content."\n";
                 break;
             case 'section':
+                // How to deal with sections ???
                 if (count($obj->children) > 0) {
                     for ($i = 0; $i < count($obj->children); $i++) {
                         $string .= $this->toString($obj->getChild($i));
