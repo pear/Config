@@ -22,11 +22,13 @@
   </maintainers>
  <license>PHP License</license>
   <release>
-    <version>1.8.1</version>
-    <date>2003-09-07</date>
+    <version>1.9</version>
+    <date>2003-09-21</date>
     <state>stable</state> 
     <notes>
-* Fix a bug in XML container related to cdata handler read by chunk, reported by Stephan Wentz
+* Added a new boolean option/parameter in XML, PHPArray and toArray() to set
+  whether attributes should be rendered.
+* Added comments rendering in XML.
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -53,6 +55,14 @@
     </deps>
   </release>
 <changelog>
+  <release>
+    <version>1.8.1</version>
+    <date>2003-09-07</date>
+    <state>stable</state> 
+    <notes>
+* Fix a bug in XML container related to cdata handler read by chunk, reported by Stephan Wentz
+    </notes>
+  </release>
   <release>
     <version>1.8</version>
     <date>2003-08-16</date>
