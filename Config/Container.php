@@ -507,7 +507,6 @@ class Config_Container {
     */
     function toString($configType = '')
     {
-        $string = '';
         $configType = strtolower($configType);
         if (!Config::isConfigTypeRegistered($configType)) {
             return PEAR::raiseError("Configuration type '$configType' is not registered in Config_Container::toString.", null, PEAR_ERROR_RETURN);
@@ -560,17 +559,33 @@ class Config_Container {
     
     /**
     * Writes the configuration to a file
-    * Must be overriden in case you don't use files.
-    * @param  string datasrc        path to the configuraton file
-    * @param  string configType     type of configuration
+    * 
+    * @param  mixed  datasrc        info on datasource such as path to the configuraton file
+    * @param  string configType     (optional)type of configuration
     * @access public
     * @return PEAR_ERROR or true
     */
-    function writeDatasrc($datasrc, $configType)
+    function writeDatasrc($datasrc, $configType = '')
     {
+        // Check for a writeDatasrc method in plugin
+        /* NOT YET FULLY IMPLEMENTED
+        $configType = strtolower($configType);
+        if (!Config::isConfigTypeRegistered($configType)) {
+            return PEAR::raiseError("Configuration type '$configType' is not registered in Config_Container::writeDatasrc.", null, PEAR_ERROR_RETURN);
+        }
+        $className = $GLOBALS['CONFIG_TYPES'][$configType][1];
+        $includeFile = $GLOBALS['CONFIG_TYPES'][$configType][0];
+        include_once($includeFile);
+
+        if (in_array('writeDatasrc', get_class_methods($className))) {
+            return eval("return $className::writeDatasrc('$configType');");
+        }
+        */
+
+        // Default behaviour
         $fp = @fopen($datasrc, 'w');
         if ($fp) {
-            $string = $this->toString();
+            $string = $this->toString($configType);
             $len = strlen($string);
             @flock($fp, LOCK_EX);
             @fwrite($fp, $string, $len);
