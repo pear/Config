@@ -17,7 +17,7 @@
 //
 // $Id$
 
-require_once('Config/Container.php');
+require_once('Config.php');
 
 /**
 * Config parser for PHP .ini files with comments
@@ -25,43 +25,43 @@ require_once('Config/Container.php');
 * @author      Bertrand Mansion <bmansion@mamasam.com>
 * @package     Config
 */
-class Config_Container_IniCommented extends Config_Container {
+class Config_Container_IniCommented {
 
     /**
     * Parses the data of the given configuration file
     *
     * @access public
     * @param string $datasrc    path to the configuration file
-    * @return mixed returns a PEAR_ERROR, if error occurs or the container itsef
+    * @return mixed returns a PEAR_ERROR, if error occurs or false if ok
     */
     function &parseDatasrc($datasrc)
     {
-        if (is_null($datasrc) || !file_exists($datasrc)) {
+        if (!file_exists($datasrc)) {
             return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);
         }
         $lines = file($datasrc);
         $n = 0;
         $lastline = '';
-        $currentSection =& $this;
+        $currentSection =& $this->container;
         foreach ($lines as $line) {
             $n++;
             if (preg_match('/^\s*;(.*?)\s*$/', $line, $match)) {
                 // a comment
-                $currentSection->addItem('comment', '', $match[1]);
+                $currentSection->createComment($match[1]);
             } elseif (preg_match('/^\s*$/', $line)) {
                 // a blank line
-                $currentSection->addItem('blank', '', '');
+                $currentSection->createBlank();
             } elseif (preg_match('/^([a-zA-Z1-9_\-\.]*)\s*=(\s*(.*))$/', $line, $match)) {
                 // a directive
-                $currentSection->addItem('directive', $match[1], $match[3]);
+                $currentSection->createDirective($match[1], $match[3]);
             } elseif (preg_match('/^\s*\[\s*(.*)\s*\]\s*$/', $line, $match)) {
                 // a section
-                $currentSection =& $this->addItem('section', $match[1], '');
+                $currentSection =& $this->container->createSection($match[1]);
             } else {
                 return PEAR::raiseError("Syntax error in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
             }
         }
-        return $this;
+        return false;
     } // end func parseDatasrc
 
     /**
@@ -69,7 +69,7 @@ class Config_Container_IniCommented extends Config_Container {
     * @access public
     * @return string
     */
-    function toString()
+    function toString($configType = 'inicommented')
     {
         if (!isset($string)) {
             $string = '';
@@ -85,12 +85,12 @@ class Config_Container_IniCommented extends Config_Container {
                 $string = $this->name.' = '.$this->content."\n";
                 break;
             case 'section':
-                if (!is_null($this->parent)) {
+                if (!$this->isRoot()) {
                     $string = '['.$this->name."]\n";
                 }
                 if (count($this->children) > 0) {
                     for ($i = 0; $i < count($this->children); $i++) {
-                        $string .= $this->children[$i]->toString();
+                        $string .= $this->children[$i]->toString($configType);
                     }
                 }
                 break;
