@@ -215,12 +215,7 @@ class Config_Container {
         if ($this->type != 'section') {
             return PEAR::raiseError('Config_Container::getItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
         }
-        $testFields = array();
-        if ($type == '') {
-            return PEAR::raiseError('You must specify an existing type in Config_Container::getItem.', null, PEAR_ERROR_RETURN);
-        } else {
-            $testFields[] = 'type';
-        }
+        $testFields[] = 'type';
         if (!is_null($name)) {
             $testFields[] = 'name';
         }
@@ -255,7 +250,51 @@ class Config_Container {
             }
         }
     } // end func &getItem
-    
+
+    /**
+    * Returns how many children this container has
+    *
+    * @param  string    type    (optional)type of children counted
+    * @param  string    type    (optional)name of children counted
+    * @return int  number of children found
+    */
+    function countChildren($type = null, $name = null)
+    {
+        if ($this->type != 'section') {
+            return PEAR::raiseError('Config_Container::getChildrenNum must be called on a section type object.', null, PEAR_ERROR_RETURN);
+        }
+        if (is_null($type) && is_null($name)) {
+            return count($this->children);
+        }
+        $count = 0;
+        if (isset($name) && isset($type)) {
+            for ($i = 0; $i < count($this->children); $i++) {
+                if ($this->children[$i]->name == $name && 
+                    $this->children[$i]->type == $type) {
+                    $count++;
+                }
+            }
+            return $count;
+        }
+        if (isset($type)) {
+            for ($i = 0; $i < count($this->children); $i++) {
+                if ($this->children[$i]->type == $type) {
+                    $count++;
+                }
+            }
+            return $count;
+        }
+        if (isset($name)) {
+            // Some directives can have the same name
+            for ($i = 0; $i < count($this->children); $i++) {
+                if ($this->children[$i]->name == $name) {
+                    $count++;
+                }
+            }
+            return $count;
+        }
+    } // end func &countChildren
+
     /**
     * Inserts an item to a specified position.
     * The position is relative to a target object if it is defined.
