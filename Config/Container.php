@@ -135,7 +135,7 @@ class Config_Container {
             $this->children[$index]->parent =& $this;
             return true;
         } else {
-            return PEAR::raiseError('Child must be a Config_Container object for Config_Container::addItem.', null, PEAR_ERROR_RETURN);
+            return PEAR::raiseError('Added item must be a Config_Container object for Config_Container::addItem.', null, PEAR_ERROR_RETURN);
         }
     } // end func addItem
 
@@ -296,69 +296,6 @@ class Config_Container {
     } // end func &countChildren
 
     /**
-    * Inserts an item to a specified position.
-    * The position is relative to a target object if it is defined.
-    * Example:
-    * $obj->insertItem('section', 'new section', '', 'top');
-    * $obj->insertItem('comment', 'A comment line', 'before', $servertype);
-    *
-    * This method can only be called on an object of type 'section'.
-    * This method is not recursive and tries to keep the current structure.
-    *
-    * @param  string    type    type of item: directive, section, comment, blank...
-    * @param  mixed     item    item name or item object
-    * @param  string    content (optional)item content
-    * @param  string    where   (optional)position: top, bottom, before or after.
-    * @param  object    target  (optional)object to insert before or after.
-    * @return mixed  reference to inserted item or PEAR_Error
-    */
-    function &insertItem($type, $item, $content = '', $where = 'bottom', $target = null)
-    {
-        if ($this->type != 'section') {
-            return PEAR::raiseError('Config_Container::insertItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
-        }
-        if (is_null($target)) {
-            $target =& $this;
-        }
-        if (!is_object($target)) {
-            return PEAR::raiseError('Target must be an object in Config_Container::insertItem.', null, PEAR_ERROR_RETURN);
-        }
-        if (!is_a($target, 'Config_Container')) {
-            return PEAR::raiseError('Target must be an Config_Container object in Config_Container::insertItem.', null, PEAR_ERROR_RETURN);
-        }
-        switch ($where) {
-            case 'before':
-                $index = $target->getItemIndex();
-                break;
-            case 'after':
-                $index = $target->getItemIndex()+1;
-                break;
-            case 'top':
-                $index = 0;
-                break;
-            case 'bottom':
-                $index = -1;
-                break;
-            default:
-                return PEAR::raiseError('Use only top, bottom, before or after in Config_Container::insertItem.', null, PEAR_ERROR_RETURN);
-        }
-        if (isset($index) && $index >= 0) {
-            array_splice($this->children, $index, 0, 'tmp');
-            if (is_object($item) && is_a($item, 'config_container')) {
-                $this->children[$index] =& $item;
-            } elseif (is_string($item)) {
-                $currentContainer = get_class($this);
-                $itemObj =& new $currentContainer($type, $item, $content);
-                $this->children[$index] =& $itemObj;
-                $this->children[$index]->parent =& $this; 
-            }
-            return $this->children[$index];
-        } else {
-            return $this->createItem($type, $item, $content);
-        }
-    } // end func &insertItem
-
-    /**
     * Deletes an item (section, directive, comment...) from the current object
     * TODO: recursive remove in sub-sections
     * @return mixed  true if object was removed, false if not, or PEAR_Error if root
@@ -386,6 +323,7 @@ class Config_Container {
             // I couldn't think of a better way to compare object references
             // so I compare object contents for now.
             // Maybe I should use an ID or a flag ?
+            // This will be fixed in Zend Engine 2
             $pchildren =& $this->parent->children;
             for ($i = 0; $i < count($pchildren); $i++) {
                 if ($pchildren[$i]->name == $this->name &&
@@ -418,7 +356,7 @@ class Config_Container {
 
     /**
     * Get this item's name.
-    * @return string    item's type
+    * @return string    item's name
     */
     function getName()
     {
@@ -433,36 +371,10 @@ class Config_Container {
     {
         $this->content = $content;
     } // end func setContent
-
-    /**
-    * Set a children directive content.
-    * This is an helper method calling getItem and insertItem or setContent for you.
-    * If the directive does not exist, it will be created at the bottom.
-    *
-    * @param  string    name    Name of the directive to look for
-    * @param  mixed     content New content, a string or a container object
-    * @param  int       index   Index of the directive to set,
-    *                           in case there are more than one directive
-    *                           with the same name
-    * @return object    newly set directive
-    */
-    function &setDirective($name, $content, $index = -1)
-    {
-        $item =& $this->getItem('directive', $name, null, $index);
-        if (PEAR::isError($item)) {
-            // Directive does not exist, will create one
-            unset($item);
-            $item =& addItem('directive', $name, $content);
-        } else {
-            // Change existing directive value
-            $item->setContent($content);
-        }
-        return $item;
-    } // end func setDirective
-
+    
     /**
     * Get this item's content.
-    * @return mixed item's value
+    * @return string    item's content
     */
     function getContent()
     {
@@ -486,6 +398,32 @@ class Config_Container {
     {
         return $this->type;
     } // end func getType
+
+    /**
+    * Set a children directive content.
+    * This is an helper method calling getItem and addItem or setContent for you.
+    * If the directive does not exist, it will be created at the bottom.
+    *
+    * @param  string    name    Name of the directive to look for
+    * @param  mixed     content New content, a string or a container object
+    * @param  int       index   Index of the directive to set,
+    *                           in case there are more than one directive
+    *                           with the same name
+    * @return object    newly set directive
+    */
+    function &setDirective($name, $content, $index = -1)
+    {
+        $item =& $this->getItem('directive', $name, null, $index);
+        if (PEAR::isError($item)) {
+            // Directive does not exist, will create one
+            unset($item);
+            $item =& addItem('directive', $name, $content);
+        } else {
+            // Change existing directive value
+            $item->setContent($content);
+        }
+        return $item;
+    } // end func setDirective
 
     /**
     * Is this item root, in a config container object
