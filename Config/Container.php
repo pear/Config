@@ -17,7 +17,7 @@
 //
 // $Id$
 
-require_once('Config.php');
+require_once 'Config.php';
 
 /**
 * Interface for Config containers
@@ -298,12 +298,16 @@ class Config_Container {
     } // end func &getItem
 
     /**
-    * Finds a node using XPATH like format:
+    * Finds a node using XPATH like format.
     * 
-    * search format = array ( item,item,item,item)
-    * item = 'string' .. will match the <string of the xml element
-    * item = array('string',array('name'=>'xyz'))
-    *       .. will match <string name="xyz">
+    * The search format is an array:
+    * array(item1, item2, item3, ...)
+    *
+    * Each item can be defined as the following:
+    * item = 'string' : will match the container named 'string'
+    * item = array('string', array('name' => 'xyz'))
+    * will match the container name 'string' whose attribute name is equal to "xyz"
+    * For example : <string name="xyz">
     * 
     * @param    mixed   Search path and attributes
     * 
@@ -336,6 +340,51 @@ class Config_Container {
         }
         return $match;
     } // end func &searchPath
+
+    /**
+    * Return a child directive's content.
+    * 
+    * This method can use two different search approach, depending on
+    * the parameter it is given. If the parameter is an array, it will use
+    * the {@link Config_Container::searchPath()} method. If it is a string, 
+    * it will use the {@link Config_Container::getItem()} method.
+    *
+    * Example:
+    * <code>
+    * require_once 'Config.php';
+    * $ini = new Config();
+    * $conf =& $ini->parseConfig('/path/to/config.ini', 'inicommented');
+    *
+    * // Will return the value found at :
+    * // [Database]
+    * // host=localhost
+    * echo $conf->directiveContent(array('Database', 'host')));
+    *
+    * // Will return the value found at :
+    * // date="dec-2004"
+    * echo $conf->directiveContent('date');
+    *
+    * </code>
+    *
+    * @param    mixed   Search path and attributes or a directive name
+    * @param    int     Index of the item in the returned directive list.
+    *                   Eventually used if args is a string.
+    * 
+    * @return   mixed   Content of directive or false if not found.
+    * @access   public
+    */
+    function directiveContent($args, $index = -1)
+    {
+        if (is_array($args)) {
+            $item =& $this->searchPath($args);
+        } else {
+            $item =& $this->getItem('directive', $args, null, null, $index);
+        }
+        if ($item) {
+            return $item->getContent();
+        }
+        return false;
+    } // end func getDirectiveContent
 
     /**
     * Returns how many children this container has
