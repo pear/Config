@@ -17,8 +17,6 @@
 //
 // $Id$
 
-require_once('Config.php');
-
 /**
 * Config parser for PHP .ini files with comments
 *
@@ -80,10 +78,18 @@ class Config_Container_IniCommented {
                 } else {
                     $value = $match[2];
                 }
-                $currentSection->createDirective($match[1], $value);
+                // try to split the value if comma found
+                $values = preg_split('/\s*,\s+/', $value);
+                if (count($values) > 1) {
+                    foreach ($value as $k => $v) {
+                        $currentSection->createDirective($match[1], $v);
+                    }
+                } else {
+                    $currentSection->createDirective($match[1], $value);
+                }
             } elseif (preg_match('/^\s*\[\s*(.*)\s*\]\s*$/', $line, $match)) {
                 // a section
-                $currentSection =& $this->container->createSection($match[1]);
+                $currentSection =& $currentSection->createSection($match[1]);
             } else {
                 return PEAR::raiseError("Syntax error in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
             }
@@ -99,6 +105,8 @@ class Config_Container_IniCommented {
     */
     function toString(&$obj)
     {
+        static $childrenCount, $commaString;
+
         if (!isset($string)) {
             $string = '';
         }
@@ -110,7 +118,38 @@ class Config_Container_IniCommented {
                 $string = ';'.$obj->content."\n";
                 break;
             case 'directive':
-                $string = $obj->name.'='.$obj->content."\n";
+                $count = $obj->parent->countChildren('directive', $obj->name);
+                $content = $obj->content;
+                if ($content === false) {
+                    $content = '0';
+                } elseif ($content === true) {
+                    $content = '1';
+                } elseif ((strlen(trim($content)) < strlen($content) ||
+                          strpos($content, ',') !== false ||
+                          strpos($content, ';') !== false) &&
+                          strpos($content, '"') === false) {
+                    $content = '"'.$content.'"';          
+                }
+
+                if ($count > 1) {
+                    // multiple values for a directive are separated by a comma
+                    if (isset($childrenCount[$obj->name])) {
+                        $childrenCount[$obj->name]++;
+                    } else {
+                        $childrenCount[$obj->name] = 0;
+                        $commaString[$obj->name] = $obj->name.'=';
+                    }
+                    if ($childrenCount[$obj->name] == $count-1) {
+                        // Clean the static for future calls to toString
+                        $string .= $commaString[$obj->name].$content."\n";
+                        unset($childrenCount[$obj->name]);
+                        unset($commaString[$obj->name]);
+                    } else {
+                        $commaString[$obj->name] .= $content.', ';
+                    }
+                } else {
+                    $string = $obj->name.'='.$content."\n";
+                }
                 break;
             case 'section':
                 if (!$obj->isRoot()) {
