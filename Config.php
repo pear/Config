@@ -12,333 +12,121 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Authors: Alexander Merz <alexander.merz@t-online.de>                 |
-// |          Christian Stocker <chregu@phant.ch>                         |
+// | Author: Bertrand Mansion <bmansion@mamasam.com>                      |
 // +----------------------------------------------------------------------+
 //
 // $Id$
 
-require_once( "PEAR.php") ;
+require_once('PEAR.php');
+
+$GLOBALS['CONFIG_CONTAINERS'] = 
+        array(
+            'apache'        =>array('Config/Container/Apache.php','Config_Container_Apache'),
+            'genericconf'   =>array('Config/Container/GenericConf.php','Config_Container_GenericConf'),
+            'inifile'       =>array('Config/Container/IniFile.php','Config_Container_IniFile'),
+            'inicommented'  =>array('Config/Container/IniCommented.php','Config_Container_IniCommented'),
+            'phparray'      =>array('Config/Container/PHPArray.php','Config_Container_PHPArray')
+        );
 
 /**
-* Partly implementation of the Config-Interface-API
+* Config
 *
-* This class implements a part of the API for working on configuration data
-* ConfigDefault implements getValues(), getBlocks(), getValue(), setValue()
-* The data is internally saved in a nested array.
+* This class allows for parsing and editing of configuration datasources.
+* Do not use this class only to read datasources because of the overhead
+* it creates to keep track of the configuration structure.
 *
-* Example:
-*   include("Config.php");
-*   $i = new Config("IniFile");
-*   $i -> parseInput( "yourfile.ini");
-*   $ret = $i->getValues('/section');
-*
-*
-* @author      Alexander Merz <alexander.merz@t-online.de>
-* @access      public
-* @version     $Id$
-* @package     Config
+* @author   Bertrand Mansion <bmansion@mamasam.com>
+* @credit   Alexander Merz <alexander.merz@t-online.de>
+* @credit   Christian Stocker <chregu@phant.ch>
+* @package  Config
 */
-
-class Config  {
+class Config {
 
     /**
-    * contains the data source given by parseInput
-    * @var string
+    * Datasource
+    * Can be a file url, a dsn, an object...
+    * @var mixed
     */
-    var $datasrc ;
+    var $datasrc;
 
     /**
-    * contains the internal data structure
-    * @var array
+    * Container object
+    * @var object
     */
-    var $data = array() ;
-
-	/**
-	*	Constructor
-	*
-	*	requires the type of the data container, if the container needs
-	*	special parameters during creation, set them with $storage_options
-	*
-	*	@access public
-	*	@param	string	$storage_driver 	type of container
-	*	@param	string	$storage_options	parameter for container constructor
-	*/
-    function Config($storage_driver,$storage_options = "")
-    {
-
-        $storage_class = 'Config_Container_' . $storage_driver;
-        $storage_classfile = 'Config/Container/' . $storage_driver . '.php';
-
-        include_once $storage_classfile;
-        $this->container = new $storage_class($storage_options);
-    } // end func Config() 
-
-
+    var $container;
 
     /**
-    * returns all key-value-pairs of the given block
+    * Constructor
+    * Initializes a container and returns its root element.
     *
-    * If the block not exists, a PEAR_Error will returned, else
-    * a hash: $array["key"] = value
+    * Requires the type of data container. If the container needs
+    * special parameters upon initialization, set them in $options.
+    * The format and required content of object 'datasrc' depend on the
+    * chosen container.
     *
     * @access public
-    * @param string $block    block path
-    * @return array				returns a hash containing all values, but a PEAR_Error if fails
+    * @param    string  $container  (optional)Container
+    * @param    array   $options    (optional)Array of options for the container
+    * @return   mixed   PEAR_Error on error or container root element
     */
-
-    function getValues( $block = "/")
+    function Config($container, $options = null)
     {
-        if( !empty( $this -> data ) )
-        {
-            // if leading slash was forgotten...
-            if( "/" != substr( $block, 0, 1) )
-            {
-                $block = "/".$block ;
-            }
-            if( isset( $this -> data[ $block ] ) )
-            {
-                if( is_array( $this -> data[ $block ] ) )
-                {
-                    $ret = $this -> data[ $block ] ;
-                }
-                else
-                {
-                    $ret = false ;
-                }
-            }
-            else
-            {
-                $ret = new PEAR_Error("Block path '".$block."' doesn't exists! Request couldn't be answered.", 12, PEAR_ERROR_RETURN, null, null );
-            }
+        $container = strtolower($container);
+        if (!Config::isContainerRegistered($container)) {
+            return PEAR::raiseError("Container '$container' is not registered in Config::Config.", null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
         }
-        else
-        {
-            $ret = new PEAR_Error("No internal data! Request couldn't be answered.", 11, PEAR_ERROR_RETURN, null, null );
+        $className = $GLOBALS['CONFIG_CONTAINERS'][$container][1];
+        $includeFile = $GLOBALS['CONFIG_CONTAINERS'][$container][0];
+        include_once ($includeFile);
+        $obj = new stdclass;
+        $this->container =& new $className('section', 'root', '', $obj);
+        if (is_array($options)) {
+            $this->container->setOptions($options);
         }
-
-        return $ret ;
-    } // end func getValues
+        return $this->container;
+    } // end constructor
 
     /**
-    * returns all blocks of the given block
-    *
-    * If the block not exists, a PEAR_Error will returned, else
-    * a array containing all child blocks
-    *
+    * Returns true if container is registered
     * @access public
-    * @param string $block    block path
-    * @return array				returns a array containing all values, or a PEAR_Error, if fails
+    * @param    string  $container  type of container
+    * @return   bool
     */
-
-    function getBlocks( $block = "/")
+    function isContainerRegistered($container)
     {
-        if( !empty( $this -> data ) )
-        {
-            // if leading slash was forgotten...
-            if( "/" != substr( $block, 0, 1) )
-            {
-                $block = "/".$block ;
-            }
-            $ret = array() ;
-            foreach( $this -> data as $key => $value)
-            {
-                $key = $key."/" ;
-                if( $block == substr( $key, 0, strlen( $block ) ) )
-                {
-                    array_push ( $ret, trim( substr( $key, strlen( $block ), strpos( substr( $key, strlen( $block ) ), "/" ) ) ) ) ;
-                }
-            }
-        }
-        else
-        {
-            $ret = new PEAR_Error("No internal data! Request couldn't be answered.", 21, PEAR_ERROR_RETURN, null, null );
-        }
-
-        return $ret ;
-    } // end func getBlocks
+        return in_array($container, array_keys($GLOBALS['CONFIG_CONTAINERS']));
+    } // end func isContainerRegistered
 
     /**
-    * sets the value of the key of the given block
-    *
-    * If the block or the key not exists, both will be created.
-    * The value will be returned.
-    *
+    * Parses the datasource contents
+    * @param mixed  $datasrc  Datasource to work with
     * @access public
-    * @param string $block    block path
-    * @param string $key      key to set
-    * @param string $value    value for the key
-	* @return mixed				type depends on $value
-	* @see getValue()
+    * @return mixed PEAR_Error on error or Config_Container object
     */
-
-    function setValue( $block = "/", $key, $value = "")
+    function &parseConfig($datasrc)
     {
-        // if leading slash was forgotten...
-        if( "/" != substr( $block, 0, 1) )
-        {
-            $block = "/".$block ;
-        }
-        // check for existing block and key
-        if( !isset ( $this -> data[ $block ] ) )
-        {
-            $this->data[ $block ] = array() ;
-        }
-        $kvp = $this -> data[ $block ] ;
-        $kvp[ $key ] = $value ;
-        $this -> data[ $block ] = $kvp ;
-        $ret = $value ;
-
-        return $ret ;
-    } // end func setValue
+        $this->datasrc = $datasrc;
+        return $this->container->parseDatasrc($datasrc);
+    } // end func &parseConfig
 
     /**
-    * return the value of the key of the given block
-    *
-    * If the block or the key not exists, both will be created and
-    * sets on the default.
-    * The value or if not exists the default will be returned.
-    *
+    * Writes the container contents to datasource
+    * @param mixed  $datasrc  (optional)Datasource to write to
     * @access public
-    * @param string $block    block path
-    * @param string $key      key to set
-    * @param string $default  default value for the key
-    * @return mixed			   type depends of the value
+    * @return mixed PEAR_Error on error or true if ok
     */
-
-    function getValue( $block = "/", $key, $default = "")
+    function writeConfig($datasrc = null)
     {
-        // if leading slash was forgotten...
-        if( "/" != substr( $block, 0, 1) )
-        {
-            $block = "/".$block ;
+        if (!is_null($datasrc)) {
+            $this->datasrc = $datasrc;
         }
-        // check for existing block and key
-        $values = $this -> getValues( $block ) ;
-        if( PEAR::isError($values) or !in_array( $key, array_keys( $values) )  )
-        {
-            $this -> setValue( $block, $key, $default) ;
-            $values = $this -> getValues( $block ) ;
+        if (is_null($this->datasrc)) {
+            return PEAR::raiseError("No datasource given for Config::writeConfig.", null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
         }
-        $ret = $values[ $key ] ;
-
-        return $ret ;
-    } // end func getValue
-
-    /**
-    * parses the input of the given data source
-    *
-    * The format and required content of $datasrc depends of the implementation.
-    * If the implemention requires additional data, for example a comment char, it have to
-    * deliver in a hash as second argument.
-    *
-    * @access public
-    * @param string $files  	Name of the datasource to parse
-    * @param array $feature   	Contains a hash of features depending on the implentation
-    * @return mixed				returns a PEAR_ERROR, if error occurs
-    */
-
-    function parseInput ($files ,$feature = Null )
-    {
-        if (is_array($files)) {
-            $totaldata = array();
-            foreach ($files as $datasrc)
-            {
-                if (is_null($feature))
-                    $error = $this->container->parseInput($datasrc);
-                else 
-                    $error = $this->container->parseInput($datasrc,$feature);        
-                
-                if (Pear::isError($error))
-                   return $error;
-         
-                $totaldata = $this->array_merge_clobber($totaldata,$this->container->data);
-                unset ($this->data);
-                $this->datasrc = $datasrc;
-            }
-            $this->data = $totaldata;
+        if (!$this->container->writeDatasrc($this->datasrc)) {
+            return PEAR::raiseError("Unable to write to datasource in Config::writeConfig.", null, PEAR_ERROR_TRIGGER, E_USER_WARNING);
         }
-        else
-        {
-            if (is_null($feature))
-                $error = $this->container->parseInput($files);
-            else 
-                $error = $this->container->parseInput($files,$feature);                    
-            
-            if (Pear::isError($error))
-                 return $error;
-
-            $this->data = $this->container->data;
-            $this->datasrc = $files;
-        }
-
-    } // end func parseInput()
-    
-    
-    /**
-    * writes the data to the given data source or if not given to the datasource of parseInput
-    * If $datasrc was a array, the last file will used.
-    *
-    * See parseInput for $datasrc. If the second argument $preserve is true, the implementation
-    * should try to preserve the original format and data of the source except changed or added values.
-    * This mean to preserve for example comments in files or so.
-    *
-    * @access public
-    * @param string $datasrc    Name of the datasource to parse
-    * @param boolean    $preserve   preserving behavior
-    * @return mixed					returns PEAR_Error, if fails
-    * @see parseInput()
-    */
-    function writeInput( $datasrc = "", $preserve = True )
-    {
-        if( empty( $datasrc ) ) {
-            $datasrc = $this -> datasrc ;
-        }
-        $this->container->data = $this->data;
-        return $this->container->writeInput($datasrc,$preserve);
-    }
-
-
-
-        //taken from kc@hireability.com at http://www.php.net/manual/en/function.array-merge-recursive.php
-    /**
-    * There seemed to be no built in function that would merge two arrays recursively and clobber
-    *   any existing key/value pairs. Array_Merge() is not recursive, and array_merge_recursive
-    *   seemed to give unsatisfactory results... it would append duplicate key/values.
-    *
-    *   So here's a cross between array_merge and array_merge_recursive
-    *
-    * @param    array first array to be merged
-    * @param    array second array to be merged
-    * @return   array merged array
-    * @acces private
-    */
-    function array_merge_clobber($a1,$a2)
-    {
-        if(!is_array($a1) || !is_array($a2)) return false;
-        $newarray = $a1;
-        while (list($key, $val) = each($a2))
-        {
-            if (isset($newarray[$key]) && is_array($val) && is_array($newarray[$key]))
-            {
-                $newarray[$key] = $this->array_merge_clobber($newarray[$key], $val);
-            }
-            else
-            {
-                $newarray[$key] = $val;
-            }
-        }
-        return $newarray;
-    }
-
-
-
-}; // end class Config
-
-
-
-
-
-
-
+        return true;
+    } // end func writeConfig
+} // end class Config
 ?>

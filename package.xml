@@ -1,53 +1,62 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE package SYSTEM "../package.dtd">
-<!-- do not use the "Type" attribute here, that one is only for
-     generated package.xml files -->
 <package version="1.0">
   <name>Config</name>
-  <description>Class for reading and writing Config-"files"</description>
-  <summary>Class for reading and writing Config-"files"</summary>
+  <summary>The Config package provides methods for editing configuration datasources</summary>
+  <description>The Config package provides methods for editing configuration datasources.
+It does so in an object oriented manner, defining each and every items found in the config datasource as a Config_Container of various types (comments, sections, directives, blanks, ...).
+Items can then be edited, added, removed, inserted.
+This package is not intended for reading configuration data only, but for editing them. If you only want to read your configuration data, use functions like parse_ini_file() and the like instead, they are much faster.</description>
   <maintainers>
     <maintainer>
-      <user>alexmerz</user>
-      <name>Alexander Merz</name>
-      <email>alexmerz@php.net</email>
+      <user>mansion</user>
+      <name>Bertrand Mansion</name>
+      <email>bmansion@mamasam.com</email>
 	  <role>lead</role>
     </maintainer>
-	 <maintainer>
-    	<user>chregu</user>
-      	<name>Christian Stocker</name>
-      	<email>chregu@php.net</email>
-    	<role>developer</role>
-    </maintainer>	
   </maintainers>
  <license>PHP License</license>  
   <release>
-    <version>0.3.1</version>
-    <date>2002-06-25</date>
-    <state>stable</state>	
+    <version>1.0</version>
+    <date>2002-10-05</date>
+    <state>beta</state>	
     <notes>
-	Documentation is in README.Config.
-	0.3.1
-	-  E_ALL fixes
+Complete rewrite : API has changed.
+The class now uses a tree structure of container objects.
+As a consequence, backward compatibility is not provided !!!
+Look at the Apache.php and IniCommented.php scripts in 'docs' for usage examples.
+Some containers are still missing : XML and DB.
     </notes>
     <filelist>
       <dir name="/">
         <file role="php">Config.php</file>
-        <file role="doc">README.Config</file>
         <dir name="Config">
-	  <file role="php">Container.php</file>
-	  <dir name="Container">
-	    <file role="php">db.php</file>
-	    <file role="php">IniFile.php</file>
-	    <file role="php">phpIniFile.php</file>	    
-	    <file role="php">wddx.php</file>	    	    
-	    <file role="php">xml.php</file>
-	  </dir>
+	      <file role="php">Container.php</file>
+	      <dir name="Container">
+	        <file role="php">Apache.php</file>
+	        <file role="php">GenericConf.php</file>
+	        <file role="php">IniCommented.php</file>
+	        <file role="php">IniFile.php</file>
+	        <file role="php">PHPArray.php</file>
+	      </dir>
+        </dir>
+        <dir name="docs" role="doc">
+          <file>Apache.php</file>
+          <file>IniCommented.php</file>
+          <file>TODO</file>
         </dir>
       </dir>
     </filelist>
   </release>
 <changelog>
+	<release>
+    	<version>0.3.1</version>
+		<notes>
+Documentation is in README.Config.
+0.3.1
+-  E_ALL fixes
+		</notes>
+	</release>
 	<release>
     	<version>0.3</version>
 		<notes>
@@ -75,6 +84,5 @@
 (thanks to Markus Fischer for the reports)		
 		</notes>
 	</release>
-
 </changelog>		
 </package>
