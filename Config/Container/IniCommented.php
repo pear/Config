@@ -79,10 +79,14 @@ class Config_Container_IniCommented {
                     $value = $match[2];
                 }
                 // try to split the value if comma found
-                $values = preg_split('/\s*,\s+/', $value);
-                if (count($values) > 1) {
-                    foreach ($value as $k => $v) {
-                        $currentSection->createDirective($match[1], $v);
+                if (strpos($value, '"') === false) {
+                    $values = preg_split('/\s*,\s+/', $value);
+                    if (count($values) > 1) {
+                        foreach ($value as $k => $v) {
+                            $currentSection->createDirective($match[1], $v);
+                        }
+                    } else {
+                        $currentSection->createDirective($match[1], $value);
                     }
                 } else {
                     $currentSection->createDirective($match[1], $value);
