@@ -59,8 +59,8 @@
       </dir>
     </filelist>
     <deps>
-        <dep type="pkg" rel="has">XML_Parser</dep>
-        <dep type="pkg" rel="has">XML_Util</dep>
+        <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
+        <dep type="pkg" rel="has" optional="yes">XML_Util</dep>
     </deps>
   </release>
 <changelog>
