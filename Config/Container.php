@@ -18,6 +18,7 @@
 // $Id$
 
 require_once('Config.php');
+require_once('HTML/Common.php');
 
 /**
 * Interface for Config containers
@@ -25,7 +26,7 @@ require_once('Config.php');
 * @author   Bertrand Mansion <bmansion@mamasam.com>
 * @package  Config
 */
-class Config_Container {
+class Config_Container extends HTML_Common {
 
     /**
     * Container object type
@@ -61,26 +62,32 @@ class Config_Container {
     /**
     * Constructor
     *
-    * @param  string  type      (optional)Type of container object
-    * @param  string  name      (optional)Name of container object
-    * @param  string  content   (optional)Content of container object
+    * @param  string  type       (optional)Type of container object
+    * @param  string  name       (optional)Name of container object
+    * @param  string  content    (optional)Content of container object
+    * @param  mixed   attributes (optional)String or array of attributes for container object
     */
-    function Config_Container($type = '', $name = '', $content = '')
+    function &Config_Container($type = '', $name = '', $content = '', $attributes = null)
     {
+        HTML_Common::HTML_Common($attributes);
         $this->type       = $type;
         $this->name       = $name;
         $this->content    = $content;
         $this->parent     = null;
+        return $this;
     } // end constructor
 
     /**
     * Create a child for this item.
-    * @param  string  type      type of item: directive, section, comment, blank...
-    * @param  mixed   item      item name
-    * @param  string  content   item content
+    * @param  string  type       type of item: directive, section, comment, blank...
+    * @param  mixed   item       item name
+    * @param  string  content    item content
+    * @param  array   attributes item attributes
+    * @param  string  where      choose a position 'bottom', 'top', 'after', 'before'
+    * @param  object  target     needed if you choose 'before' or 'after' for where
     * @return object  reference to new item or Pear_Error
     */
-    function &createItem($type, $item, $content, $where = 'bottom', $target = null)
+    function &createItem($type, $item, $content, $attributes = null, $where = 'bottom', $target = null)
     {
         if ($this->type != 'section') {
             return PEAR::raiseError('Config_Container::createItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
@@ -88,7 +95,7 @@ class Config_Container {
         if (is_null($target)) {
             $target =& $this;
         }
-        if (!is_object($target) || !is_a($target, 'Config_Container')) {
+        if (!is_object($target) || get_class($target) != 'config_container') {
             return PEAR::raiseError('Target must be a Config_Container object in Config_Container::createItem.', null, PEAR_ERROR_RETURN);
         }
 
@@ -113,8 +120,7 @@ class Config_Container {
         } else {
             $index = sizeof($this->children);
         }
-        $currentContainer = get_class($this);
-        $itemObj =& new $currentContainer($type, $item, $content);
+        $itemObj =& new Config_Container($type, $item, $content, $attributes);
         $this->children[$index] =& $itemObj;
         $this->children[$index]->parent =& $this;
 
@@ -124,18 +130,50 @@ class Config_Container {
     /**
     * Adds an item to this item.
     * @param  object   item      a container object
+    * @param  string   where     (optional)choose a position 'bottom', 'top', 'after', 'before'
+    * @param  object   target    (optional)needed if you choose 'before' or 'after' for where
     * @return true on success, Pear_Error on error
     */
-    function addItem(&$item, $where = 'bottom', $target = null)
+    function &addItem(&$item, $where = 'bottom', $target = null)
     {
-        $index = sizeof($this->children);
-        if (is_object($item) && is_a($item, 'config_container')) {
-            $this->children[$index] =& $item;
-            $this->children[$index]->parent =& $this;
-            return true;
-        } else {
-            return PEAR::raiseError('Added item must be a Config_Container object for Config_Container::addItem.', null, PEAR_ERROR_RETURN);
+        if (!is_object($item) || get_class($item) != 'config_container') {
+            return PEAR::raiseError('Config_Container::addItem must be called with a Config_Container item.', null, PEAR_ERROR_RETURN);
         }
+        if ($this->type != 'section') {
+            return PEAR::raiseError('Config_Container::addItem must be called on a section type object.', null, PEAR_ERROR_RETURN);
+        }
+        if (is_null($target)) {
+            $target =& $this;
+        }
+        if (!is_object($target) || get_class($target) != 'config_container') {
+            return PEAR::raiseError('Target must be a Config_Container object in Config_Container::addItem.', null, PEAR_ERROR_RETURN);
+        }
+
+        switch ($where) {
+            case 'before':
+                $index = $target->getItemIndex();
+                break;
+            case 'after':
+                $index = $target->getItemIndex()+1;
+                break;
+            case 'top':
+                $index = 0;
+                break;
+            case 'bottom':
+                $index = -1;
+                break;
+            default:
+                return PEAR::raiseError('Use only top, bottom, before or after in Config_Container::addItem.', null, PEAR_ERROR_RETURN);
+        }
+        if (isset($index) && $index >= 0) {
+            array_splice($this->children, $index, 0, 'tmp');
+        } else {
+            $index = sizeof($this->children);
+        }
+        $this->children[$index] =& $item;
+        $this->children[$index]->parent =& $this;
+
+        return $item;
     } // end func addItem
 
     /**
@@ -147,7 +185,7 @@ class Config_Container {
     */
     function &createComment($content = '', $where = 'bottom', $target = null)
     {
-        $item =& $this->createItem('comment', null, $content, $where, $target);
+        $item =& $this->createItem('comment', null, $content, null, $where, $target);
         return $item;
     } // end func &createComment
 
@@ -159,7 +197,7 @@ class Config_Container {
     */
     function &createBlank($where = 'bottom', $target = null)
     {
-        $item =& $this->createItem('blank', null, null, $where, $target);
+        $item =& $this->createItem('blank', null, null, null, $where, $target);
         return $item;
     } // end func &createBlank
 
@@ -171,9 +209,9 @@ class Config_Container {
     * @param  string  content   Content of new directive
     * @return object  reference to new item or Pear_Error
     */
-    function &createDirective($name, $content, $where = 'bottom', $target = null)
+    function &createDirective($name, $content, $attributes = null, $where = 'bottom', $target = null)
     {
-        $item =& $this->createItem('directive', $name, $content, $where, $target);
+        $item =& $this->createItem('directive', $name, $content, $attributes, $where, $target);
         return $item;
     } // end func &createDirective
 
@@ -186,13 +224,13 @@ class Config_Container {
     * @param  string  name      Name of new section
     * @return object  reference to new item or Pear_Error
     */
-    function &createSection($name, $where = 'bottom', $target = null)
+    function &createSection($name, $attributes = null, $where = 'bottom', $target = null)
     {
         $item =& $this->getItem('section', $name);
         if (!$item) {
             // Section does not exist, will create one
             unset($item);
-            $item =& $this->createItem('section', $name, null, $where, $target);
+            $item =& $this->createItem('section', $name, null, $attributes, $where, $target);
         }
         return $item;
     } // end func &createSection
@@ -329,7 +367,7 @@ class Config_Container {
             // I couldn't think of a better way to compare object references
             // so I compare object contents for now.
             // Maybe I should use an ID or a flag ?
-            // This will be fixed in Zend Engine 2
+            // This will be fixed with Zend Engine 2
             $pchildren =& $this->parent->children;
             for ($i = 0; $i < count($pchildren); $i++) {
                 if ($pchildren[$i]->name == $this->name &&
@@ -344,12 +382,25 @@ class Config_Container {
 
     /**
     * Returns the item parent object.
-    * @return object  returns parent object or null if root object
+    * @return object  returns reference to parent object or null if root object
     */
     function &getParent()
     {
         return $this->parent;
     } // end func &getParent
+
+    /**
+    * Returns the item parent object.
+    * @return mixed  returns reference to child object or false if child does not exist
+    */
+    function &getChild($index = 0)
+    {
+        if (isset($this->children[$index])) {
+            return $this->children[$index];
+        } else {
+            return false;
+        }
+    } // end func &getChild
 
     /**
     * Set this item's name.
@@ -410,11 +461,12 @@ class Config_Container {
     * This is an helper method calling getItem and addItem or setContent for you.
     * If the directive does not exist, it will be created at the bottom.
     *
-    * @param  string    name    Name of the directive to look for
-    * @param  mixed     content New content, a string or a container object
-    * @param  int       index   Index of the directive to set,
-    *                           in case there are more than one directive
-    *                           with the same name
+    * @param  string    name        Name of the directive to look for
+    * @param  mixed     content     New content, a string or a container object
+    * @param  mixed     attributes  New content, a string or a container object
+    * @param  int       index       Index of the directive to set,
+    *                               in case there are more than one directive
+    *                               with the same name
     * @return object    newly set directive
     */
     function &setDirective($name, $content, $index = -1)
@@ -423,7 +475,7 @@ class Config_Container {
         if (PEAR::isError($item)) {
             // Directive does not exist, will create one
             unset($item);
-            $item =& addItem('directive', $name, $content);
+            $item =& addItem('directive', $name, $content, null);
         } else {
             // Change existing directive value
             $item->setContent($content);
@@ -453,18 +505,20 @@ class Config_Container {
     function toString($configType = '', $options = array())
     {
         $configType = strtolower($configType);
-        if (!Config::isConfigTypeRegistered($configType)) {
+        if (!isset($GLOBALS['CONFIG_TYPES'][$configType])) {
             return PEAR::raiseError("Configuration type '$configType' is not registered in Config_Container::toString.", null, PEAR_ERROR_RETURN);
         }
-        $className = $GLOBALS['CONFIG_TYPES'][$configType][1];
         $includeFile = $GLOBALS['CONFIG_TYPES'][$configType][0];
+        $className   = $GLOBALS['CONFIG_TYPES'][$configType][1];
         include_once($includeFile);
-        return call_user_func(array($className, 'toString'), $configType, $options, $this);
+        $renderer = new $className($options);
+        return $renderer->toString($this);
     } // end func toString
 
     /**
     * Returns a key/value pair array of the container and its children.
     * Format : section[directive][index] = value
+    * If the container has attributes, it will use '@' and '#'
     * index is here because multiple directives can have the same name.
     * @access   public
     * @return array
@@ -474,9 +528,17 @@ class Config_Container {
         $array[$this->name] = array();
         switch ($this->type) {
             case 'directive':
-                $array[$this->name] = $this->content;
+                if (count($this->_attributes) > 0) {
+                    $array[$this->name]['#'] = $this->content;
+                    $array[$this->name]['@'] = $this->_attributes;
+                } else {
+                    $array[$this->name] = $this->content;
+                }
                 break;
             case 'section':
+                if (count($this->_attributes) > 0) {
+                    $array[$this->name]['@'] = $this->_attributes;
+                }
                 if (count($this->children) > 0) {
                     for ($i = 0; $i < count($this->children); $i++) {
                         $newArr = $this->children[$i]->toArray();
@@ -505,35 +567,31 @@ class Config_Container {
     /**
     * Writes the configuration to a file
     * 
-    * @param  mixed  datasrc        info on datasource such as path to the configuraton file
-    * @param  string configType     (optional)type of configuration
+    * @param  mixed  datasrc        info on datasource such as path to the configuraton file or dsn...
+    * @param  string configType     type of configuration
+    * @param  array  options        (optional) Options for writer
     * @access public
     * @return PEAR_ERROR or true
     */
-    function writeDatasrc($datasrc, $configType = '', $options = array())
+    function writeDatasrc($datasrc, $configType, $options = array())
     {
         $configType = strtolower($configType);
-        if (!Config::isConfigTypeRegistered($configType)) {
+        if (!isset($GLOBALS['CONFIG_TYPES'][$configType])) {
             return PEAR::raiseError("Configuration type '$configType' is not registered in Config_Container::writeDatasrc.", null, PEAR_ERROR_RETURN);
         }
-        $className = $GLOBALS['CONFIG_TYPES'][$configType][1];
         $includeFile = $GLOBALS['CONFIG_TYPES'][$configType][0];
+        $className = $GLOBALS['CONFIG_TYPES'][$configType][1];
         include_once($includeFile);
 
-        if (in_array('writeDatasrc', get_class_methods($className))) {
-            return call_user_func(array($className, 'writeDatasrc'), $datasrc, $configType, $options, $this);
+        if (in_array('writedatasrc', get_class_methods($className))) {
+            $writer = new $className($options);
+            return $writer->writeDatasrc($datasrc, $this);
         }
 
         // Default behaviour
         $fp = @fopen($datasrc, 'w');
         if ($fp) {
-            switch ($configType) {
-                case 'phparray':
-                    $string = "<?php\n". $this->toString($configType, $options) ."?>";
-                    break;
-                default:
-                   $string = $this->toString($configType, $options);
-            }
+            $string = $this->toString($configType, $options);
             $len = strlen($string);
             @flock($fp, LOCK_EX);
             @fwrite($fp, $string, $len);
