@@ -37,6 +37,7 @@ class Config_Container_XML extends XML_Parser {
     * linebreak : char used for linebreak
     * addDecl   : whether to add the xml declaration at beginning or not
     * useAttr   : whether to use the attributes
+    * isFile    : whether the given content is a file or an XML string
     *
     * @var  array
     */
@@ -46,7 +47,8 @@ class Config_Container_XML extends XML_Parser {
                          'indent'    => '  ',
                          'linebreak' => "\n",
                          'addDecl'   => true,
-                         'useAttr'   => true);
+                         'useAttr'   => true,
+                         'isFile'    => true);
 
     /**
     * Container objects
@@ -67,6 +69,7 @@ class Config_Container_XML extends XML_Parser {
     *                               linebreak   : char used for linebreak
     *                               addDecl     : whether to add the xml declaration at beginning or not
     *                               useAttr     : whether to use the attributes
+    *                               isFile      : whether the given content is a file or an XML string
     */
     function Config_Container_XML($options = array())
     {
@@ -89,12 +92,20 @@ class Config_Container_XML extends XML_Parser {
         $this->cdata = null;
         $this->XML_Parser(null, 'event');
         $this->containers[0] =& $obj->container;
-
-        $err = $this->setInputFile($datasrc);
-        if (PEAR::isError($err)) {
-            return $err;
+        if (is_string($datasrc)) {
+            if ($this->options['isFile']) {
+                $err = $this->setInputFile($datasrc);
+                if (PEAR::isError($err)) {
+                    return $err;
+                }
+                $err = $this->parse();
+            } else {
+                $err = $this->parseString($datasrc, true);
+            }
+        } else {
+           $this->setInput($datasrc);
+           $err = $this->parse();
         }
-        $err = $this->parse();
         if (PEAR::isError($err)) {
             return $err;
         }
