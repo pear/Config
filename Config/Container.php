@@ -50,7 +50,7 @@ class Config_Container {
     * Container object children
     * @var  array
     */
-    var $children;
+    var $children = array();
 
     /**
     * Reference to container object's parent
@@ -456,7 +456,7 @@ class Config_Container {
     */
     function &getChild($index = 0)
     {
-        if (isset($this->children[$index])) {
+        if (!empty($this->children[$index])) {
             return $this->children[$index];
         } else {
             return false;
