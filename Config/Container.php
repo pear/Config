@@ -205,8 +205,9 @@ class Config_Container extends HTML_Common {
     * Adds a directive to this item.
     * This is a helper method that calls createItem
     *
-    * @param  string  name      Name of new directive
-    * @param  string  content   Content of new directive
+    * @param  string  name        Name of new directive
+    * @param  string  content     Content of new directive
+    * @param  mixed   attributes  (optional)Directive attributes
     * @return object  reference to new item or Pear_Error
     */
     function &createDirective($name, $content, $attributes = null, $where = 'bottom', $target = null)
@@ -221,17 +222,13 @@ class Config_Container extends HTML_Common {
     * If the section already exists, it won't create a new one. 
     * It will return reference to existing item.
     *
-    * @param  string  name      Name of new section
+    * @param  string  name        Name of new section
+    * @param  mixed   attributes  (optional)Section attributes
     * @return object  reference to new item or Pear_Error
     */
     function &createSection($name, $attributes = null, $where = 'bottom', $target = null)
     {
-        $item =& $this->getItem('section', $name);
-        if (!$item) {
-            // Section does not exist, will create one
-            unset($item);
-            $item =& $this->createItem('section', $name, null, $attributes, $where, $target);
-        }
+        $item =& $this->createItem('section', $name, null, $attributes, $where, $target);
         return $item;
     } // end func &createSection
 
