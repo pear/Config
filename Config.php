@@ -78,12 +78,11 @@ class Config {
         $className = $GLOBALS['CONFIG_CONTAINERS'][$container][1];
         $includeFile = $GLOBALS['CONFIG_CONTAINERS'][$container][0];
         include_once ($includeFile);
-        $obj = new stdclass;
-        $this->container =& new $className('section', 'root', '', $obj);
+        $this->container =& new $className('section', 'root', '');
+        $this->container->parent = null;
         if (is_array($options)) {
             $this->container->setOptions($options);
         }
-        return $this->container;
     } // end constructor
 
     /**
@@ -96,6 +95,16 @@ class Config {
     {
         return in_array($container, array_keys($GLOBALS['CONFIG_CONTAINERS']));
     } // end func isContainerRegistered
+
+    /**
+    * Returns the root container for this config object
+    * @access public
+    * @return   object	root container object
+    */
+    function &getRoot()
+    {
+        return $this->container;
+    } // end func getRoot
 
     /**
     * Parses the datasource contents
