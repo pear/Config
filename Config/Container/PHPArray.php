@@ -17,8 +17,6 @@
 //
 // $Id$
 
-require_once('Config/Container.php');
-
 /**
 * Config parser for common PHP configuration array
 * such as found in the horde project.
@@ -34,39 +32,63 @@ require_once('Config/Container.php');
 class Config_Container_PHPArray {
 
     /**
+    * This class options:
+    * - name of the config array to parse/output
+    *   Ex: $options['name'] = 'myconf';
+    *
+    * @var  array
+    */
+    var $options = array();
+
+    /**
+    * Constructor
+    *
+    * @access public
+    * @param    string  $options    (optional)Options to be used by renderer
+    */
+    function Config_Container_PHPArray($options = array())
+    {
+        if (empty($options['name'])) {
+             // default array is $conf
+            $options['name'] = 'conf';
+        }
+        $this->options = $options;
+    } // end constructor
+
+    /**
     * Parses the data of the given configuration file
     *
     * @access public
     * @param string $datasrc    path to the configuration file
+    * @param object $obj        reference to a config object
     * @return mixed    returns a PEAR_ERROR, if error occurs or true if ok
     */
     function &parseDatasrc($datasrc, &$obj)
     {
-        if (is_null($datasrc)) {
-            return PEAR::raiseError("Datasource file path cannot be null.", null, PEAR_ERROR_RETURN);
+        if (empty($datasrc)) {
+            return PEAR::raiseError("Datasource file path is empty.", null, PEAR_ERROR_RETURN);
         }
-        if (!file_exists($datasrc)) {
-            return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);        
+        if (is_array($datasrc)) {
+            $this->_parseArray($datasrc, $obj->container);
         } else {
-            if (empty($obj->parserOptions['name'])) {
-                $obj->parserOptions['name'] = 'conf'; // default array is $conf
+            if (!file_exists($datasrc)) {
+                return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);        
+            } else {
+                include($datasrc);
+                if (!isset(${$this->options['name']}) || !is_array(${$this->options['name']})) {
+                    return PEAR::raiseError("File '$datasrc' does not contain a required '".$this->options['name']."' array.", null, PEAR_ERROR_RETURN);
+                }
             }
-            include($datasrc);
-            if (!isset(${$obj->parserOptions['name']}) || !is_array(${$obj->parserOptions['name']})) {
-                return PEAR::raiseError("File '$datasrc' does not contain a required '".$obj->parserOptions['name']."' array.", null, PEAR_ERROR_RETURN);
-            }
-            $datasrc = ${$obj->parserOptions['name']};
+            $this->_parseArray(${$this->options['name']}, $obj->container);
         }
-        $root =& $obj->container;
-        Config_Container_PHPArray::_parseArray($datasrc, $root);
         return true;
     } // end func parseDatasrc
 
     /**
     * Parses the PHP array recursively
-    * @param array $array    array values from the config file
-    * @param object $container    reference to the container object
-    * @access public
+    * @param array  $array      array values from the config file
+    * @param object $container  reference to the container object
+    * @access private
     * @return void
     */
     function _parseArray($array, &$container)
@@ -87,31 +109,42 @@ class Config_Container_PHPArray {
                         $container->createDirective("$key", $v);
                     }
                 } else {
-                    // new section
-                    $section =& $container->createSection("$key");
-                    Config_Container_PHPArray::_parseArray($value, $section);
+                    if (isset($value['#'])) {
+                        $directive =& $container->createDirective("$key", $value['#']);
+                        if (isset($value['@']) && is_array($value['@'])) {
+                            $directive->updateAttributes($value['@']);
+                        }
+                    } else {
+                        // new section
+                        $section =& $container->createSection("$key");
+                        if (isset($value['@']) && is_array($value['@'])) {
+                            $section->updateAttributes($value['@']);
+                            unset($value['@']);
+                        }
+                        if (count($value) > 0) {
+                            $this->_parseArray($value, $section);
+                        }
+                    }
                 }
             } else {
                 // new directive
                 $container->createDirective("$key", $value);
             }
         }
-    }
+    } // end func _parseArray
 
     /**
     * Returns a formatted string of the object
-    * @access public
-    * @return string
+    * @param    object  $obj    Container object to be output as string
+    * @access   public
+    * @return   string
     */
-    function toString($configType = 'phparray', $options = array(), &$obj)
+    function toString(&$obj)
     {
         static $childrenCount;
 
         if (!isset($string)) {
             $string = '';
-            if (empty($options['name'])) {
-                $options['name'] = 'conf';
-            }
         }
         switch ($obj->type) {
             case 'blank':
@@ -121,28 +154,59 @@ class Config_Container_PHPArray {
                 $string .= '// '.$obj->content."\n";
                 break;
             case 'directive':
-                $string .= '$'.$options['name'];
-                $string .= Config_Container_PHPArray::_getParentString($obj);
-                if ($obj->parent->countChildren('directive', $obj->name) > 1) {
-                    // we need to take care of directive set more than once
-                    if (isset($childrenCount[$obj->name])) {
-                        $childrenCount[$obj->name]++;
-                    } else {
-                        $childrenCount[$obj->name] = 0;
+                $attrString = '';
+                $string .= '$'.$this->options['name'];
+                $parentString = $this->_getParentString($obj);
+                $attributes = $obj->getAttributes();
+                if (count($attributes) > 0) {
+                    // Directive with attributes '@' and value '#'
+                    $string .= $parentString."['#']";
+                    foreach ($attributes as $attr => $val) {
+                        $attrString .= '$'.$this->options['name'].$parentString."['@']"
+                                    ."['".$attr."'] = ".'"'.$val.'"'.";\n";
                     }
-                    $string .= '['.$childrenCount[$obj->name].']';
+                } else {
+                    $string .= $parentString;
+                    $count = $obj->parent->countChildren('directive', $obj->name);
+                    if ($count > 1) {
+                        // we need to take care of directive set more than once
+                        if (isset($childrenCount[$obj->name])) {
+                            $childrenCount[$obj->name]++;
+                        } else {
+                            $childrenCount[$obj->name] = 0;
+                        }
+                        $string .= '['.$childrenCount[$obj->name].']';
+                        if ($childrenCount[$obj->name] == $count-1) {
+                            // Clean the static for future calls to toString
+                            unset($childrenCount[$obj->name]);
+                        }
+                    }
                 }
                 $string .= ' = ';
                 if (is_string($obj->content)) {
-                    $string .= "'".$obj->content."';\n";
+                    $string .= '"'.$obj->content.'"';
                 } elseif (is_int($obj->content)) {
-                    $string .= $obj->content.";\n";
+                    $string .= $obj->content;
+                } elseif (is_bool($obj->content)) {
+                    $string .= ($obj->content) ? 'true' : 'false';
                 }
+                $string .= ";\n";
+                $string .= $attrString;
                 break;
             case 'section':
+                $attrString = '';
+                $attributes = $obj->getAttributes();
+                if (count($attributes) > 0) {
+                    $parentString = $this->_getParentString($obj);
+                    foreach ($attributes as $attr => $val) {
+                        $attrString .= '$'.$this->options['name'].$parentString."['@']"
+                                    ."['".$attr."'] = ".'"'.$val.'"'.";\n";
+                    }
+                }
+                $string .= $attrString;
                 if (count($obj->children) > 0) {
                     for ($i = 0; $i < count($obj->children); $i++) {
-                        $string .= $obj->children[$i]->toString($configType, $options);
+                        $string .= $this->toString($obj->getChild($i));
                     }
                 }
                 break;
@@ -157,13 +221,37 @@ class Config_Container_PHPArray {
     * @access private
     * @return string
     */
-    function _getParentString(&$cont)
+    function _getParentString(&$obj)
     {
-        $string = "['".$cont->name."']";
-        if (!$cont->parent->isRoot()) {
-            $string = Config_Container_PHPArray::_getParentString($cont->parent).$string;
+        $string = "['".$obj->name."']";
+        if (!$obj->parent->isRoot()) {
+            $string = $this->_getParentString($obj->parent).$string;
         }
         return $string;
     } // end func _getParentString
+
+    /**
+    * Writes the configuration to a file
+    *
+    * @param  mixed  datasrc        info on datasource such as path to the configuraton file
+    * @param  string configType     (optional)type of configuration
+    * @access public
+    * @return string
+    */
+    function writeDatasrc($datasrc, &$obj)
+    {
+        $fp = @fopen($datasrc, 'w');
+        if ($fp) {
+            $string = "<?php\n". $this->toString($obj) ."?>"; // <? : Fix syntax coloring
+            $len = strlen($string);
+            @flock($fp, LOCK_EX);
+            @fwrite($fp, $string, $len);
+            @flock($fp, LOCK_UN);
+            @fclose($fp);
+            return true;
+        } else {
+            return PEAR::raiseError('Cannot open datasource for writing.', 1, PEAR_ERROR_RETURN);
+        }
+    } // end func writeDatasrc
 } // end class Config_Container_PHPArray
 ?>
