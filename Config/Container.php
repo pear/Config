@@ -180,13 +180,20 @@ class Config_Container {
     /**
     * Adds a section to this item.
     * This is a helper method that calls createItem
+    * If the section already exists, it won't create a new one. 
+    * It will return reference to existing item.
     *
-    * @param  mixed   name      Name of new section or container object
-    * @return object  reference to new item
+    * @param  string  name      Name of new section
+    * @return object  reference to new item or Pear_Error
     */
-    function &createSection($section, $content = null, $where = 'bottom', $target = null)
+    function &createSection($name, $where = 'bottom', $target = null)
     {
-        $item =& $this->createItem('section', $section, $content, $where, $target);
+        $item =& $this->getItem('section', $name);
+        if (!$item) {
+            // Section does not exist, will create one
+            unset($item);
+            $item =& $this->createItem('section', $name, null, $where, $target);
+        }
         return $item;
     } // end func &createSection
 
