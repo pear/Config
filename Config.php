@@ -319,7 +319,7 @@ class Config  {
         $newarray = $a1;
         while (list($key, $val) = each($a2))
         {
-            if (is_array($val) && is_array($newarray[$key]))
+            if (isset($newarray[$key]) && is_array($val) && is_array($newarray[$key]))
             {
                 $newarray[$key] = $this->array_merge_clobber($newarray[$key], $val);
             }
