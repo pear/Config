@@ -116,11 +116,11 @@ class Config_Container_IniFile {
                     $content = '0';
                 } elseif ($content === true) {
                     $content = '1';
-                } elseif ((strlen(trim($content)) < strlen($content) ||
+                } elseif (strlen(trim($content)) < strlen($content) ||
                           strpos($content, ',') !== false ||
-                          strpos($content, ';') !== false) &&
-                          strpos($content, '"') === false) {
-                    $content = '"'.$content.'"';          
+                          strpos($content, ';') !== false ||
+                          strpos($content, '"') !== false) {
+                    $content = '"'.addslashes($content).'"';          
                 }
                 if ($count > 1) {
                     // multiple values for a directive are separated by a comma
