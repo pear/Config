@@ -67,6 +67,7 @@
 * Method _parseArray() in PHPArray refactored and much faster (Bertrand Mansion)
 * Fix bugs with certain type of arrays with PHPArray (Bertrand Mansion)
 * PHPArray now returns values between single quotes (Jean-Marc Fontaine)
+    </notes>
   </release>
   <release>
     <version>1.6</version>
