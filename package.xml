@@ -9,14 +9,18 @@
     <maintainer>
       <user>alexmerz</user>
       <name>Alexander Merz</name>
-      <email>alexander.merz@t-online.de</email>
+      <email>alexmerz@php.net</email>
     </maintainer>
   </maintainers>
   <release>
-    <version>0.2.2</version>
-    <date>2001-09-22</date>
+    <version>0.3.0</version>
+    <date>2002-6-23</date>
     <notes>
 	Documentation is in README.Config.
+	0.3.0 :
+ 	- some fixes
+	- add WDDX-Container for config data in WDDX-files
+	- add phpIniFile, does the same like IniFile but based on the PHP build-in function parse_ini_file()
 	0.2.2 :
 	- Only the first char of ->feature['cc'] is taken as a comment deliminator
 	- quoting supports both methods:
@@ -24,7 +28,6 @@
 	  foo = "'bar'"
 	  bar = '"foo"'
 	- Value parser only parser until first comment-char or the end of the string, therefore spaces surrounded by nonspaces don't have to be quoted.
-
 	0.2.1 :
 	- Bug fixed, when $feature in ParseInput was not set 
 	- some e_warnings fixed
@@ -39,6 +42,8 @@
 	  <dir name="Container">
 	    <file role="php">db.php</file>
 	    <file role="php">IniFile.php</file>
+	    <file role="php">phpIniFile.php</file>	    
+	    <file role="php">wddx.php</file>	    	    
 	    <file role="php">xml.php</file>
 	  </dir>
         </dir>
