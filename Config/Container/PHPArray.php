@@ -147,7 +147,7 @@ class Config_Container_PHPArray {
                 $string .= ' = ';
                 if (is_string($obj->content)) {
                     $string .= "'".$obj->content."'";
-                } elseif (is_int($obj->content)) {
+                } elseif (is_int($obj->content) || is_float($obj->content)) {
                     $string .= $obj->content;
                 } elseif (is_bool($obj->content)) {
                     $string .= ($obj->content) ? 'true' : 'false';
