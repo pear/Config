@@ -152,7 +152,7 @@ class Config_Container_XML extends XML_Parser {
             $ident = str_repeat('  ', $deep);
         } else {
             // Initialize string with xml declaration
-            $string = '<?xml version="'.$this->options['version'].' ';
+            $string = '<?xml version="'.$this->options['version'].'" ';
             $string .= 'encoding="'.$this->options['encoding']."\"?>\n"; // <? Fix coloring
         }
         if (!isset($string)) {
