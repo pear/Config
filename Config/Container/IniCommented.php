@@ -28,10 +28,30 @@ require_once('Config.php');
 class Config_Container_IniCommented {
 
     /**
+    * This class options
+    * Not used at the moment
+    *
+    * @var  array
+    */
+    var $options = array();
+
+    /**
+    * Constructor
+    *
+    * @access public
+    * @param    string  $options    (optional)Options to be used by renderer
+    */
+    function Config_Container_IniCommented($options = array())
+    {
+        $this->options = $options;
+    } // end constructor
+
+    /**
     * Parses the data of the given configuration file
     *
     * @access public
     * @param string $datasrc    path to the configuration file
+    * @param object $obj        reference to a config object
     * @return mixed returns a PEAR_ERROR, if error occurs or true if ok
     */
     function &parseDatasrc($datasrc, &$obj)
@@ -73,10 +93,11 @@ class Config_Container_IniCommented {
 
     /**
     * Returns a formatted string of the object
-    * @access public
-    * @return string
+    * @param    object  $obj    Container object to be output as string
+    * @access   public
+    * @return   string
     */
-    function toString($configType = 'inicommented', $options = array(), &$obj)
+    function toString(&$obj)
     {
         if (!isset($string)) {
             $string = '';
@@ -97,7 +118,7 @@ class Config_Container_IniCommented {
                 }
                 if (count($obj->children) > 0) {
                     for ($i = 0; $i < count($obj->children); $i++) {
-                        $string .= $obj->children[$i]->toString($configType, $options);
+                        $string .= $this->toString($obj->getChild($i));
                     }
                 }
                 break;

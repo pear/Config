@@ -17,8 +17,6 @@
 //
 // $Id$
 
-require_once('Config.php');
-
 /**
 * Config parser for PHP .ini files
 * Faster because it uses parse_ini_file() but get rid of comments.
@@ -29,10 +27,30 @@ require_once('Config.php');
 class Config_Container_IniFile {
 
     /**
+    * This class options
+    * Not used at the moment
+    *
+    * @var  array
+    */
+    var $options = array();
+
+    /**
+    * Constructor
+    *
+    * @access public
+    * @param    string  $options    (optional)Options to be used by renderer
+    */
+    function Config_Container_IniFile($options = array())
+    {
+        $this->options = $options;
+    } // end constructor
+
+    /**
     * Parses the data of the given configuration file
     *
     * @access public
     * @param string $datasrc    path to the configuration file
+    * @param object $obj        reference to a config object
     * @return mixed    returns a PEAR_ERROR, if error occurs or true if ok
     */
     function &parseDatasrc($datasrc, &$obj)
@@ -60,10 +78,11 @@ class Config_Container_IniFile {
 
     /**
     * Returns a formatted string of the object
-    * @access public
-    * @return string
+    * @param    object  $obj    Container object to be output as string
+    * @access   public
+    * @return   string
     */
-    function toString($configType = 'inifile', $options = array(), &$obj)
+    function toString(&$obj)
     {
         if (!isset($string)) {
             $string = '';
@@ -78,7 +97,7 @@ class Config_Container_IniFile {
                 }
                 if (count($obj->children) > 0) {
                     for ($i = 0; $i < count($obj->children); $i++) {
-                        $string .= $obj->children[$i]->toString($configType, $options);
+                        $string .= $this->toString($obj->getChild($i));
                     }
                 }
                 break;
