@@ -191,6 +191,7 @@ class Config_Container_IniCommented {
                                 continue 2;
                             } else {
                                 while ($state != 'normal') {
+                                	$returnpos++;
                                     array_pop($stack);
                                     $state = $this->_getQACEvent($stack);
                                 }
