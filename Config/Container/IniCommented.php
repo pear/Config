@@ -54,6 +54,7 @@ class Config_Container_IniCommented {
     */
     function &parseDatasrc($datasrc, &$obj)
     {
+        $return = true;
         if (!file_exists($datasrc)) {
             return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);
         }
@@ -69,7 +70,7 @@ class Config_Container_IniCommented {
             } elseif (preg_match('/^\s*$/', $line)) {
                 // a blank line
                 $currentSection->createBlank();
-			} elseif (preg_match('/^\s*([a-zA-Z0-9_\-\.\s]*)\s*=\s*(.*)\s*$/', $line, $match)) {
+            } elseif (preg_match('/^\s*([a-zA-Z0-9_\-\.\s]*)\s*=\s*(.*)\s*$/', $line, $match)) {
                 // a directive
                 
                 $values = $this->_quoteAndCommaParser($match[2]);
@@ -94,7 +95,7 @@ class Config_Container_IniCommented {
                 return PEAR::raiseError("Syntax error in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
             }
         }
-        return true;
+        return $return;
     } // end func parseDatasrc
 
     /**

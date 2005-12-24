@@ -159,12 +159,12 @@ class Config {
     function setRoot(&$rootContainer)
     {
         if (is_object($rootContainer) && strtolower(get_class($rootContainer)) === 'config_container') {
-        	if ($rootContainer->getName() === 'root' && $rootContainer->getType() === 'section') {
-        		$this->container =& $rootContainer;
-        	} else {
-	            $this->container =& new Config_Container('section', 'root');
-    	        $this->container->addItem($rootContainer);
-    	    }
+            if ($rootContainer->getName() === 'root' && $rootContainer->getType() === 'section') {
+                $this->container =& $rootContainer;
+            } else {
+                $this->container =& new Config_Container('section', 'root');
+                $this->container->addItem($rootContainer);
+            }
             return true;
         } else {
             return PEAR::raiseError("Config::setRoot only accepts object of Config_Container type.", null, PEAR_ERROR_RETURN);

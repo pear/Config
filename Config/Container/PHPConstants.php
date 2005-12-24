@@ -58,9 +58,11 @@ class Config_Container_PHPConstants extends Config_Container {
     */
     function &parseDatasrc($datasrc, &$obj)
     {
+        $return = true;
+
         if (!file_exists($datasrc)) {
             return PEAR::raiseError("Datasource file does not exist.", null, 
-                    PEAR_ERROR_RETURN);
+                PEAR_ERROR_RETURN);
         }
         
         $fileContent = file_get_contents($datasrc, true);
@@ -69,38 +71,38 @@ class Config_Container_PHPConstants extends Config_Container {
             return PEAR::raiseError("File '$datasrc' could not be read.", null,
                 PEAR_ERROR_RETURN);
         }
-		
-		$rows = explode("\n", $fileContent);
-		for ($i=0, $max=count($rows); $i<$max; $i++) {
-		    $line = $rows[$i];
+        
+        $rows = explode("\n", $fileContent);
+        for ($i=0, $max=count($rows); $i<$max; $i++) {
+            $line = $rows[$i];
     
-                //blanks?
-			    
-			    // sections
-		    if (preg_match("/^\/\/\s*$/", $line)) {
-		        preg_match("/^\/\/\s*(.+)$/", $rows[$i+1], $matches);
-			    $obj->container->createSection(trim($matches[1]));
-			    $i += 2;
-			    continue;
-		    }
-		  
-		    // comments
-		    if (preg_match("/^\/\/\s*(.+)$/", $line, $matches) || 
-		            preg_match("/^#\s*(.+)$/", $line, $matches)) {
-			    $obj->container->createComment(trim($matches[1]));
-			    continue;
-		    }
-		  
-		    // directives
-		    $regex = "/^\s*define\s*\('([A-Z1-9_]+)',\s*'*(.[^\']*)'*\)/";
-		    preg_match($regex, $line, $matches);
-		    if (!empty($matches)) {
-			    $obj->container->createDirective(trim($matches[1]), 
-			        trim($matches[2]));
-		    }
-	    }
+            //blanks?
+                
+            // sections
+            if (preg_match("/^\/\/\s*$/", $line)) {
+                preg_match("/^\/\/\s*(.+)$/", $rows[$i+1], $matches);
+                $obj->container->createSection(trim($matches[1]));
+                $i += 2;
+                continue;
+            }
+          
+            // comments
+            if (preg_match("/^\/\/\s*(.+)$/", $line, $matches) || 
+                    preg_match("/^#\s*(.+)$/", $line, $matches)) {
+                $obj->container->createComment(trim($matches[1]));
+                continue;
+            }
+          
+            // directives
+            $regex = "/^\s*define\s*\('([A-Z1-9_]+)',\s*'*(.[^\']*)'*\)/";
+            preg_match($regex, $line, $matches);
+            if (!empty($matches)) {
+                $obj->container->createDirective(trim($matches[1]), 
+                    trim($matches[2]));
+            }
+        }
     
-        return true;
+        return $return;
         
     } // end func parseDatasrc
 
@@ -110,48 +112,48 @@ class Config_Container_PHPConstants extends Config_Container {
     * @access   public
     * @return   string
     */
-	 function toString(&$obj)
-	 {
-		 $string = '';
+     function toString(&$obj)
+     {
+         $string = '';
 
-		 switch ($obj->type) 
-		 {
-			 case 'blank':
-				 $string = "\n";
-				 break;
-				 
-			 case 'comment':
-				 $string = '// '.$obj->content."\n";
-				 break;
-				 
-			 case 'directive':
-				 $content = $obj->content;
-				 // don't quote numeric values, true/false and constants
-				 if (!is_numeric($content) && !in_array($content, array('false', 
-				            'true')) && !preg_match('/^[A-Z_]+$/', $content)) {
-					 $content = "'".$content."'";
-				 }
-				 $string = 'define(\''.$obj->name.'\', '.$content.');'.chr(10);
-				 break;
-				 
-			 case 'section':
-				 if (!$obj->isRoot()) {
-					 $string  = chr(10);
-					 $string .= '//'.chr(10);
-					 $string .= '// '.$obj->name.chr(10);
-					 $string .= '//'.chr(10);
-				 }
-				 if (count($obj->children) > 0) {
-					 for ($i = 0, $max = count($obj->children); $i < $max; $i++) {
-						 $string .= $this->toString($obj->getChild($i));
-					 }
-				 }
-				 break;
-			 default:
-				 $string = '';
-		 }
-		 return $string;
-	 } // end func toString
+         switch ($obj->type) 
+         {
+             case 'blank':
+                 $string = "\n";
+                 break;
+                 
+             case 'comment':
+                 $string = '// '.$obj->content."\n";
+                 break;
+                 
+             case 'directive':
+                 $content = $obj->content;
+                 // don't quote numeric values, true/false and constants
+                 if (!is_numeric($content) && !in_array($content, array('false', 
+                            'true')) && !preg_match('/^[A-Z_]+$/', $content)) {
+                     $content = "'".$content."'";
+                 }
+                 $string = 'define(\''.$obj->name.'\', '.$content.');'.chr(10);
+                 break;
+                 
+             case 'section':
+                 if (!$obj->isRoot()) {
+                     $string  = chr(10);
+                     $string .= '//'.chr(10);
+                     $string .= '// '.$obj->name.chr(10);
+                     $string .= '//'.chr(10);
+                 }
+                 if (count($obj->children) > 0) {
+                     for ($i = 0, $max = count($obj->children); $i < $max; $i++) {
+                         $string .= $this->toString($obj->getChild($i));
+                     }
+                 }
+                 break;
+             default:
+                 $string = '';
+         }
+         return $string;
+     } // end func toString
 
     /**
     * Writes the configuration to a file
@@ -166,15 +168,15 @@ class Config_Container_PHPConstants extends Config_Container {
         $fp = @fopen($datasrc, 'w');
         if ($fp) {
             $string  = "<?php";
-				$string .= "\n\n";
-				$string .= '/**' . chr(10);
-				$string .= ' *' . chr(10);
-				$string .= ' * AUTOMATICALLY GENERATED CODE - 
-				DO NOT EDIT BY HAND' . chr(10);
-				$string .= ' *' . chr(10);
-				$string .= '**/' . chr(10);
-				$string .= $this->toString($obj);
-				$string .= "\n?>"; // <? : Fix my syntax coloring
+                $string .= "\n\n";
+                $string .= '/**' . chr(10);
+                $string .= ' *' . chr(10);
+                $string .= ' * AUTOMATICALLY GENERATED CODE - 
+                DO NOT EDIT BY HAND' . chr(10);
+                $string .= ' *' . chr(10);
+                $string .= '**/' . chr(10);
+                $string .= $this->toString($obj);
+                $string .= "\n?>"; // <? : Fix my syntax coloring
 
             $len = strlen($string);
             @flock($fp, LOCK_EX);
@@ -191,7 +193,7 @@ class Config_Container_PHPConstants extends Config_Container {
         }
     } // end func writeDatasrc
 
-	 
+     
 } // end class Config_Container_PHPConstants
 
 ?>

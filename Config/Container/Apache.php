@@ -56,6 +56,7 @@ class Config_Container_Apache {
     */
     function &parseDatasrc($datasrc, &$obj)
     {
+        $return = true;
         if (!is_readable($datasrc)) {
             return PEAR::raiseError("Datasource file cannot be read.", null, PEAR_ERROR_RETURN);
         }
@@ -105,7 +106,7 @@ class Config_Container_Apache {
                 return PEAR::raiseError("Syntax error in '$datasrc' at line $n.", null, PEAR_ERROR_RETURN);
             }
         }
-        return true;
+        return $return;
     } // end func parseDatasrc
 
     /**

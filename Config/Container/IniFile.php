@@ -56,6 +56,7 @@ class Config_Container_IniFile {
     */
     function &parseDatasrc($datasrc, &$obj)
     {
+        $return = true;
         if (!file_exists($datasrc)) {
             return PEAR::raiseError("Datasource file does not exist.", null, PEAR_ERROR_RETURN);
         }
@@ -86,7 +87,7 @@ class Config_Container_IniFile {
                 $currentSection->createDirective($key, $value);
             }
         }
-        return true;
+        return $return;
     } // end func parseDatasrc
 
     /**

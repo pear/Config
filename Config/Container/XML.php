@@ -98,6 +98,7 @@ class Config_Container_XML extends XML_Parser
     */
     function &parseDatasrc($datasrc, &$obj)
     {
+        $err = true;
         $this->folding = false;
         $this->cdata = null;
         $this->XML_Parser($this->options['encoding'], 'event');
@@ -116,10 +117,7 @@ class Config_Container_XML extends XML_Parser
            $this->setInput($datasrc);
            $err = $this->parse();
         }
-        if (PEAR::isError($err)) {
-            return $err;
-        }
-        return true;
+        return $err;
     } // end func parseDatasrc
 
     /**

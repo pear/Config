@@ -68,6 +68,7 @@ class Config_Container_PHPArray {
     */
     function &parseDatasrc($datasrc, &$obj)
     {
+        $return = true;
         if (empty($datasrc)) {
             return PEAR::raiseError("Datasource file path is empty.", null, PEAR_ERROR_RETURN);
         }
@@ -84,7 +85,7 @@ class Config_Container_PHPArray {
             }
             $this->_parseArray(${$this->options['name']}, $obj->container);
         }
-        return true;
+        return $return;
     } // end func parseDatasrc
 
     /**
