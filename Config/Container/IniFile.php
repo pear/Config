@@ -120,6 +120,7 @@ class Config_Container_IniFile {
                 } elseif (strlen(trim($content)) < strlen($content) ||
                           strpos($content, ',') !== false ||
                           strpos($content, ';') !== false ||
+                          strpos($content, '=') !== false ||
                           strpos($content, '"') !== false ||
                           strpos($content, '%') !== false ||
                           strpos($content, '~') !== false) {
