@@ -117,11 +117,14 @@ class Config_Container_PHPArray {
                     if (is_array($value)) {
                         if (is_integer(key($value))) {
                             foreach ($value as $nestedValue) {
-                                $section =& $container->createSection($key);
-                                $this->_parseArray($nestedValue, $section);
+                                if (is_array($nestedValue)) {
+                                    $section =& $container->createSection($key);
+                                    $this->_parseArray($nestedValue, $section);
+                                } else {
+                                    $container->createDirective($key, $nestedValue);
+                                }
                             }
                         } else {
-
                             $section =& $container->createSection($key);
                             $this->_parseArray($value, $section);
                         }
