@@ -141,7 +141,7 @@ class Config_Container_Apache {
                 if (!$obj->isRoot()) {
                     $string = $ident.'<'.$obj->name;
                     if (is_array($obj->attributes) && count($obj->attributes) > 0) {
-                        while (list(,$val) = each($obj->attributes)) {
+                        foreach ($obj->attributes as $attr => $val) {
                             $string .= ' '.$val;
                         }
                     }
