@@ -11,7 +11,7 @@
 
 require_once('Config.php');
 
-$datasrc = '/path/to/php.ini';
+$datasrc = '/usr/local/php5/lib/php.ini';
 
 $phpIni = new Config();
 $root =& $phpIni->parseConfig($datasrc, 'inicommented');

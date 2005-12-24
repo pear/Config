@@ -1,21 +1,16 @@
 --TEST--
-bug 2742 regression
+test for bug 2742
 --FILE--
 <?php
-    set_include_path(dirname(dirname(__FILE__)) . ':' . get_include_path());
-
-    require_once 'Config.php' ;
-
-    $datasrc = dirname(__FILE__) . '/bug2742.ini';
-    $phpIni = new Config();
-    $root =& $phpIni->parseConfig($datasrc, 'inicommented');
-    if (PEAR::isError($root)) {
-    	die($root->getMessage());
-    }
-
-    // Convert your ini file to a php array config
-
-    echo $root->toString('phparray', array('name' => 'php_ini'));
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'setup.php.inc';
+$datasrc = dirname(__FILE__) . '/bug2742.ini';
+$root = &$config->parseConfig($datasrc, 'inicommented');
+if ($phpt->assertNoErrors('problem!')) {
+   $phpt->assertEquals('$php_ini[\'var\'] = \'1234\';',
+       $root->toString('phparray', array('name' => 'php_ini')),
+       'convert var = 1234 to array');
+}
+echo 'tests done'; 
 ?>
 --EXPECT--
-$php_ini['var'] = '1234';
+tests done

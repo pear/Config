@@ -195,10 +195,7 @@ class Config_Container_XML extends XML_Parser
                 $string .= $this->options['linebreak'];
             }
             if (!empty($this->options['name'])) {
-                $string .= '<'.$this->options['name'];
-                $string .= ($this->options['useAttr']) ? XML_Util::attributesToString($obj->attributes) : '';
-                $string .= '>'.$this->options['linebreak'];
-
+                $string .= '<'.$this->options['name'].'>'.$this->options['linebreak'];
                 $this->_deep++;
                 $indent = str_repeat($this->options['indent'], $this->_deep);
             }

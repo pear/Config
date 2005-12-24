@@ -69,7 +69,7 @@ class Config_Container_IniCommented {
             } elseif (preg_match('/^\s*$/', $line)) {
                 // a blank line
                 $currentSection->createBlank();
-            } elseif (preg_match('/^\s*([a-zA-Z0-9_\-\.\s]*)\s*=\s*(.*)\s*$/', $line, $match)) {
+			} elseif (preg_match('/^\s*([a-zA-Z0-9_\-\.\s]*)\s*=\s*(.*)\s*$/', $line, $match)) {
                 // a directive
                 
                 $values = $this->_quoteAndCommaParser($match[2]);
@@ -80,7 +80,7 @@ class Config_Container_IniCommented {
                 if (count($values)) {
                     foreach($values as $value) {
                         if ($value[0] == 'normal') {
-                            $currentSection->createDirective($match[1], $value[1]);
+                            $currentSection->createDirective(trim($match[1]), $value[1]);
                         }
                         if ($value[0] == 'comment') {
                             $currentSection->createComment(substr($value[1], 1));
@@ -191,7 +191,6 @@ class Config_Container_IniCommented {
                                 continue 2;
                             } else {
                                 while ($state != 'normal') {
-                                	$returnpos++;
                                     array_pop($stack);
                                     $state = $this->_getQACEvent($stack);
                                 }
@@ -283,7 +282,7 @@ class Config_Container_IniCommented {
                         $childrenCount[$obj->name]++;
                     } else {
                         $childrenCount[$obj->name] = 0;
-                        $commaString[$obj->name] = $obj->name.'=';
+                        $commaString[$obj->name] = $obj->name.' = ';
                     }
                     if ($childrenCount[$obj->name] == $count-1) {
                         // Clean the static for future calls to toString
@@ -294,7 +293,7 @@ class Config_Container_IniCommented {
                         $commaString[$obj->name] .= $content.', ';
                     }
                 } else {
-                    $string = $obj->name.'='.$content."\n";
+                    $string = $obj->name.' = '.$content."\n";
                 }
                 break;
             case 'section':
