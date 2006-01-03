@@ -12,6 +12,7 @@
 * Parses configurations into a tree structure
 * Provides XPath like access to directives
   </description>
+  <license>PHP License</license>
   <maintainers>
     <maintainer>
       <user>mansion</user>
@@ -25,20 +26,32 @@
       <email>ryansking@php.net</email>
       <role>lead</role>
     </maintainer>
+		<maintainer>
+			<user>aashley</user>
+			<name>Adam Ashley</name>
+			<email>aashley@php.net</email>
+			<role>lead</role>
+		</maintainer>
   </maintainers>
-  <license>PHP License</license>
   <release>
-    <version>1.10.4</version>
-    <date>2005-02-10</date>
+    <version>1.10.5</version>
+    <date>2006-01-03</date>
+  	<license>PHP License</license>
     <state>stable</state> 
     <notes>
-    Changelog:
-        * Fixed bug #3298 which wouldn't parse arrays with numerical indexes correctly.
-        *Fixed bug #2742 which didn't trim variable names in Inicommented file
-        *changed XML_Parser and XML_Util dependencies to optional, since they're only needed 
-        when parsing XML files (bug #2738)
-        *added a new container for editing files of php constants, courtesy of philip ortel [me@phillipoertel.com] (beta)
+Changelog:
+ * Make what we add quotes around consistent between IniFile and IniCommented.
+ * Fixed bug #3137 Adding a comment caused problems outputing in phparray format.
+ * Fixed bug #3590 Handling phparray formats with implicit numeric keys.
+ * Fixed bug #4623 Rendering to Apache format a second time looses section attributes.
+ * Fixed bug #5598 Allow '=' in values and output it correctly in IniFile format.
+ * Fixed bugs #5033, #5835, #6294 Return only variables by reference as required by PHP 4.4 and 5.1.
+ * Partial Fix for #6385 Allow colon in directive name in IniCommented to match IniFile.
     </notes>
+    <deps>
+        <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
+        <dep type="pkg" rel="has" optional="yes">XML_Util</dep>
+    </deps>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
       <dir name="Config" role="php">
@@ -59,23 +72,39 @@
         <file name="IniFromScratch.php"/>
       </dir>
       <dir name="test" role="test">
+        <file name="phpt_test.php.inc" role="test" />
+        <file name="setup.php.inc" role="test" />
         <file name="bug2742.phpt" role="test" />
         <file name="bug2742.ini" role="test" />
         <file name="bug2780.phpt" role="test" />
-        <file name="phpt_test.php.inc" role="test" />
         <file name="bug3051.phpt" role="test" />
         <file name="bug3051.xml" role="test" />
-        <file name="setup.php.inc" role="test" />
-        <file name="bug3298.php" role="test" />
+        <file name="bug3137.phpt" role="test" />
+        <file name="bug3298.phpt" role="test" />
         <file name="bug3298.xml" role="test" />
-    </dir>
+        <file name="bug3398.phpt" role="test" />
+        <file name="bug3398.ini" role="test" />
+        <file name="bug3590.phpt" role="test" />
+        <file name="bug3590-input.php" role="test" />
+        <file name="bug4623.phpt" role="test" />
+        <file name="bug4623.conf" role="test" />
+      </dir>
     </filelist>
-    <deps>
-        <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
-        <dep type="pkg" rel="has" optional="yes">XML_Util</dep>
-    </deps>
   </release>
 <changelog>
+  <release>
+    <version>1.10.4</version>
+    <date>2005-02-10</date>
+    <state>stable</state> 
+    <notes>
+    Changelog:
+        * Fixed bug #3298 which wouldn't parse arrays with numerical indexes correctly.
+        *Fixed bug #2742 which didn't trim variable names in Inicommented file
+        *changed XML_Parser and XML_Util dependencies to optional, since they're only needed 
+        when parsing XML files (bug #2738)
+        *added a new container for editing files of php constants, courtesy of philip ortel [me@phillipoertel.com] (beta)
+    </notes>
+	</release>
   <release>
     <version>1.10.3</version>
     <date>2004-10-13</date>
@@ -89,7 +118,7 @@
             on the previous behavior, this change may break your code.
     </notes>
   </release>
-<release>
+  <release>
     <version>1.10.2</version>
     <date>2004-06-14</date>
     <state>stable</state> 
@@ -98,7 +127,7 @@
   causing PHPArray container not to work correctly. See also #1556.
   Patch provided by m at tacker dotorg.
     </notes>
-</release>
+  </release>
   <release>
     <version>1.10.1</version>
     <date>2004-06-04</date>
