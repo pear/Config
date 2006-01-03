@@ -195,6 +195,7 @@ class Config_Container_IniCommented {
                                     array_pop($stack);
                                     $state = $this->_getQACEvent($stack);
                                 }
+                                $returnpos++;
                             }
                         break;
                         default :
