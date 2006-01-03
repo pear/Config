@@ -1,5 +1,5 @@
 --TEST--
-regression test for bug #3134
+regression test for bug #3137
 --FILE--
 <?php
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'setup.php.inc';
