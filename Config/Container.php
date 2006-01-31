@@ -286,13 +286,15 @@ class Config_Container {
             if (isset($itemsArr[$index])) {
                 return $itemsArr[$index];
             } else {
-                return false;
+                $return = false
+                return $return;
             }
         } else {
             if ($count = count($itemsArr)) {
                 return $itemsArr[$count-1];
             } else {
-                return false;
+                $return = false;
+                return $return;
             }
         }
     } // end func &getItem
@@ -333,7 +335,8 @@ class Config_Container {
         $match =& $this->getItem(null, $name, null, $attributes);
 
         if (!$match) {
-            return false;
+					  $return = false
+            return $return;
         }
         if (!empty($args)) {
             return $match->searchPath($args);
