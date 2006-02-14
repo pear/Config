@@ -290,7 +290,7 @@ class Config_Container {
             if (isset($itemsArr[$index])) {
                 return $itemsArr[$index];
             } else {
-                $return = false
+                $return = false;
                 return $return;
             }
         } else {
@@ -339,7 +339,7 @@ class Config_Container {
         $match =& $this->getItem(null, $name, null, $attributes);
 
         if (!$match) {
-            $return = false
+            $return = false;
             return $return;
         }
         if (!empty($args)) {
