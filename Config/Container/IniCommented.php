@@ -216,6 +216,11 @@ class Config_Container_IniCommented {
                                 $return[$returnpos] = array('normal', '');
                             }
                             $return[$returnpos][1] .= $char;
+                            if (strcasecmp('true', $return[$returnpos][1]) == 0) {
+                              $return[$returnpos][1] = '1';
+                            } elseif (strcasecmp('false', $return[$returnpos][1]) == 0) {
+                              $return[$returnpos][1] = '';
+                            }
                         }
                     } else {
                         if (trim($char) != '') {
