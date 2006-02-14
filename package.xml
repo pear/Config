@@ -34,19 +34,16 @@
 		</maintainer>
   </maintainers>
   <release>
-    <version>1.10.5</version>
-    <date>2006-01-03</date>
+    <version>1.10.6</version>
+    <date>2006-02-14</date>
   	<license>PHP License</license>
     <state>stable</state> 
     <notes>
 Changelog:
- * Make what we add quotes around consistent between IniFile and IniCommented.
- * Fixed bug #3137 Adding a comment caused problems outputing in phparray format.
- * Fixed bug #3590 Handling phparray formats with implicit numeric keys.
- * Fixed bug #4623 Rendering to Apache format a second time looses section attributes.
- * Fixed bug #5598 Allow '=' in values and output it correctly in IniFile format.
- * Fixed bugs #5033, #5835, #6294 Return only variables by reference as required by PHP 4.4 and 5.1.
- * Partial Fix for #6385 Allow colon in directive name in IniCommented to match IniFile.
+ * More PHP 4.4 and 5.1 return by reference fixes
+ * Fixed bug #4477 fatal error when key of array is longer than 114 chars under PHP4.x
+ * Fixed bug #6385 Allow colon in directive name in IniCommented to match IniFile.
+ * Fixed bug #6441 true and false literals should be parsed appropriately. Booleans are now parsed the same as in parse_ini_file()
     </notes>
     <deps>
         <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
@@ -88,10 +85,28 @@ Changelog:
         <file name="bug3590-input.php" role="test" />
         <file name="bug4623.phpt" role="test" />
         <file name="bug4623.conf" role="test" />
+        <file name="bug6441.phpt" role="test" />
+        <file name="bug6441.ini" role="test" />
       </dir>
     </filelist>
   </release>
 <changelog>
+  <release>
+    <version>1.10.5</version>
+    <date>2006-01-03</date>
+  	<license>PHP License</license>
+    <state>stable</state> 
+    <notes>
+Changelog:
+ * Make what we add quotes around consistent between IniFile and IniCommented.
+ * Fixed bug #3137 Adding a comment caused problems outputing in phparray format.
+ * Fixed bug #3590 Handling phparray formats with implicit numeric keys.
+ * Fixed bug #4623 Rendering to Apache format a second time looses section attributes.
+ * Fixed bug #5598 Allow '=' in values and output it correctly in IniFile format.
+ * Fixed bugs #5033, #5835, #6294 Return only variables by reference as required by PHP 4.4 and 5.1.
+ * Partial Fix for #6385 Allow colon in directive name in IniCommented to match IniFile.
+    </notes>
+	</release>
   <release>
     <version>1.10.4</version>
     <date>2005-02-10</date>
