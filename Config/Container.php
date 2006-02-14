@@ -89,7 +89,11 @@ class Config_Container {
         $this->content    = $content;
         $this->attributes = $attributes;
         $this->parent     = null;
-        $this->_id        = uniqid($name.$type, true);
+        if (version_compare(PHP_VERSION, '5.0.0', 'gt')) {
+            $this->_id    = uniqid($name.$type, true);
+        } else {
+            $this->_id    = uniqid(substr($name.$type, 0, 114), true);
+        }
     } // end constructor
 
     /**
@@ -335,7 +339,7 @@ class Config_Container {
         $match =& $this->getItem(null, $name, null, $attributes);
 
         if (!$match) {
-					  $return = false
+            $return = false
             return $return;
         }
         if (!empty($args)) {
