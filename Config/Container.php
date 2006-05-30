@@ -473,16 +473,22 @@ class Config_Container {
     /**
     * Returns the item rank in its parent children array
     * according to other items with same type and name.
+    * @param bool  count items differently by type
     * @return int  returns int or null if root object
     */
-    function getItemPosition()
+    function getItemPosition($byType = true)
     {
         if (is_object($this->parent)) {
             $pchildren =& $this->parent->children;
             for ($i = 0, $count = count($pchildren); $i < $count; $i++) {
-                if ($pchildren[$i]->name == $this->name &&
-                    $pchildren[$i]->type == $this->type) {
-                    $obj[] =& $pchildren[$i];
+                if ($pchildren[$i]->name == $this->name) {
+                    if ($byType == true) {
+                        if ($pchildren[$i]->type == $this->type) {
+                            $obj[] =& $pchildren[$i];
+                        }
+                    } else {
+                        $obj[] =& $pchildren[$i];
+                    }
                 }
             }
             for ($i = 0, $count = count($obj); $i < $count; $i++) {

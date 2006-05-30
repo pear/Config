@@ -223,7 +223,7 @@ class Config_Container_PHPArray {
             $string = $this->_getParentString($obj->parent).$string;
             $count = $obj->parent->countChildren(null, $obj->name);
             if ($count > 1) {
-                $string .= '['.$obj->getItemPosition().']';
+                $string .= '['.$obj->getItemPosition(false).']';
             }
         }
         return $string;
