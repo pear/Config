@@ -40,6 +40,7 @@
     <state>stable</state> 
     <notes>
 Changelog:
+ * Fixed Bug #7544: Empty attributes in IniCommented are being discarded (Luis Correa d'Almeida)
  * Fixed Bug #7652: wrong xml to phparray convert. Caused by counting position
    of directives and sections seperately. While when converting to some containers
    we want to count them together.
@@ -88,6 +89,9 @@ Changelog:
         <file name="bug6441.ini" role="test" />
         <file name="bug7652.phpt" role="test" />
         <file name="bug7652.xml" role="test" />
+        <file name="bug7544.ini" role="test" />
+        <file name="bug7544-inicommented.phpt" role="test" />
+        <file name="bug7544-inifile.phpt" role="test" />
       </dir>
     </filelist>
   </release>

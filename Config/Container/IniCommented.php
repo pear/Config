@@ -122,7 +122,10 @@ class Config_Container_IniCommented {
     {   
         $text = trim($text);
         if ($text == '') {
-            return array();
+            $emptyNode = array();
+            $emptyNode[0][0] = 'normal';
+            $emptyNode[0][1] = '';
+            return $emptyNode;
         }
 
         // tokens
