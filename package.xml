@@ -26,23 +26,23 @@
       <email>ryansking@php.net</email>
       <role>lead</role>
     </maintainer>
-		<maintainer>
-			<user>aashley</user>
-			<name>Adam Ashley</name>
-			<email>aashley@php.net</email>
-			<role>lead</role>
-		</maintainer>
+    <maintainer>
+      <user>aashley</user>
+      <name>Adam Ashley</name>
+      <email>aashley@php.net</email>
+      <role>lead</role>
+    </maintainer>
   </maintainers>
   <release>
     <version>1.10.7</version>
     <date>2006-05-30</date>
-  	<license>PHP License</license>
+    <license>PHP License</license>
     <state>stable</state> 
     <notes>
 Changelog:
  * Fixed Bug #7652: wrong xml to phparray convert. Caused by counting position
    of directives and sections seperately. While when converting to some containers
-	 we want to count them together.
+   we want to count them together.
     </notes>
     <deps>
         <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
@@ -86,8 +86,8 @@ Changelog:
         <file name="bug4623.conf" role="test" />
         <file name="bug6441.phpt" role="test" />
         <file name="bug6441.ini" role="test" />
-				<file name="bug7652.phpt" role="test" />
-				<file name="bug7652.xml" role="test" />
+        <file name="bug7652.phpt" role="test" />
+        <file name="bug7652.xml" role="test" />
       </dir>
     </filelist>
   </release>
@@ -95,7 +95,7 @@ Changelog:
   <release>
     <version>1.10.6</version>
     <date>2006-02-14</date>
-  	<license>PHP License</license>
+    <license>PHP License</license>
     <state>stable</state> 
     <notes>
 Changelog:
@@ -104,11 +104,11 @@ Changelog:
  * Fixed bug #6385 Allow colon in directive name in IniCommented to match IniFile.
  * Fixed bug #6441 true and false literals should be parsed appropriately. Booleans are now parsed the same as in parse_ini_file()
     </notes>
-	</release>
+  </release>
   <release>
     <version>1.10.5</version>
     <date>2006-01-03</date>
-  	<license>PHP License</license>
+    <license>PHP License</license>
     <state>stable</state> 
     <notes>
 Changelog:
@@ -120,7 +120,7 @@ Changelog:
  * Fixed bugs #5033, #5835, #6294 Return only variables by reference as required by PHP 4.4 and 5.1.
  * Partial Fix for #6385 Allow colon in directive name in IniCommented to match IniFile.
     </notes>
-	</release>
+  </release>
   <release>
     <version>1.10.4</version>
     <date>2005-02-10</date>
@@ -133,7 +133,7 @@ Changelog:
         when parsing XML files (bug #2738)
         *added a new container for editing files of php constants, courtesy of philip ortel [me@phillipoertel.com] (beta)
     </notes>
-	</release>
+  </release>
   <release>
     <version>1.10.3</version>
     <date>2004-10-13</date>
