@@ -44,6 +44,8 @@ Changelog:
  * Fixed Bug #7652: wrong xml to phparray convert. Caused by counting position
    of directives and sections seperately. While when converting to some containers
    we want to count them together.
+ * Add tests to confirm behaviour of Bug #8357. Do not believe it is fixable without removing
+   features.
     </notes>
     <deps>
         <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
@@ -92,6 +94,9 @@ Changelog:
         <file name="bug7544.ini" role="test" />
         <file name="bug7544-inicommented.phpt" role="test" />
         <file name="bug7544-inifile.phpt" role="test" />
+        <file name="bug8357.ini" role="test" />
+        <file name="bug8357-inicommented.phpt" role="test" />
+        <file name="bug8357-inifile.phpt" role="test" />
       </dir>
     </filelist>
   </release>
