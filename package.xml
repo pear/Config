@@ -34,18 +34,14 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>1.10.7</version>
+    <version>1.10.8RC1</version>
     <date>2006-08-11</date>
     <license>PHP License</license>
-    <state>stable</state> 
+    <state>beta</state> 
     <notes>
-Changelog:
- * Fixed Bug #7544: Empty attributes in IniCommented are being discarded (Luis Correa d'Almeida)
- * Fixed Bug #7652: wrong xml to phparray convert. Caused by counting position
-   of directives and sections seperately. While when converting to some containers
-   we want to count them together.
- * Add tests to confirm behaviour of Bug #8357. Do not believe it is fixable without removing
-   features.
+ * Fixed Bug #7097: writeConfig incorrect when root has attributes
+   This fix has the potential to break other things as it is a big change to the
+	 PHPArray backend. Please test.
     </notes>
     <deps>
         <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
@@ -101,6 +97,21 @@ Changelog:
     </filelist>
   </release>
 <changelog>
+  <release>
+    <version>1.10.7</version>
+    <date>2006-08-11</date>
+    <license>PHP License</license>
+    <state>stable</state> 
+    <notes>
+Changelog:
+ * Fixed Bug #7544: Empty attributes in IniCommented are being discarded (Luis Correa d'Almeida)
+ * Fixed Bug #7652: wrong xml to phparray convert. Caused by counting position
+   of directives and sections seperately. While when converting to some containers
+   we want to count them together.
+ * Add tests to confirm behaviour of Bug #8357. Do not believe it is fixable without removing
+   features.
+    </notes>
+  </release>
   <release>
     <version>1.10.6</version>
     <date>2006-02-14</date>
