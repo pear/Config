@@ -2,7 +2,7 @@
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
 <package version="1.0">
   <name>Config</name>
-  <summary>Your configurations swiss-army knife.</summary>
+  <summary>Your configuration's swiss-army knife.</summary>
   <description>The Config package provides methods for configuration manipulation.
 * Creates configurations from scratch
 * Parses and outputs different formats (XML, PHP, INI, Apache...)
