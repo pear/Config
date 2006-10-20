@@ -16,9 +16,9 @@ if (PEAR::isError($result)) {
 }
 
 $exp = '// Comment
-$conf[\'0\'] = \'foo\';
-$conf[\'1\'] = \'bar\';
-$conf[\'2\'] = \'too\';
+$conf[0] = \'foo\';
+$conf[1] = \'bar\';
+$conf[2] = \'too\';
 ';
 
 //print_r($root->toString('phparray'));
