@@ -41,12 +41,8 @@
     <notes>
  * Fixed Bug #7097: writeConfig incorrect when root has attributes
    This fix has the potential to break other things as it is a big change to the
-	 PHPArray backend. Please test.
+   PHPArray backend. Please test.
     </notes>
-    <deps>
-        <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
-        <dep type="pkg" rel="has" optional="yes">XML_Util</dep>
-    </deps>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
       <dir name="Config" role="php">
@@ -95,6 +91,11 @@
         <file name="bug8357-inifile.phpt" role="test" />
       </dir>
     </filelist>
+    <deps>
+      <dep type="php" rel="ge" version="4.3.0" />
+      <dep type="pkg" rel="has" optional="yes">XML_Parser</dep>
+      <dep type="pkg" rel="has" optional="yes">XML_Util</dep>
+    </deps>
   </release>
 <changelog>
   <release>
