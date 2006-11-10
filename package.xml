@@ -34,14 +34,12 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>1.10.8RC1</version>
-    <date>2006-08-11</date>
+    <version>1.10.8</version>
+    <date>2006-11-10</date>
     <license>PHP License</license>
-    <state>beta</state> 
+    <state>stable</state> 
     <notes>
  * Fixed Bug #7097: writeConfig incorrect when root has attributes
-   This fix has the potential to break other things as it is a big change to the
-   PHPArray backend. Please test.
     </notes>
     <filelist>
       <file role="php" baseinstalldir="/" name="Config.php"/>
@@ -98,6 +96,17 @@
     </deps>
   </release>
 <changelog>
+  <release>
+    <version>1.10.8RC1</version>
+    <date>2006-08-11</date>
+    <license>PHP License</license>
+    <state>beta</state> 
+    <notes>
+ * Fixed Bug #7097: writeConfig incorrect when root has attributes
+   This fix has the potential to break other things as it is a big change to the
+   PHPArray backend. Please test.
+    </notes>
+	</release>
   <release>
     <version>1.10.7</version>
     <date>2006-08-11</date>
