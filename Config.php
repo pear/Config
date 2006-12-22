@@ -22,12 +22,13 @@ require_once('Config/Container.php');
 
 $GLOBALS['CONFIG_TYPES'] = 
         array(
-            'apache'        =>array('Config/Container/Apache.php','Config_Container_Apache'),
-            'genericconf'   =>array('Config/Container/GenericConf.php','Config_Container_GenericConf'),
-            'inifile'       =>array('Config/Container/IniFile.php','Config_Container_IniFile'),
-            'inicommented'  =>array('Config/Container/IniCommented.php','Config_Container_IniCommented'),
-            'phparray'      =>array('Config/Container/PHPArray.php','Config_Container_PHPArray'),
-            'xml'           =>array('Config/Container/XML.php','Config_Container_XML')
+            'apache'        => array('Config/Container/Apache.php', 'Config_Container_Apache'),
+            'genericconf'   => array('Config/Container/GenericConf.php', 'Config_Container_GenericConf'),
+            'inifile'       => array('Config/Container/IniFile.php', 'Config_Container_IniFile'),
+            'inicommented'  => array('Config/Container/IniCommented.php', 'Config_Container_IniCommented'),
+            'phparray'      => array('Config/Container/PHPArray.php', 'Config_Container_PHPArray'),
+						'phpconstants'	=> array('Config/Container/PHPConstants.php', 'Config_Container_PHPConstants'),
+            'xml'           => array('Config/Container/XML.php', 'Config_Container_XML')
             );
 
 /**

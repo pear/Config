@@ -34,10 +34,16 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>aashley@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-11-10</date>
+ <developer>
+  <name>Adam Harvey</name>
+  <user>aharvey</user>
+  <email>aharvey@php.net</email>
+  <active>yes</active>
+ </developer>
+ <date>2006-12-22</date>
  <time>09:00:00</time>
  <version>
-  <release>1.10.8</release>
+  <release>1.10.9</release>
   <api>1.10.8</api>
  </version>
  <stability>
@@ -45,7 +51,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>* Fixed Bug #7097: writeConfig incorrect when root has attributes
+ <notes> * Fixed Bug #9632: PHPConstants container not registered. Thanks to 
+   Clemens Lang &lt;neverpanic at gmail dot com&gt;
  </notes>
  <contents>
   <dir name="/">
@@ -119,6 +126,21 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+	 <date>2006-11-10</date>
+	 <time>09:00:00</time>
+	 <version>
+	  <release>1.10.8</release>
+	  <api>1.10.8</api>
+	 </version>
+	 <stability>
+	  <release>stable</release>
+	  <api>stable</api>
+	 </stability>
+	 <license uri="http://www.php.net/license">PHP License</license>
+	 <notes>* Fixed Bug #7097: writeConfig incorrect when root has attributes
+	 </notes>
+	</release>
 	<release>
 	 <date>2006-10-20</date>
 	 <time>03:23:43</time>
