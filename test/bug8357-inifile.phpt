@@ -13,7 +13,7 @@ print $root->toString('phparray');
 
 ?>
 --EXPECT--
-$conf['meta']['robots'][0] = 'index';
-$conf['meta']['robots'][1] = 'follow';
-$conf['meta']['keywords'][0] = 'key';
-$conf['meta']['keywords'][1] = 'words';
+$conf['meta']['robots'][0] = "index";
+$conf['meta']['robots'][1] = "follow";
+$conf['meta']['keywords'][0] = "key";
+$conf['meta']['keywords'][1] = "words";

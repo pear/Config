@@ -13,5 +13,5 @@ print $root->toString('phparray');
 
 ?>
 --EXPECT--
-$conf['meta']['robots'] = 'index, follow';
-$conf['meta']['keywords'] = 'key, words';
+$conf['meta']['robots'] = "index, follow";
+$conf['meta']['keywords'] = "key, words";
