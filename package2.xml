@@ -99,6 +99,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <file name="bug8357-inicommented.phpt" role="test" />
     <file name="bug8357-inifile.phpt" role="test" />
     <file name="bug8357.ini" role="test" />
+		<file name="bug10010.phpt" role="test" />
+		<file name="bug10185.phpt" role="test" />
     <file name="phpt_test.php.inc" role="test" />
     <file name="setup.php.inc" role="test" />
    </dir> <!-- /test -->
