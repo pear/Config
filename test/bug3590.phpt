@@ -10,12 +10,12 @@ if (PEAR::isError($root)) {
     die('Error while reading configuration: ' . $root->getMessage() . "\r\n");
 }
 
-$exp = '$conf[\'mysql\'][\'user\'] = "croooow";
-$conf[\'mysql\'][\'password\'] = "coolrobot";
-$conf[\'mysql\'][\'host\'] = "localhost";
-$conf[\'mysql\'][\'database\'] = "deep13";
-$conf[\'emergencyemails\'][0] = "joel@example.org";
-$conf[\'emergencyemails\'][1] = "cambot@example.org";
+$exp = '$conf[\'mysql\'][\'user\'] = \'croooow\';
+$conf[\'mysql\'][\'password\'] = \'coolrobot\';
+$conf[\'mysql\'][\'host\'] = \'localhost\';
+$conf[\'mysql\'][\'database\'] = \'deep13\';
+$conf[\'emergencyemails\'][0] = \'joel@example.org\';
+$conf[\'emergencyemails\'][1] = \'cambot@example.org\';
 ';
 
 if ($phpt->assertNoErrors('problem!')) {

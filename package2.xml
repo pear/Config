@@ -40,10 +40,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>aharvey@php.net</email>
   <active>yes</active>
  </developer>
- <date>2007-03-26</date>
+ <date>2007-06-12</date>
  <time>22:03:06</time>
  <version>
-	<release>1.10.10</release>
+	<release>1.10.11</release>
 	<api>1.10.8</api>
  </version>
  <stability>
@@ -52,8 +52,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
- * Fix Bug #10010: numeric index lost when parsing subarrays
- * Fix Bug #10185: problem with addslashs in container &quot;PHPArray&quot; / method &quot;toString&quot;
+  Fixed Bug #11184: Knock on problems from fix for Bug #10185. Thanks to
+	Thomas Despoix and Carsten Wiedmann for helping me understand it properly.
  </notes>
  <contents>
   <dir name="/">
@@ -129,6 +129,23 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <date>2007-03-26</date>
+   <time>22:03:06</time>
+   <version>
+	  <release>1.10.10</release>
+	  <api>1.10.8</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+ * Fix Bug #10010: numeric index lost when parsing subarrays
+ * Fix Bug #10185: problem with addslashs in container &quot;PHPArray&quot; / method &quot;toString&quot;
+   </notes>
+  </release>
   <release>
    <date>2006-12-22</date>
    <time>09:00:00</time>

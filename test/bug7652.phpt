@@ -13,9 +13,9 @@ print $root->toString('phparray');
 
 ?>
 --EXPECT--
-$conf['root']['tag1'][0]['#'] = "";
-$conf['root']['tag1'][0]['@']['attrib'] = "val";
-$conf['root']['tag1'][1]['@']['attrib'] = "val2";
-$conf['root']['tag1'][1]['tag2'] = "hello world";
-$conf['root']['tag1'][2]['#'] = "";
-$conf['root']['tag1'][2]['@']['attrib'] = "val23";
+$conf['root']['tag1'][0]['#'] = '';
+$conf['root']['tag1'][0]['@']['attrib'] = 'val';
+$conf['root']['tag1'][1]['@']['attrib'] = 'val2';
+$conf['root']['tag1'][1]['tag2'] = 'hello world';
+$conf['root']['tag1'][2]['#'] = '';
+$conf['root']['tag1'][2]['@']['attrib'] = 'val23';

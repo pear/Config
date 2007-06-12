@@ -13,8 +13,8 @@ print $root->toString('phparray');
 
 ?>
 --EXPECT--
-$conf['test']['myattrib1'] = "wee";
-$conf['test']['myattrib2'] = "";
+$conf['test']['myattrib1'] = 'wee';
+$conf['test']['myattrib2'] = '';
 // comment
 
 // after blank line
