@@ -52,8 +52,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-  Fixed Bug #11184: Knock on problems from fix for Bug #10185. Thanks to
-	Thomas Despoix and Carsten Wiedmann for helping me understand it properly.
+ * Fixed Bug #11184: Knock on problems from fix for Bug #10185. Thanks to
+   Thomas Despoix and Carsten Wiedmann for helping me understand it properly.
  </notes>
  <contents>
   <dir name="/">
