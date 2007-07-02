@@ -14,7 +14,6 @@ http://pear.php.net/dtd/package-2.0.xsd">
 * Allows manipulation of sections, comments, directives...
 * Parses configurations into a tree structure
 * Provides XPath like access to directives
-  
  </description>
  <lead>
   <name>Bertrand Mansion</name>
@@ -43,17 +42,16 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>2007-06-12</date>
  <time>22:03:06</time>
  <version>
-	<release>1.10.11</release>
-	<api>1.10.8</api>
+  <release>1.10.12</release>
+  <api>1.10.8</api>
  </version>
  <stability>
   <release>stable</release>
-	<api>stable</api>
+  <api>stable</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
- * Fixed Bug #11184: Knock on problems from fix for Bug #10185. Thanks to
-   Thomas Despoix and Carsten Wiedmann for helping me understand it properly.
+ * Fixed Bug #11435: Fix IniCommented parsing of ~ ! | &amp; ( ).
  </notes>
  <contents>
   <dir name="/">
@@ -99,8 +97,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <file name="bug8357-inicommented.phpt" role="test" />
     <file name="bug8357-inifile.phpt" role="test" />
     <file name="bug8357.ini" role="test" />
-		<file name="bug10010.phpt" role="test" />
-		<file name="bug10185.phpt" role="test" />
+    <file name="bug10010.phpt" role="test" />
+    <file name="bug10185.phpt" role="test" />
+		<file name="bug11435-inicommented.phpt" role="test" />
+		<file name="bug11435.ini" role="test" />
     <file name="phpt_test.php.inc" role="test" />
     <file name="setup.php.inc" role="test" />
    </dir> <!-- /test -->
@@ -130,11 +130,28 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <phprelease />
  <changelog>
   <release>
+   <date>2007-06-12</date>
+   <time>22:03:06</time>
+   <version>
+    <release>1.10.11</release>
+    <api>1.10.8</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+ * Fixed Bug #11184: Knock on problems from fix for Bug #10185. Thanks to
+   Thomas Despoix and Carsten Wiedmann for helping me understand it properly.
+   </notes>
+  </release>
+  <release>
    <date>2007-03-26</date>
    <time>22:03:06</time>
    <version>
-	  <release>1.10.10</release>
-	  <api>1.10.8</api>
+    <release>1.10.10</release>
+    <api>1.10.8</api>
    </version>
    <stability>
     <release>stable</release>

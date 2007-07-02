@@ -101,6 +101,7 @@ class Config_Container_IniCommented {
     /**
      * Quote and Comma Parser for INI files
      *
+		 1;3D
      * This function allows complex values such as:
      *
      * <samp>
@@ -285,7 +286,13 @@ class Config_Container_IniCommented {
                           strpos($content, '=') !== false ||
                           strpos($content, '"') !== false ||
                           strpos($content, '%') !== false ||
-                          strpos($content, '~') !== false) {
+                          strpos($content, '~') !== false ||
+													strpos($content, '!') !== false ||
+													strpos($content, '|') !== false ||
+													strpos($content, '&') !== false ||
+													strpos($content, '(') !== false ||
+													strpos($content, ')') !== false ||
+													$content === 'none') {
                     $content = '"'.addslashes($content).'"';          
                 }
                 if ($count > 1) {
