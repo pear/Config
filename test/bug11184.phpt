@@ -29,6 +29,10 @@ echo "Actual values: ";
 print_r($actualValues);
 
 ?>
+--CLEAN--
+<?php
+unlink('bug11184-output.php');
+?>
 --EXPECT--
 Expected values: Array
 (

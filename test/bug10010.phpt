@@ -35,6 +35,10 @@ include($filename);
 print_r($words)
 
 ?>
+--CLEAN--
+<?php
+unlink('bug10010-output.php');
+?>
 --EXPECT--
 Array
 (

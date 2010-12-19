@@ -21,5 +21,9 @@ if ($phpt->assertNoErrors('problem!')) {
 }
 echo 'tests done'; 
 ?>
+--CLEAN--
+<?php
+unlink('new_config.xml');
+?>
 --EXPECT--
 tests done

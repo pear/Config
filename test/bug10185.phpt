@@ -28,6 +28,12 @@ $conf2->writeConfig('bug10185.httpd.conf.new', 'apache');
 readfile('bug10185.httpd.conf.new');
 
 ?>
+--CLEAN--
+<?php
+unlink('bug10185.httpd.conf.new.php');
+unlink('bug10185.httpd.conf.new');
+unlink('bug10185.httpd.conf.old');
+?>
 --EXPECT--
 LogFormat "%h %l %u %t \"%r\" %>s %b" common
 <Directory "/foo/bar">
