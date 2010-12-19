@@ -5,7 +5,7 @@ test for bug 3051
 
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'setup.php.inc';
 
-$root =& $config->parseConfig('bug3051.xml', 'xml');
+$root =& $config->parseConfig(dirname(__FILE__) . '/bug3051.xml', 'xml');
 
 $root =& $root->getChild(0);
 
