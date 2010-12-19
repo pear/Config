@@ -70,7 +70,7 @@ class Config_Container_IniFile {
                 $currentSection =& $obj->container->createSection($key);
                 foreach ($value as $directive => $content) {
                     // try to split the value if comma found
-                    if (strpos($content, '"') === false) {
+                    if (!is_array($content) && strpos($content, '"') === false) {
                         $values = preg_split('/\s*,\s+/', $content);
                         if (count($values) > 1) {
                             foreach ($values as $k => $v) {
