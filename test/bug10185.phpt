@@ -14,6 +14,7 @@ $conf .= '</Directory>'.PHP_EOL;
 $conf .= '<Directory "\\\foo\\\bar">'.PHP_EOL;
 $conf .= '  CustomLog "\\\foo\\\bar\\\access.log" common'.PHP_EOL;
 $conf .= '</Directory>'.PHP_EOL;
+file_put_contents('bug10185.httpd.conf.old', $conf);
 
 $conf1 = new Config;
 $root1 =& $conf1->parseConfig('bug10185.httpd.conf.old', 'apache');
