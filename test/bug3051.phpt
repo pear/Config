@@ -3,8 +3,7 @@ test for bug 3051
 --FILE--
 <?php
 
-require_once 'Config.php';
-$config = new Config();
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'setup.php.inc';
 
 $root =& $config->parseConfig('bug3051.xml', 'xml');
 
