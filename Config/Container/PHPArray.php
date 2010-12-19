@@ -171,6 +171,8 @@ class Config_Container_PHPArray {
                     $string .= $obj->content;
                 } elseif (is_bool($obj->content)) {
                     $string .= ($obj->content) ? 'true' : 'false';
+                } elseif ($obj->content === null) {
+                    $string .= 'null';
                 }
                 $string .= ";\n";
                 $string .= $attrString;
