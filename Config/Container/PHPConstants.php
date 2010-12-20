@@ -31,11 +31,15 @@ class Config_Container_PHPConstants extends Config_Container {
 
     /**
     * This class options
-    * Not used at the moment
+    *
+    * Valid config options:
+    * - "lowercase" - boolean - config names are lowercased when reading them
     *
     * @var  array
     */
-    var $options = array();
+    var $options = array(
+        'lowercase' => false
+    );
 
     /**
     * Constructor
@@ -45,7 +49,7 @@ class Config_Container_PHPConstants extends Config_Container {
     */
     function Config_Container_PHPConstants($options = array())
     {
-        $this->options = $options;
+        $this->options = array_merge($this->options, $options);
     } // end constructor
 
     /**
@@ -97,7 +101,11 @@ class Config_Container_PHPConstants extends Config_Container {
             $regex = "/^\s*define\s*\('([A-Z1-9_]+)',\s*'*(.[^\']*)'*\)/";
             preg_match($regex, $line, $matches);
             if (!empty($matches)) {
-                $obj->container->createDirective(trim($matches[1]), 
+                $name = trim($matches[1]);
+                if ($this->options['lowercase']) {
+                    $name = strtolower($name);
+                }
+                $obj->container->createDirective($name, 
                     trim($matches[2]));
             }
         }
@@ -133,7 +141,7 @@ class Config_Container_PHPConstants extends Config_Container {
                             'true')) && !preg_match('/^[A-Z_]+$/', $content)) {
                      $content = "'".$content."'";
                  }
-                 $string = 'define(\''.$obj->name.'\', '.$content.');'.chr(10);
+                 $string = 'define(\''.strtoupper($obj->name).'\', '.$content.');'.chr(10);
                  break;
                  
              case 'section':
