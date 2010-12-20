@@ -1,9 +1,9 @@
 --TEST--
-Test for request #12387: Allow spaces after the key
+Test for request #12388: Allow spaces after the key
 --FILE--
 <?php
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'setup.php.inc';
-$datasrc = dirname(__FILE__) . '/bug12387.ini';
+$datasrc = dirname(__FILE__) . '/bug12388.ini';
 $root = $config->parseConfig($datasrc, 'genericconf');
 var_dump($root->toArray());
 ?>
