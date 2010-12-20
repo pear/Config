@@ -9,5 +9,5 @@ echo $root->toString('inifile');
 ?>
 --EXPECT--
 [section]
-directive[] = value1
-directive[] = value2
+directive[]=value1
+directive[]=value2
