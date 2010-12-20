@@ -112,7 +112,12 @@ class Config_Container_PHPArray {
                     break;
                 default:
                     if (is_array($value)) {
-                        if ($this->options['duplicateDirectives'] == true && is_integer(key($value))) {
+                        if ($this->options['duplicateDirectives'] == true
+                            //speed (first/one key is numeric)
+                            && is_integer(key($value))
+                            //accuracy (all keys are numeric)
+                            && 1 == count(array_unique(array_map('is_numeric', array_keys($value))))
+                        ) {
                             foreach ($value as $nestedValue) {
                                 if (is_array($nestedValue)) {
                                     $section =& $container->createSection($key);
