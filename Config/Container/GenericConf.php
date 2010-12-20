@@ -93,7 +93,7 @@ class Config_Container_GenericConf {
             } elseif (preg_match('/^\s*$/', $line)) {
                 // a blank line
                 $currentSection->createBlank();
-            } elseif (preg_match('/^\s*(\w+)\s*'.$this->options['equals'].'\s*((.*?)|)\s*$/', $line, $match)) {
+            } elseif (preg_match('/^\s*([\w-]+)\s*'.$this->options['equals'].'\s*((.*?)|)\s*$/', $line, $match)) {
                 // a directive
                 $currentSection->createDirective($match[1], $match[2]);
             } else {
