@@ -137,7 +137,9 @@ class Config_Container_PHPConstants extends Config_Container {
              case 'directive':
                  $content = $obj->content;
                  // don't quote numeric values, true/false and constants
-                 if (!is_numeric($content)
+                 if (is_bool($content)) {
+                     $content = var_export($content, true);
+                 } else if (!is_numeric($content)
                      && !in_array($content, array('false', 'true'))
                      && !preg_match('/^[A-Z_]+$/', $content)
                  ) {
