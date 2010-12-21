@@ -137,11 +137,16 @@ class Config_Container_PHPConstants extends Config_Container {
              case 'directive':
                  $content = $obj->content;
                  // don't quote numeric values, true/false and constants
-                 if (!is_numeric($content) && !in_array($content, array('false', 
-                            'true')) && !preg_match('/^[A-Z_]+$/', $content)) {
-                     $content = "'".$content."'";
+                 if (!is_numeric($content)
+                     && !in_array($content, array('false', 'true'))
+                     && !preg_match('/^[A-Z_]+$/', $content)
+                 ) {
+                     $content = "'" . str_replace("'", '\\\'', $content) . "'";
                  }
-                 $string = 'define(\''.strtoupper($obj->name).'\', '.$content.');'.chr(10);
+                 $string = 'define('
+                     . '\'' . strtoupper($obj->name) . '\''
+                     . ', ' . $content . ');'
+                     . chr(10);
                  break;
                  
              case 'section':
