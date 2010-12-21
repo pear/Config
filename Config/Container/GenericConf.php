@@ -78,9 +78,9 @@ class Config_Container_GenericConf {
         foreach ($lines as $line) {
             $n++;
             if (!preg_match('/^\s*'.$this->options['comment'].'/', $line) && 
-                 preg_match('/^\s*(.*)\s+'.$this->options['newline'].'\s*$/', $line, $match)) {
+                 preg_match('/^\s*(.*)'.$this->options['newline'].'\s*$/', $line, $match)) {
                 // directive on more than one line
-                $lastline .= $match[1].' ';
+                $lastline .= $match[1];
                 continue;
             }
             if ($lastline != '') {
