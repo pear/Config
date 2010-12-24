@@ -66,6 +66,8 @@ Bugs fixed:
    a directive. (cweiske)
  * Fixed Bug #12388: GenericConf doesn't allow whitepace to left of directive
    delimiter. (cweiske)
+ * Fixed Bug #13116: Syntax Strict notice for references on constructors.
+   (fjfnaranjo)
  * Fixed Bug #15964: errors in test suite. (cweiske)
  * Fixed Bug #16590: parseConfig phparray ignores named arrays that use numbers
    as name. (cweiske)
@@ -200,6 +202,8 @@ Bugs fixed:
    a directive. (cweiske)
  * Fixed Bug #12388: GenericConf doesn't allow whitepace to left of directive
    delimiter. (cweiske)
+ * Fixed Bug #13116: Syntax Strict notice for references on constructors.
+   (fjfnaranjo)
  * Fixed Bug #15964: errors in test suite. (cweiske)
  * Fixed Bug #16590: parseConfig phparray ignores named arrays that use numbers
    as name. (cweiske)
