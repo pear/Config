@@ -39,8 +39,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>aharvey@php.net</email>
   <active>yes</active>
  </developer>
- <date>2007-06-12</date>
- <time>22:03:06</time>
+ <date>2010-12-24</date>
+ <time>12:45:00</time>
  <version>
   <release>1.10.12</release>
   <api>1.10.8</api>
@@ -51,7 +51,32 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
- * Fixed Bug #11435: Fix IniCommented parsing of ~ ! | &amp; ( ).
+I believe we'll call this the "all hail Christian Weiske" release, since he's
+been a very busy bee.
+
+Bugs fixed:
+
+ * Fixed Bug #11435: Fix IniCommented parsing of ~ ! | &amp; ( ). (aashley)
+ * Fixed Bug #11807: Config can create invalid php for unknown values.
+   (cweiske)
+ * Fixed Bug #11827: notice when using arrays (directive[]=value) in inifiles.
+   (cweiske)
+ * Fixed Bug #12291: PEAR GenericConf newline shouldn't need a space. (cweiske)
+ * Fixed Bug #12387: GenericConf doesn't allow for hyphens on left-hand-side of
+   a directive. (cweiske)
+ * Fixed Bug #12388: GenericConf doesn't allow whitepace to left of directive
+   delimiter. (cweiske)
+ * Fixed Bug #15964: errors in test suite. (cweiske)
+ * Fixed Bug #16590: parseConfig phparray ignores named arrays that use numbers
+   as name. (cweiske)
+ * Fixed Bug #18124: Saving arrays back to ini file fails. (cweiske)
+
+Feature requests implemented:
+
+ * Request #13791: Options for the PHPConstants container. (cweiske)
+ * Request #16656: New 'linebreak' option for IniCommented container. (cweiske)
+ * Request #16724: PHPConstants container should have option lowercase.
+   (cweiske)
  </notes>
  <contents>
   <dir name="/">
@@ -99,8 +124,26 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <file name="bug8357.ini" role="test" />
     <file name="bug10010.phpt" role="test" />
     <file name="bug10185.phpt" role="test" />
-		<file name="bug11435-inicommented.phpt" role="test" />
-		<file name="bug11435.ini" role="test" />
+    <file name="bug11435-inicommented.phpt" role="test" />
+    <file name="bug11435-inifile.phpt" role="test" />
+    <file name="bug11435.ini" role="test" />
+    <file name="bug11807.phpt" role="test" />
+    <file name="bug11827.ini" role="test" />
+    <file name="bug11827.phpt" role="test" />
+    <file name="bug12291.ini" role="test" />
+    <file name="bug12291.phpt" role="test" />
+    <file name="bug12387.ini" role="test" />
+    <file name="bug12387.phpt" role="test" />
+    <file name="bug12388.ini" role="test" />
+    <file name="bug12388.phpt" role="test" />
+    <file name="bug13791.phpt" role="test" />
+    <file name="bug16590.phpt" role="test" />
+    <file name="bug16590-2.phpt" role="test" />
+    <file name="bug16656.ini" role="test" />
+    <file name="bug16656.phpt" role="test" />
+    <file name="bug16724.phpt" role="test" />
+    <file name="bug16724-config.php" role="test" />
+    <file name="bug18124.phpt" role="test" />
     <file name="phpt_test.php.inc" role="test" />
     <file name="setup.php.inc" role="test" />
    </dir> <!-- /test -->
@@ -129,6 +172,47 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </dependencies>
  <phprelease />
  <changelog>
+  <release>
+   <date>2010-12-24</date>
+   <time>12:45:00</time>
+   <version>
+    <release>1.10.12</release>
+    <api>1.10.8</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+I believe we'll call this the "all hail Christian Weiske" release, since he's
+been a very busy bee.
+
+Bugs fixed:
+
+ * Fixed Bug #11435: Fix IniCommented parsing of ~ ! | &amp; ( ). (aashley)
+ * Fixed Bug #11807: Config can create invalid php for unknown values.
+   (cweiske)
+ * Fixed Bug #11827: notice when using arrays (directive[]=value) in inifiles.
+   (cweiske)
+ * Fixed Bug #12291: PEAR GenericConf newline shouldn't need a space. (cweiske)
+ * Fixed Bug #12387: GenericConf doesn't allow for hyphens on left-hand-side of
+   a directive. (cweiske)
+ * Fixed Bug #12388: GenericConf doesn't allow whitepace to left of directive
+   delimiter. (cweiske)
+ * Fixed Bug #15964: errors in test suite. (cweiske)
+ * Fixed Bug #16590: parseConfig phparray ignores named arrays that use numbers
+   as name. (cweiske)
+ * Fixed Bug #18124: Saving arrays back to ini file fails. (cweiske)
+
+Feature requests implemented:
+
+ * Request #13791: Options for the PHPConstants container. (cweiske)
+ * Request #16656: New 'linebreak' option for IniCommented container. (cweiske)
+ * Request #16724: PHPConstants container should have option lowercase.
+   (cweiske)
+   </notes>
+  </release>
   <release>
    <date>2007-06-12</date>
    <time>22:03:06</time>
@@ -639,3 +723,4 @@ Some containers are still missing : XML and DB.
   </release>
  </changelog>
 </package>
+<!-- vim: set nocin ai ts=1 sw=1 et: -->
