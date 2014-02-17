@@ -42,5 +42,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "*"
+    },
+    "suggest": {
+        "pear/xml_parser": "Install optionally via your project's composer.json"
     }
 }
