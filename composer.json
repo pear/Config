@@ -1,0 +1,49 @@
+{
+    "authors": [
+        {
+            "email": "bmansion@mamasam.com",
+            "name": "Bertrand Mansion",
+            "role": "Lead"
+        },
+        {
+            "email": "ryansking@php.net",
+            "name": "Ryan King",
+            "role": "Lead"
+        },
+        {
+            "email": "aashley@php.net",
+            "name": "Adam Ashley",
+            "role": "Lead"
+        },
+        {
+            "email": "aharvey@php.net",
+            "name": "Adam Harvey",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Config": "./"
+        }
+    },
+    "description": "More info available on: http://pear.php.net/package/Config",
+    "include-path": [
+        "./"
+    ],
+    "license": "PHP License",
+    "name": "pear/config",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Config",
+        "source": "https://github.com/pear/Config"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "suggest": {
+        "pear/xml_parser": "Install optionally via your project's composer.json"
+    }
+}
