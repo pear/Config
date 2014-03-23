@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------+
-// | PHP Version 4                                                        |
+// | PHP Version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1997-2003 The PHP Group                                |
 // +----------------------------------------------------------------------+
@@ -41,7 +41,7 @@ class Config_Container_IniCommented {
     * @access public
     * @param    string  $options    (optional)Options to be used by renderer
     */
-    function Config_Container_IniCommented($options = array())
+    function __construct($options = array())
     {
         $this->options = array_merge($this->options, $options);
     } // end constructor
@@ -54,7 +54,7 @@ class Config_Container_IniCommented {
     * @param object $obj        reference to a config object
     * @return mixed returns a PEAR_ERROR, if error occurs or true if ok
     */
-    function &parseDatasrc($datasrc, &$obj)
+    function parseDatasrc($datasrc, $obj)
     {
         $return = true;
         if (!file_exists($datasrc)) {
@@ -280,7 +280,7 @@ class Config_Container_IniCommented {
     * @access   public
     * @return   string
     */
-    function toString(&$obj)
+    function toString($obj)
     {
         static $childrenCount, $commaString;
 
@@ -353,4 +353,3 @@ class Config_Container_IniCommented {
         return $string;
     } // end func toString
 } // end class Config_Container_IniCommented
-?>

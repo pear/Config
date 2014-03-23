@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------+
-// | PHP Version 4                                                        |
+// | PHP Version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1997-2003 The PHP Group                                |
 // +----------------------------------------------------------------------+
@@ -81,7 +81,7 @@ class Config_Container_XML extends XML_Parser
     *                               useAttr     : whether to use the attributes
     *                               isFile      : whether the given content is a file or an XML string
     */
-    function Config_Container_XML($options = array())
+    function __construct($options = array())
     {
         foreach ($options as $key => $value) {
             $this->options[$key] = $value;
@@ -101,8 +101,8 @@ class Config_Container_XML extends XML_Parser
         $err = true;
         $this->folding = false;
         $this->cdata = null;
-        $this->XML_Parser($this->options['encoding'], 'event');
-        $this->containers[0] =& $obj->container;
+        parent::__construct($this->options['encoding'], 'event');
+        $this->containers[0] = $obj->container;
         if (is_string($datasrc)) {
             if ($this->options['isFile']) {
                 $err = $this->setInputFile($datasrc);
@@ -131,8 +131,8 @@ class Config_Container_XML extends XML_Parser
     */
     function startHandler($xp, $elem, &$attribs)
     {
-        $container =& new Config_Container('section', $elem, null, $attribs);
-        $this->containers[] =& $container;
+        $container = new Config_Container('section', $elem, null, $attribs);
+        $this->containers[] = $container;
         return null;
     } // end func startHandler
 
@@ -147,8 +147,8 @@ class Config_Container_XML extends XML_Parser
     function endHandler($xp, $elem)
     {
         $count = count($this->containers);
-        $container =& $this->containers[$count-1];
-        $currentSection =& $this->containers[$count-2];
+        $container = $this->containers[$count-1];
+        $currentSection = $this->containers[$count-2];
         if (count($container->children) == 0) {
             $container->setType('directive');
             $container->setContent(trim($this->cdata));
@@ -178,7 +178,7 @@ class Config_Container_XML extends XML_Parser
     * @access   public
     * @return   string
     */
-    function toString(&$obj)
+    function toString($obj)
     {
         $indent = '';
         if (!$obj->isRoot()) {
@@ -246,4 +246,3 @@ class Config_Container_XML extends XML_Parser
         return $string;
     } // end func toString
 } // end class Config_Container_XML
-?>

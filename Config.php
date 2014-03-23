@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------+
-// | PHP Version 4                                                        |
+// | PHP Version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1997-2003 The PHP Group                                |
 // +----------------------------------------------------------------------+
@@ -228,4 +228,3 @@ class Config {
         return $this->container->writeDatasrc($datasrc, $configType, $options);
     } // end func writeConfig
 } // end class Config
-?>

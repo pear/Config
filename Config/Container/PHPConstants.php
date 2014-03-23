@@ -2,7 +2,7 @@
 /**
  * Part of the PEAR Config package
  *
- * PHP Version 4
+ * PHP Version 5
  *
  * @category Configuration
  * @package  Config
@@ -41,7 +41,7 @@ class Config_Container_PHPConstants extends Config_Container
      *
      * @access public
      */
-    function Config_Container_PHPConstants($options = array())
+    function __construct($options = array())
     {
         $this->options = array_merge($this->options, $options);
     } // end constructor
@@ -185,7 +185,7 @@ class Config_Container_PHPConstants extends Config_Container
      *
      * @access public
      */
-    function writeDatasrc($datasrc, &$obj)
+    function writeDatasrc($datasrc, $obj)
     {
         $fp = @fopen($datasrc, 'w');
         if (!$fp) {
@@ -218,5 +218,3 @@ class Config_Container_PHPConstants extends Config_Container
 
      
 } // end class Config_Container_PHPConstants
-
-?>

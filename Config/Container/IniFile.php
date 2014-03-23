@@ -2,7 +2,7 @@
 /**
  * Part of the PEAR Config package
  *
- * PHP Version 4
+ * PHP Version 5
  *
  * @category Configuration
  * @package  Config
@@ -42,7 +42,7 @@ class Config_Container_IniFile
      *
      * @access public
      */
-    function Config_Container_IniFile($options = array())
+    function __construct($options = array())
     {
         $this->options = $options;
     } // end constructor
@@ -57,7 +57,7 @@ class Config_Container_IniFile
      *
      * @access public
      */
-    function &parseDatasrc($datasrc, &$obj)
+    function parseDatasrc($datasrc, $obj)
     {
         $return = true;
         if (!file_exists($datasrc)) {
@@ -66,7 +66,7 @@ class Config_Container_IniFile
                 null, PEAR_ERROR_RETURN
             );
         }
-        $currentSection =& $obj->container;
+        $currentSection = $obj->container;
         $confArray = parse_ini_file($datasrc, true);
         if (!$confArray) {
             return PEAR::raiseError(
@@ -108,7 +108,7 @@ class Config_Container_IniFile
      *
      * @access public
      */
-    function toString(&$obj)
+    function toString($obj)
     {
         static $childrenCount, $commaString;
 
@@ -214,4 +214,3 @@ class Config_Container_IniFile
     }
 
 } // end class Config_Container_IniFile
-?>

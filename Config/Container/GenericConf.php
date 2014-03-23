@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------+
-// | PHP Version 4                                                        |
+// | PHP Version 5                                                        |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 1997-2003 The PHP Group                                |
 // +----------------------------------------------------------------------+
@@ -42,7 +42,7 @@ class Config_Container_GenericConf {
     * @access public
     * @param    string  $options    (optional)Options to be used by renderer
     */
-    function Config_Container_GenericConf($options = array())
+    function __construct($options = array())
     {
         if (empty($options['comment'])) {
             $options['comment'] = '#';
@@ -64,7 +64,7 @@ class Config_Container_GenericConf {
     * @param object $obj        reference to a config object
     * @return mixed returns a PEAR_ERROR, if error occurs or true if ok
     */
-    function &parseDatasrc($datasrc, &$obj)
+    function parseDatasrc($datasrc, $obj)
     {
         $return = true;
         if (!is_readable($datasrc)) {
@@ -109,7 +109,7 @@ class Config_Container_GenericConf {
     * @access public
     * @return string
     */
-    function toString(&$obj)
+    function toString($obj)
     {
         $string = '';
         switch ($obj->type) {
@@ -136,4 +136,3 @@ class Config_Container_GenericConf {
         return $string;
     } // end func toString
 } // end class Config_Container_GenericConf
-?>
