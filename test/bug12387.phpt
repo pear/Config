@@ -9,9 +9,9 @@ var_dump($root->toArray());
 ?>
 --EXPECT--
 array(1) {
-  'root' =>
+  ["root"]=>
   array(1) {
-    'hy-phen' =>
+    ["hy-phen"]=>
     string(5) "value"
   }
 }

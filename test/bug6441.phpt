@@ -14,20 +14,20 @@ var_dump($conf);
 ?>
 --EXPECT--
 array(8) {
-  'val1' =>
+  ["val1"]=>
   string(1) "1"
-  'val2' =>
+  ["val2"]=>
   string(0) ""
-  'val3' =>
+  ["val3"]=>
   string(1) "1"
-  'val4' =>
+  ["val4"]=>
   string(0) ""
-  'val5' =>
+  ["val5"]=>
   string(1) "1"
-  'val6' =>
+  ["val6"]=>
   string(0) ""
-  'val7' =>
+  ["val7"]=>
   string(4) "true"
-  'val8' =>
+  ["val8"]=>
   string(5) "false"
 }
