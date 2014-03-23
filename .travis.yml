@@ -1,6 +1,6 @@
 language: php
 install:
-  - pear install package.xml
+  - pear install -a package.xml
 php:
   - 5.5
 script: phpunit test/
