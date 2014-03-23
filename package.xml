@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package packagerversion="1.4.11" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
-http://pear.php.net/dtd/tasks-1.0.xsd
-http://pear.php.net/dtd/package-2.0
-http://pear.php.net/dtd/package-2.0.xsd">
+<package packagerversion="1.9.4" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Config</name>
  <channel>pear.php.net</channel>
  <summary>Your configuration&apos;s swiss-army knife.</summary>
@@ -13,8 +10,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 * Converts configurations to other formats
 * Allows manipulation of sections, comments, directives...
 * Parses configurations into a tree structure
-* Provides XPath like access to directives
- </description>
+* Provides XPath like access to directives</description>
  <lead>
   <name>Bertrand Mansion</name>
   <user>mansion</user>
@@ -39,11 +35,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>aharvey@php.net</email>
   <active>yes</active>
  </lead>
- <date>2010-12-24</date>
- <time>12:45:00</time>
+ <date>2014-03-24</date>
+ <time>01:44:07</time>
  <version>
-  <release>1.10.12</release>
-  <api>1.10.8</api>
+  <release>2.0.0</release>
+  <api>2.0.0</api>
  </version>
  <stability>
   <release>stable</release>
@@ -51,106 +47,77 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-I believe we'll call this the "all hail Christian Weiske" release, since he's
-been a very busy bee.
-
-Bugs fixed:
-
- * Fixed Bug #11435: Fix IniCommented parsing of ~ ! | &amp; ( ). (aashley)
- * Fixed Bug #11807: Config can create invalid php for unknown values.
-   (cweiske)
- * Fixed Bug #11827: notice when using arrays (directive[]=value) in inifiles.
-   (cweiske)
- * Fixed Bug #12291: PEAR GenericConf newline shouldn't need a space. (cweiske)
- * Fixed Bug #12387: GenericConf doesn't allow for hyphens on left-hand-side of
-   a directive. (cweiske)
- * Fixed Bug #12388: GenericConf doesn't allow whitepace to left of directive
-   delimiter. (cweiske)
- * Fixed Bug #13116: Syntax Strict notice for references on constructors.
-   (fjfnaranjo)
- * Fixed Bug #15964: errors in test suite. (cweiske)
- * Fixed Bug #16590: parseConfig phparray ignores named arrays that use numbers
-   as name. (cweiske)
- * Fixed Bug #18124: Saving arrays back to ini file fails. (cweiske)
-
-Feature requests implemented:
-
- * Request #13791: Options for the PHPConstants container. (cweiske)
- * Request #16656: New 'linebreak' option for IniCommented container. (cweiske)
- * Request #16724: PHPConstants container should have option lowercase.
-   (cweiske)
+BC Break: Drop PHP4 support entirely
  </notes>
  <contents>
-  <dir name="/">
-   <dir name="Config">
-    <dir name="Container">
-     <file name="Apache.php" role="php" />
-     <file name="GenericConf.php" role="php" />
-     <file name="IniCommented.php" role="php" />
-     <file name="IniFile.php" role="php" />
-     <file name="PHPArray.php" role="php" />
-     <file name="PHPConstants.php" role="php" />
-     <file name="XML.php" role="php" />
-    </dir> <!-- /Config/Container -->
-    <file name="Container.php" role="php" />
-   </dir> <!-- /Config -->
-   <dir name="docs">
-    <file name="Apache.php" role="doc" />
-    <file name="IniCommented.php" role="doc" />
-    <file name="IniFromScratch.php" role="doc" />
-   </dir> <!-- /docs -->
-   <dir name="test">
-    <file name="bug2742.ini" role="test" />
-    <file name="bug2742.phpt" role="test" />
-    <file name="bug2780.phpt" role="test" />
-    <file name="bug3051.phpt" role="test" />
-    <file name="bug3051.xml" role="test" />
-    <file name="bug3137.phpt" role="test" />
-    <file name="bug3298.phpt" role="test" />
-    <file name="bug3298.xml" role="test" />
-    <file name="bug3398.ini" role="test" />
-    <file name="bug3398.phpt" role="test" />
-    <file name="bug3590-input.php" role="test" />
-    <file name="bug3590.phpt" role="test" />
-    <file name="bug4623.conf" role="test" />
-    <file name="bug4623.phpt" role="test" />
-    <file name="bug6441.ini" role="test" />
-    <file name="bug6441.phpt" role="test" />
-    <file name="bug7544-inicommented.phpt" role="test" />
-    <file name="bug7544-inifile.phpt" role="test" />
-    <file name="bug7544.ini" role="test" />
-    <file name="bug7652.phpt" role="test" />
-    <file name="bug7652.xml" role="test" />
-    <file name="bug8357-inicommented.phpt" role="test" />
-    <file name="bug8357-inifile.phpt" role="test" />
-    <file name="bug8357.ini" role="test" />
-    <file name="bug10010.phpt" role="test" />
-    <file name="bug10185.phpt" role="test" />
-    <file name="bug11435-inicommented.phpt" role="test" />
-    <file name="bug11435-inifile.phpt" role="test" />
-    <file name="bug11435.ini" role="test" />
-    <file name="bug11807.phpt" role="test" />
-    <file name="bug11827.ini" role="test" />
-    <file name="bug11827.phpt" role="test" />
-    <file name="bug12291.ini" role="test" />
-    <file name="bug12291.phpt" role="test" />
-    <file name="bug12387.ini" role="test" />
-    <file name="bug12387.phpt" role="test" />
-    <file name="bug12388.ini" role="test" />
-    <file name="bug12388.phpt" role="test" />
-    <file name="bug13791.phpt" role="test" />
-    <file name="bug16590.phpt" role="test" />
-    <file name="bug16590-2.phpt" role="test" />
-    <file name="bug16656.ini" role="test" />
-    <file name="bug16656.phpt" role="test" />
-    <file name="bug16724.phpt" role="test" />
-    <file name="bug16724-config.php" role="test" />
-    <file name="bug18124.phpt" role="test" />
-    <file name="phpt_test.php.inc" role="test" />
-    <file name="setup.php.inc" role="test" />
-   </dir> <!-- /test -->
-   <file baseinstalldir="/" name="Config.php" role="php" />
-  </dir> <!-- / -->
+  <dir baseinstalldir="/" name="/">
+   <file baseinstalldir="/" md5sum="3658100159780eef78dbc1102be95150" name="Config/Container.php" role="php" />
+   <file baseinstalldir="/" md5sum="4d6cd23ba2f863f416cbae80632ed5ff" name="Config/Container/Apache.php" role="php" />
+   <file baseinstalldir="/" md5sum="e6005587d06201fb7d04c1dd92527f68" name="Config/Container/GenericConf.php" role="php" />
+   <file baseinstalldir="/" md5sum="aefe93b82605416972cf426271233ff2" name="Config/Container/IniCommented.php" role="php" />
+   <file baseinstalldir="/" md5sum="9d2f60187ac933990de015b353518536" name="Config/Container/IniFile.php" role="php" />
+   <file baseinstalldir="/" md5sum="d7e2757473d4552dbf32d05f3bf5038e" name="Config/Container/PHPArray.php" role="php" />
+   <file baseinstalldir="/" md5sum="4f9bc518e87b5bcd849697f4635c4125" name="Config/Container/PHPConstants.php" role="php" />
+   <file baseinstalldir="/" md5sum="44539c73421607086a956bf6bc112cb0" name="Config/Container/XML.php" role="php" />
+   <file baseinstalldir="/" md5sum="8aa5b4c09e50139c42623f68bb864f7c" name="docs/Apache.php" role="doc" />
+   <file baseinstalldir="/" md5sum="086d16fae9e3f7163a852b8d61530b9f" name="docs/IniCommented.php" role="doc" />
+   <file baseinstalldir="/" md5sum="625f4b44d180525770b21b7bb5cd1b95" name="docs/IniFromScratch.php" role="doc" />
+   <file baseinstalldir="/" md5sum="972b734055c645487afa4481661c47ba" name="docs/TODO" role="doc" />
+   <file baseinstalldir="/" md5sum="d77a133b013cdc9794d0f6e09b6b88d1" name="test/bug2742.ini" role="test" />
+   <file baseinstalldir="/" md5sum="1c00244cdc36cff6960e394f1746c86d" name="test/bug2742.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="a750197af925dcfbe4f30d493f43896d" name="test/bug2780.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="6cf913a0cca9ea5ca4d98585c233a23e" name="test/bug3051.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="61064633ed23cbec0f706fde3751a3e4" name="test/bug3051.xml" role="test" />
+   <file baseinstalldir="/" md5sum="ebe9d890f041a26b0a37f4b97355a7fd" name="test/bug3137.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="d02557bad1fa59221b609d4a7b935f13" name="test/bug3298.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="7d577265dcdecebc67dee5118268ace5" name="test/bug3298.xml" role="test" />
+   <file baseinstalldir="/" md5sum="2b36a2cc7b70a10d13799c116a5536bb" name="test/bug3398.ini" role="test" />
+   <file baseinstalldir="/" md5sum="373109b53b1b5129f68c7b81aa31f297" name="test/bug3398.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="08ec9d9f4649fefda49b1991d3fb20b1" name="test/bug3590-input.php" role="test" />
+   <file baseinstalldir="/" md5sum="164099132d1dedf4ac03b3f4a5afba19" name="test/bug3590.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="ad05c4a11c5b08b25488aab6248192a7" name="test/bug4623.conf" role="test" />
+   <file baseinstalldir="/" md5sum="9a8c732b18ec989dbf90c00bba4e0c55" name="test/bug4623.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="f6fec7ec6187f591c51fc7b09130da7d" name="test/bug6441.ini" role="test" />
+   <file baseinstalldir="/" md5sum="7e9519b6ccfa0b8a3e369023add3ead1" name="test/bug6441.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="8a3b57b2ae8d47ee78056b99e620c282" name="test/bug7544-inicommented.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="db33c7454539f9fbc02897f5de2b90b2" name="test/bug7544-inifile.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="8aa8d748b9266e30028e75889ed5ff0c" name="test/bug7544.ini" role="test" />
+   <file baseinstalldir="/" md5sum="b293dee5fc7a375dbf72fae9b3d65bca" name="test/bug7652.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="3fcbdf4ceabeca34357cfcd3266e5e6d" name="test/bug7652.xml" role="test" />
+   <file baseinstalldir="/" md5sum="db3a27af6cf7afbeafb56e55ba63e601" name="test/bug8357-inicommented.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="68f5313a4cb289711453a2561ba1645a" name="test/bug8357-inifile.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="23285375454662259e5821eb991d124d" name="test/bug8357.ini" role="test" />
+   <file baseinstalldir="/" md5sum="1604ca371e96eee163b0becd7bfa43aa" name="test/bug10010.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="c6ed2ada7bca78204f00571e2161f5e9" name="test/bug10185.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="2114cb4dd01b1aff923aa283dcbe1190" name="test/bug11184.phpt" role="data" />
+   <file baseinstalldir="/" md5sum="faec7b1dd86f41c5a9c8194bd4e4c49f" name="test/bug11435-inicommented.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="996158b32307c87fa555174f39b87754" name="test/bug11435-inifile.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="6ae56e6071ec4039c90a1a3d007f4587" name="test/bug11435.ini" role="test" />
+   <file baseinstalldir="/" md5sum="58fb57a1fe02ac9def35a967dbd625cd" name="test/bug11807.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="3d429c002b6be183ef44a6f920eec87a" name="test/bug11827.ini" role="test" />
+   <file baseinstalldir="/" md5sum="d8fa8e699546d8b82e6ffe8bc56b06d6" name="test/bug11827.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="6aa9afbda9f9c79eba0f48f3ae224786" name="test/bug12291.ini" role="test" />
+   <file baseinstalldir="/" md5sum="81e9a0588ad0c6fe89b55407fd644fb2" name="test/bug12291.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="15075e0ed5e9976b809790f99fa12c45" name="test/bug12387.ini" role="test" />
+   <file baseinstalldir="/" md5sum="03b81bb1b9f4d72a328f61634c81947c" name="test/bug12387.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="3ea0d634b3e35b07e079fe4b5f4abb28" name="test/bug12388.ini" role="test" />
+   <file baseinstalldir="/" md5sum="87cfd29c630c74ec6302cb2cb8549835" name="test/bug12388.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="9c9d347ba30bd5db68e7f2aca52504c5" name="test/bug13791.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="dea46ccec89fe1fe6b07b9b8b731e468" name="test/bug16590-2.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="968f292008b3a4b4079839ad3bd21bcb" name="test/bug16590.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="4f31c76d65bc346f83a71bcd98526719" name="test/bug16656.ini" role="test" />
+   <file baseinstalldir="/" md5sum="175344ba505c7daa9b4ec721def2a0f2" name="test/bug16656.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="a0f6240cf26417d81cbaf7e4d6afac0f" name="test/bug16724-config.php" role="test" />
+   <file baseinstalldir="/" md5sum="439a5b34e28ab90f9a44f5109f5fb721" name="test/bug16724.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="ba80ddd0d89cdd55ffe2649d3c43b6c8" name="test/bug18124.phpt" role="test" />
+   <file baseinstalldir="/" md5sum="98e31c0e6f42af325b417fb7d1211069" name="test/inifile.ini" role="data" />
+   <file baseinstalldir="/" md5sum="3ea20efa284d71dcf1c8056229e8d19f" name="test/inifile.phpt" role="data" />
+   <file baseinstalldir="/" md5sum="7c4919c64ffd625eb54876e277623763" name="test/phpconstants.phpt" role="data" />
+   <file baseinstalldir="/" md5sum="85a595db7562821ef50297502a50317b" name="test/phpt_test.php.inc" role="test" />
+   <file baseinstalldir="/" md5sum="e20ac1751bb06e7ab0b488dbf289009b" name="test/setup.php.inc" role="test" />
+   <file baseinstalldir="/" md5sum="d5ec3212a82c289801db9256976f6403" name="composer.json" role="data" />
+   <file baseinstalldir="/" md5sum="e2573c9f96efa63b111d5252d709719b" name="Config.php" role="php" />
+  </dir>
  </contents>
  <dependencies>
   <required>
@@ -175,53 +142,453 @@ Feature requests implemented:
  <phprelease />
  <changelog>
   <release>
-   <date>2010-12-24</date>
-   <time>12:45:00</time>
    <version>
-    <release>1.10.12</release>
-    <api>1.10.8</api>
+    <release>1.1</release>
+    <api>1.1</api>
    </version>
    <stability>
-    <release>stable</release>
-    <api>stable</api>
+    <release>beta</release>
+    <api>beta</api>
    </stability>
+   <date>2002-10-08</date>
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>
-I believe we'll call this the "all hail Christian Weiske" release, since he's
-been a very busy bee.
-
-Bugs fixed:
-
- * Fixed Bug #11435: Fix IniCommented parsing of ~ ! | &amp; ( ). (aashley)
- * Fixed Bug #11807: Config can create invalid php for unknown values.
-   (cweiske)
- * Fixed Bug #11827: notice when using arrays (directive[]=value) in inifiles.
-   (cweiske)
- * Fixed Bug #12291: PEAR GenericConf newline shouldn't need a space. (cweiske)
- * Fixed Bug #12387: GenericConf doesn't allow for hyphens on left-hand-side of
-   a directive. (cweiske)
- * Fixed Bug #12388: GenericConf doesn't allow whitepace to left of directive
-   delimiter. (cweiske)
- * Fixed Bug #13116: Syntax Strict notice for references on constructors.
-   (fjfnaranjo)
- * Fixed Bug #15964: errors in test suite. (cweiske)
- * Fixed Bug #16590: parseConfig phparray ignores named arrays that use numbers
-   as name. (cweiske)
- * Fixed Bug #18124: Saving arrays back to ini file fails. (cweiske)
-
-Feature requests implemented:
-
- * Request #13791: Options for the PHPConstants container. (cweiske)
- * Request #16656: New 'linebreak' option for IniCommented container. (cweiske)
- * Request #16724: PHPConstants container should have option lowercase.
-   (cweiske)
+Fix bug in toArray().
+Thanks to Mark Polsen for noticing it.
    </notes>
   </release>
   <release>
-   <date>2007-06-12</date>
-   <time>22:03:06</time>
    <version>
-    <release>1.10.11</release>
+    <release>1.2</release>
+    <api>1.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-03-24</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+First stable release.
+* Added an XML container (uses XML_Parser),
+* Possibility to convert from one format to another,
+* Fixes in toArray(),
+* Added attributes to containers,
+* New methods for item manipulation.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.3</release>
+    <api>1.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-03-26</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Fixed missing quote in xml generation (Nicolas Guennoc)
+* Fixed warning in xml container when no attributes (Nicolas Guennoc)
+* Added methods getAttribute and updateAttributes to container.
+* Added possibility to get item by looking at its attributes in getItem()
+* PHPArray container automatically generates array name when not specified in options
+* XML Container can accept a name too that will generate the global root entity if needed
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.4</release>
+    <api>1.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-04-02</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Fix setDirective method in Container
+* Fix warnings in foreach loop when attributes are not set
+* Added phpdoc comments
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.5</release>
+    <api>1.5</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-04-14</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Added an id private property for each node
+* Fix a bug in toArray when items are duplicates
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.6</release>
+    <api>1.6</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-05-20</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Fix bug #23690 in toArray reported by Rob Halff
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.7</release>
+    <api>1.7</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-06-16</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Added new method registerConfigType() (Greg Beaver)
+* Root containers are not named &apos;root&apos; anymore (Bertrand Mansion)
+* IniCommented handles comma, quotes, slashes (Greg Beaver)
+* IniFile and IniCommented take care of slashes (Greg Beaver)
+* Method _parseArray() in PHPArray refactored and much faster (Bertrand Mansion)
+* Fix bugs with certain type of arrays with PHPArray (Bertrand Mansion)
+* PHPArray now returns values between single quotes (Jean-Marc Fontaine)
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.8</release>
+    <api>1.8</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-08-16</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Fix a bug in setRoot() for the XML generator
+* Added new method searchPath() to Config_Container (taken from Alan Knowles for XML_Tree)
+* Added float detection in Config_Container_PHPArray (Sylvinus Prodi)
+* Uses XML_Util in xml container for special entities translation, customizable linebreaks, indents, xml declaration
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.8.1</release>
+    <api>1.8.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-09-07</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Fix a bug in XML container related to cdata handler read by chunk, reported by Stephan Wentz
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.9</release>
+    <api>1.9</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-09-21</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Added a new boolean option/parameter in XML, PHPArray and toArray() to set
+  whether attributes should be rendered.
+* Added comments rendering in XML.
+* Fix typo in PHPArray when setting the configuration array name (Laurent Laville)
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.10</release>
+    <api>1.10</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2003-11-29</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Added &apos;isFile&apos; option to XML container
+* Fix a bug when a directive has no content in XML configurations
+* Fix slowdown caused by uniqid() on Linux
+* Fix regular expression for directives in .ini files (Emil Biserov)
+* Fix bug #132 concerning % in .ini files (Wagner netsols.de)
+* Fix possible warning if text is empty in .ini commented (Dean Urmson)
+* Small speed optimizations
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.10.1</release>
+    <api>1.10.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2004-06-04</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Fixed problems with PHP5 case sensitivity on class and method names.
+* Added possibility to actually replace the root container by using method
+Config::setRoot() with a container of type &apos;section&apos; and name &apos;root&apos;.
+* XML parser now makes use of the encoding specified in the options array.
+* Fixed a warning with array_splice() on an unset $children.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.10.2</release>
+    <api>1.10.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2004-06-14</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Fixed bug #1633 related to case-sensitivity of method names in PHP4.
+  causing PHPArray container not to work correctly. See also #1556.
+  Patch provided by m at tacker dotorg.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.10.3</release>
+    <api>1.10.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2004-10-13</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+Changelog:
+    *Fixed bug #2179 which prevented URL&apos;s containting ~ in ini files to be parsed correctly
+    *Fixed bug #2439 which caused Config_Containter::countChildren() to return a PEAR_ERROR
+        object when called on a non-section Config_Container object.  This change brings
+        the object&apos;s behavior inline with the documentation. Beware, if your code relies
+        on the previous behavior, this change may break your code.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.10.4</release>
+    <api>1.10.4</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2005-02-10</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+Changelog:
+    * Fixed bug #3298 which wouldn&apos;t parse arrays with numerical indexes correctly.
+    *Fixed bug #2742 which didn&apos;t trim variable names in Inicommented file
+    *changed XML_Parser and XML_Util dependencies to optional, since they&apos;re only needed 
+    when parsing XML files (bug #2738)
+    *added a new container for editing files of php constants, courtesy of philip ortel [me@phillipoertel.com] (beta)
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.10.5</release>
+    <api>1.10.5</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-01-03</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+Changelog:
+ * Make what we add quotes around consistent between IniFile and IniCommented.
+ * Fixed bug #3137 Adding a comment caused problems outputing in phparray format.
+ * Fixed bug #3590 Handling phparray formats with implicit numeric keys.
+ * Fixed bug #4623 Rendering to Apache format a second time looses section attributes.
+ * Fixed bug #5598 Allow &apos;=&apos; in values and output it correctly in IniFile format.
+ * Fixed bugs #5033, #5835, #6294 Return only variables by reference as required by PHP 4.4 and 5.1.
+ * Partial Fix for #6385 Allow colon in directive name in IniCommented to match IniFile.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.10.6</release>
+    <api>1.10.6</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-02-14</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+Changelog:
+ * More PHP 4.4 and 5.1 return by reference fixes
+ * Fixed bug #4477 fatal error when key of array is longer than 114 chars under PHP4.x
+ * Fixed bug #6385 Allow colon in directive name in IniCommented to match IniFile.
+ * Fixed bug #6441 true and false literals should be parsed appropriately. Booleans are now parsed the same as in parse_ini_file()
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.10.7</release>
+    <api>1.10.7</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-08-11</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+Changelog:
+ * Fixed Bug #7544: Empty attributes in IniCommented are being discarded (Luis Correa d&apos;Almeida)
+ * Fixed Bug #7652: wrong xml to phparray convert. Caused by counting position
+   of directives and sections seperately. While when converting to some containers
+   we want to count them together.
+ * Add tests to confirm behaviour of Bug #8357. Do not believe it is fixable without removing
+   features.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.2.1</release>
+    <api>0.2.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-10-20</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+- Bug fixed, when $feature in ParseInput was not set 
+- some e_warnings fixed
+(thanks to Markus Fischer for the reports)
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.2.2</release>
+    <api>0.2.2</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-10-20</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+- Only the first char of -&gt;feature[&apos;cc&apos;] is taken as a comment deliminator
+- quoting supports both methods:
+  [bla]
+  foo = &quot;&apos;bar&apos;&quot;
+  bar = &apos;&quot;foo&quot;&apos;
+- Value parser only parser until first comment-char or the end of the string, therefore spaces surrounded by nonspaces don&apos;t have to be quoted.
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.3</release>
+    <api>0.3</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-10-20</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+- some fixes
+- add WDDX-Container for config data in WDDX-files
+- add phpIniFile, does the same like IniFile but based on the PHP build-in function parse_ini_file()
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>0.3.1</release>
+    <api>0.3.1</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-10-20</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+Documentation is in README.Config.
+0.3.1
+-  E_ALL fixes
+   </notes>
+  </release>
+  <release>
+   <version>
+    <release>1.0</release>
+    <api>1.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2006-10-20</date>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+Complete rewrite : API has changed.
+The class now uses a tree structure of container objects.
+As a consequence, backward compatibility is not provided !!!
+Look at the Apache.php and IniCommented.php scripts in &apos;docs&apos; for usage examples.
+Some containers are still missing : XML and DB.
+   </notes>
+  </release>
+  <release>
+   <date>2006-10-20</date>
+   <time>03:23:43</time>
+   <version>
+    <release>1.10.8RC1</release>
+    <api>1.10.8</api>
+   </version>
+   <stability>
+    <release>beta</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Fixed Bug #7097: writeConfig incorrect when root has attributes
+  This fix has the potential to break other things as it is a big change to the
+  PHPArray backend. Please test.
+   </notes>
+  </release>
+  <release>
+   <date>2006-11-10</date>
+   <time>09:00:00</time>
+   <version>
+    <release>1.10.8</release>
     <api>1.10.8</api>
    </version>
    <stability>
@@ -230,8 +597,24 @@ Feature requests implemented:
    </stability>
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>
- * Fixed Bug #11184: Knock on problems from fix for Bug #10185. Thanks to
-   Thomas Despoix and Carsten Wiedmann for helping me understand it properly.
+* Fixed Bug #7097: writeConfig incorrect when root has attributes
+   </notes>
+  </release>
+  <release>
+   <date>2006-12-22</date>
+   <time>09:00:00</time>
+   <version>
+    <release>1.10.9</release>
+    <api>1.10.8</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.php.net/license">PHP License</license>
+   <notes>
+* Fixed Bug #9632: PHPConstants container not registered. Thanks to 
+  Clemens Lang &lt;neverpanic at gmail dot com&gt;
    </notes>
   </release>
   <release>
@@ -247,15 +630,15 @@ Feature requests implemented:
    </stability>
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>
- * Fix Bug #10010: numeric index lost when parsing subarrays
- * Fix Bug #10185: problem with addslashs in container &quot;PHPArray&quot; / method &quot;toString&quot;
+* Fix Bug #10010: numeric index lost when parsing subarrays
+* Fix Bug #10185: problem with addslashs in container &quot;PHPArray&quot; / method &quot;toString&quot;
    </notes>
   </release>
   <release>
-   <date>2006-12-22</date>
-   <time>09:00:00</time>
+   <date>2007-06-12</date>
+   <time>22:03:06</time>
    <version>
-    <release>1.10.9</release>
+    <release>1.10.11</release>
     <api>1.10.8</api>
    </version>
    <stability>
@@ -263,15 +646,16 @@ Feature requests implemented:
     <api>stable</api>
    </stability>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes> * Fixed Bug #9632: PHPConstants container not registered. Thanks to 
-   Clemens Lang &lt;neverpanic at gmail dot com&gt;
+   <notes>
+* Fixed Bug #11184: Knock on problems from fix for Bug #10185. Thanks to
+  Thomas Despoix and Carsten Wiedmann for helping me understand it properly.
    </notes>
   </release>
   <release>
-   <date>2006-11-10</date>
-   <time>09:00:00</time>
+   <date>2010-12-24</date>
+   <time>12:45:00</time>
    <version>
-    <release>1.10.8</release>
+    <release>1.10.12</release>
     <api>1.10.8</api>
    </version>
    <stability>
@@ -279,452 +663,51 @@ Feature requests implemented:
     <api>stable</api>
    </stability>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed Bug #7097: writeConfig incorrect when root has attributes
-   </notes>
-  </release>
-  <release>
-   <date>2006-10-20</date>
-   <time>03:23:43</time>
-   <version>
-    <release>1.10.8RC1</release>
-    <api>1.10.8</api>
-   </version>
-   <stability>
-    <release>beta</release>
-    <api>stable</api>
-   </stability>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed Bug #7097: writeConfig incorrect when root has attributes
-  This fix has the potential to break other things as it is a big change to the
-  PHPArray backend. Please test.
-   
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.10.7</release>
-    <api>1.10.7</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2006-08-11</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>Changelog:
- * Fixed Bug #7544: Empty attributes in IniCommented are being discarded (Luis Correa d&apos;Almeida)
- * Fixed Bug #7652: wrong xml to phparray convert. Caused by counting position
-   of directives and sections seperately. While when converting to some containers
-   we want to count them together.
- * Add tests to confirm behaviour of Bug #8357. Do not believe it is fixable without removing
-   features.
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.10.6</release>
-    <api>1.10.6</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2006-02-14</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>Changelog:
- * More PHP 4.4 and 5.1 return by reference fixes
- * Fixed bug #4477 fatal error when key of array is longer than 114 chars under PHP4.x
- * Fixed bug #6385 Allow colon in directive name in IniCommented to match IniFile.
- * Fixed bug #6441 true and false literals should be parsed appropriately. Booleans are now parsed the same as in parse_ini_file()
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.10.5</release>
-    <api>1.10.5</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2006-01-03</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>Changelog:
- * Make what we add quotes around consistent between IniFile and IniCommented.
- * Fixed bug #3137 Adding a comment caused problems outputing in phparray format.
- * Fixed bug #3590 Handling phparray formats with implicit numeric keys.
- * Fixed bug #4623 Rendering to Apache format a second time looses section attributes.
- * Fixed bug #5598 Allow &apos;=&apos; in values and output it correctly in IniFile format.
- * Fixed bugs #5033, #5835, #6294 Return only variables by reference as required by PHP 4.4 and 5.1.
- * Partial Fix for #6385 Allow colon in directive name in IniCommented to match IniFile.
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.10.4</release>
-    <api>1.10.4</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2005-02-10</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>Changelog:
-    * Fixed bug #3298 which wouldn&apos;t parse arrays with numerical indexes correctly.
-    *Fixed bug #2742 which didn&apos;t trim variable names in Inicommented file
-    *changed XML_Parser and XML_Util dependencies to optional, since they&apos;re only needed 
-    when parsing XML files (bug #2738)
-    *added a new container for editing files of php constants, courtesy of philip ortel [me@phillipoertel.com] (beta)
+   <notes>
+I believe we&apos;ll call this the &quot;all hail Christian Weiske&quot; release, since he&apos;s
+been a very busy bee.
 
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.10.3</release>
-    <api>1.10.3</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2004-10-13</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>Changelog:
-    *Fixed bug #2179 which prevented URL&apos;s containting ~ in ini files to be parsed correctly
-    *Fixed bug #2439 which caused Config_Containter::countChildren() to return a PEAR_ERROR
-        object when called on a non-section Config_Container object.  This change brings
-        the object&apos;s behavior inline with the documentation. Beware, if your code relies
-        on the previous behavior, this change may break your code.
+Bugs fixed:
 
+ * Fixed Bug #11435: Fix IniCommented parsing of ~ ! | &amp; ( ). (aashley)
+ * Fixed Bug #11807: Config can create invalid php for unknown values.
+   (cweiske)
+ * Fixed Bug #11827: notice when using arrays (directive[]=value) in inifiles.
+   (cweiske)
+ * Fixed Bug #12291: PEAR GenericConf newline shouldn&apos;t need a space. (cweiske)
+ * Fixed Bug #12387: GenericConf doesn&apos;t allow for hyphens on left-hand-side of
+   a directive. (cweiske)
+ * Fixed Bug #12388: GenericConf doesn&apos;t allow whitepace to left of directive
+   delimiter. (cweiske)
+ * Fixed Bug #13116: Syntax Strict notice for references on constructors.
+   (fjfnaranjo)
+ * Fixed Bug #15964: errors in test suite. (cweiske)
+ * Fixed Bug #16590: parseConfig phparray ignores named arrays that use numbers
+   as name. (cweiske)
+ * Fixed Bug #18124: Saving arrays back to ini file fails. (cweiske)
+
+Feature requests implemented:
+
+ * Request #13791: Options for the PHPConstants container. (cweiske)
+ * Request #16656: New &apos;linebreak&apos; option for IniCommented container. (cweiske)
+ * Request #16724: PHPConstants container should have option lowercase.
+   (cweiske)
    </notes>
   </release>
   <release>
    <version>
-    <release>1.10.2</release>
-    <api>1.10.2</api>
+    <release>2.0.0</release>
+    <api>2.0.0</api>
    </version>
    <stability>
     <release>stable</release>
     <api>stable</api>
    </stability>
-   <date>2004-06-14</date>
+   <date>2014-03-24</date>
    <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed bug #1633 related to case-sensitivity of method names in PHP4.
-  causing PHPArray container not to work correctly. See also #1556.
-  Patch provided by m at tacker dotorg.
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.10.1</release>
-    <api>1.10.1</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2004-06-04</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed problems with PHP5 case sensitivity on class and method names.
-* Added possibility to actually replace the root container by using method
-Config::setRoot() with a container of type &apos;section&apos; and name &apos;root&apos;.
-* XML parser now makes use of the encoding specified in the options array.
-* Fixed a warning with array_splice() on an unset $children.
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.10</release>
-    <api>1.10</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-11-29</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Added &apos;isFile&apos; option to XML container
-* Fix a bug when a directive has no content in XML configurations
-* Fix slowdown caused by uniqid() on Linux
-* Fix regular expression for directives in .ini files (Emil Biserov)
-* Fix bug #132 concerning % in .ini files (Wagner netsols.de)
-* Fix possible warning if text is empty in .ini commented (Dean Urmson)
-* Small speed optimizations
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.9</release>
-    <api>1.9</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-09-21</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Added a new boolean option/parameter in XML, PHPArray and toArray() to set
-  whether attributes should be rendered.
-* Added comments rendering in XML.
-* Fix typo in PHPArray when setting the configuration array name (Laurent Laville)
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.8.1</release>
-    <api>1.8.1</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-09-07</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fix a bug in XML container related to cdata handler read by chunk, reported by Stephan Wentz
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.8</release>
-    <api>1.8</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-08-16</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fix a bug in setRoot() for the XML generator
-* Added new method searchPath() to Config_Container (taken from Alan Knowles for XML_Tree)
-* Added float detection in Config_Container_PHPArray (Sylvinus Prodi)
-* Uses XML_Util in xml container for special entities translation, customizable linebreaks, indents, xml declaration
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.7</release>
-    <api>1.7</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-06-16</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Added new method registerConfigType() (Greg Beaver)
-* Root containers are not named &apos;root&apos; anymore (Bertrand Mansion)
-* IniCommented handles comma, quotes, slashes (Greg Beaver)
-* IniFile and IniCommented take care of slashes (Greg Beaver)
-* Method _parseArray() in PHPArray refactored and much faster (Bertrand Mansion)
-* Fix bugs with certain type of arrays with PHPArray (Bertrand Mansion)
-* PHPArray now returns values between single quotes (Jean-Marc Fontaine)
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.6</release>
-    <api>1.6</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-05-20</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fix bug #23690 in toArray reported by Rob Halff
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.5</release>
-    <api>1.5</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-04-14</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Added an id private property for each node
-* Fix a bug in toArray when items are duplicates
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.4</release>
-    <api>1.4</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-04-02</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fix setDirective method in Container
-* Fix warnings in foreach loop when attributes are not set
-* Added phpdoc comments
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.3</release>
-    <api>1.3</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-03-26</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>* Fixed missing quote in xml generation (Nicolas Guennoc)
-* Fixed warning in xml container when no attributes (Nicolas Guennoc)
-* Added methods getAttribute and updateAttributes to container.
-* Added possibility to get item by looking at its attributes in getItem()
-* PHPArray container automatically generates array name when not specified in options
-* XML Container can accept a name too that will generate the global root entity if needed
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.2</release>
-    <api>1.2</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2003-03-24</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>First stable release.
-* Added an XML container (uses XML_Parser),
-* Possibility to convert from one format to another,
-* Fixes in toArray(),
-* Added attributes to containers,
-* New methods for item manipulation.
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.1</release>
-    <api>1.1</api>
-   </version>
-   <stability>
-    <release>beta</release>
-    <api>beta</api>
-   </stability>
-   <date>2002-10-08</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>Fix bug in toArray().
-Thanks to Mark Polsen for noticing it.
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>1.0</release>
-    <api>1.0</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2006-10-20</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>Complete rewrite : API has changed.
-The class now uses a tree structure of container objects.
-As a consequence, backward compatibility is not provided !!!
-Look at the Apache.php and IniCommented.php scripts in &apos;docs&apos; for usage examples.
-Some containers are still missing : XML and DB.
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>0.3.1</release>
-    <api>0.3.1</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2006-10-20</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>Documentation is in README.Config.
-0.3.1
--  E_ALL fixes
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>0.3</release>
-    <api>0.3</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2006-10-20</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>- some fixes
-- add WDDX-Container for config data in WDDX-files
-- add phpIniFile, does the same like IniFile but based on the PHP build-in function parse_ini_file()
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>0.2.2</release>
-    <api>0.2.2</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2006-10-20</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>- Only the first char of -&gt;feature[&apos;cc&apos;] is taken as a comment deliminator
-- quoting supports both methods:
-  [bla]
-  foo = &quot;&apos;bar&apos;&quot;
-  bar = &apos;&quot;foo&quot;&apos;
-- Value parser only parser until first comment-char or the end of the string, therefore spaces surrounded by nonspaces don&apos;t have to be quoted.
-    
-   </notes>
-  </release>
-  <release>
-   <version>
-    <release>0.2.1</release>
-    <api>0.2.1</api>
-   </version>
-   <stability>
-    <release>stable</release>
-    <api>stable</api>
-   </stability>
-   <date>2006-10-20</date>
-   <license uri="http://www.php.net/license">PHP License</license>
-   <notes>- Bug fixed, when $feature in ParseInput was not set 
-- some e_warnings fixed
-(thanks to Markus Fischer for the reports)      
-    
+   <notes>
+BC Break: Drop PHP4 support entirely
    </notes>
   </release>
  </changelog>
 </package>
-<!-- vim: set nocin ai ts=1 sw=1 et: -->
