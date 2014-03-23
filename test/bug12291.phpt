@@ -14,13 +14,13 @@ var_dump($root->toArray());
 ?>
 --EXPECT--
 array(1) {
-  ["root"]=>
+  'root' =>
   array(3) {
-    ["keyword"]=>
+    'keyword' =>
     string(11) "foo,bar,baz"
-    ["keyword_with_space"]=>
+    'keyword_with_space' =>
     string(13) "foo, bar, baz"
-    ["keyword_with_two_spaces"]=>
+    'keyword_with_two_spaces' =>
     string(14) "foo,  bar, baz"
   }
 }

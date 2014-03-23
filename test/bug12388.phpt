@@ -9,15 +9,15 @@ var_dump($root->toArray());
 ?>
 --EXPECT--
 array(1) {
-  ["root"]=>
+  'root' =>
   array(4) {
-    ["nospace"]=>
+    'nospace' =>
     string(5) "value"
-    ["space_before"]=>
+    'space_before' =>
     string(5) "value"
-    ["space_after"]=>
+    'space_after' =>
     string(5) "value"
-    ["two_spaces_after"]=>
+    'two_spaces_after' =>
     string(5) "value"
   }
 }
