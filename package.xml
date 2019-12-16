@@ -122,7 +122,7 @@ BC Break: Drop PHP4 support entirely
  <dependencies>
   <required>
    <php>
-    <min>5.0.0</min>
+    <min>7.2.0</min>
    </php>
    <pearinstaller>
     <min>1.4.0b1</min>
