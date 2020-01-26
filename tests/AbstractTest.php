@@ -11,7 +11,7 @@ class AbstractTest extends \PHPUnit\Framework\TestCase
 
     public function setUp() : void
     {
-        echo( get_called_class() . '::' . $this->getName() ."\n" );
+        // echo( get_called_class() . '::' . $this->getName() ."\n" );
     }
 
     /**/
