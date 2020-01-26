@@ -1,0 +1,7 @@
+<?php
+$conf['string'] = 'id';
+$conf['null'] = null;
+$conf['false'] = false;
+$conf['zero'] = 0;
+$conf['empty_string'] = '';
+?>
