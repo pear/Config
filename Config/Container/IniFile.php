@@ -66,6 +66,7 @@ class Config_Container_IniFile
                 null, PEAR_ERROR_RETURN
             );
         }
+        
         $currentSection = $obj->container;
         $confArray = parse_ini_file($datasrc, true);
         if (!$confArray) {
@@ -74,6 +75,7 @@ class Config_Container_IniFile
                 null, PEAR_ERROR_RETURN
             );
         }
+        
         foreach ($confArray as $key => $value) {
             if (is_array($value)) {
                 $currentSection =& $obj->container->createSection($key);

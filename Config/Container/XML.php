@@ -17,9 +17,6 @@
 //
 // $Id$
 
-require_once('XML/Parser.php');
-require_once('XML/Util.php');
-
 /**
 * Config parser for XML Files
 *

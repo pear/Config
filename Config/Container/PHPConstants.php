@@ -11,7 +11,6 @@
  * @version  SVN: $Id$
  * @link     http://pear.php.net/package/Config
  */
-require_once 'Config/Container.php';
 
 /**
  * Config parser for PHP constant files
@@ -22,7 +21,7 @@ require_once 'Config/Container.php';
  * @license  http://www.php.net/license PHP License
  * @link     http://pear.php.net/package/Config
  */
-class Config_Container_PHPConstants extends Config_Container
+class Config_Container_PHPConstants 
 {
     /**
      * Valid config options:
@@ -125,7 +124,7 @@ class Config_Container_PHPConstants extends Config_Container
      *
      * @access public
      */
-    function toString(&$obj)
+    function toString(&$obj, $options = array())
     {
         $string = '';
         

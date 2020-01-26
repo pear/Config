@@ -5,29 +5,21 @@ regression test for bug #6441
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'setup.php.inc';
 $datasrc = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'bug6441.ini';
 
-$configLoader =& new Config();
+$configLoader = new Config();
 $conf_obj = $configLoader->parseConfig($datasrc, 'inicommented');
 $temp = $conf_obj->toArray();
 $conf = $temp['root'];
-var_dump($conf);
+var_export($conf);
 
 ?>
 --EXPECT--
-array(8) {
-  ["val1"]=>
-  string(1) "1"
-  ["val2"]=>
-  string(0) ""
-  ["val3"]=>
-  string(1) "1"
-  ["val4"]=>
-  string(0) ""
-  ["val5"]=>
-  string(1) "1"
-  ["val6"]=>
-  string(0) ""
-  ["val7"]=>
-  string(4) "true"
-  ["val8"]=>
-  string(5) "false"
-}
+array (
+  'val1' => '1',
+  'val2' => '',
+  'val3' => '1',
+  'val4' => '',
+  'val5' => '1',
+  'val6' => '',
+  'val7' => 'true',
+  'val8' => 'false',
+)

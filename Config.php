@@ -17,9 +17,6 @@
 //
 // $Id$
 
-require_once('PEAR.php');
-require_once('Config/Container.php');
-
 $GLOBALS['CONFIG_TYPES'] = 
         array(
             'apache'        => array('Config/Container/Apache.php', 'Config_Container_Apache'),
