@@ -1,6 +1,14 @@
 language: php
 install:
-  - composer install
+  - composer install --prefer-dist --no-progress
+  
 php:
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+  - 7.3
   - 7.4
-script: phpunit
+
+script:
+  - vendor/bin/phpunit
