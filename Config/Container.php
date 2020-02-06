@@ -692,7 +692,7 @@ class Config_Container {
         $array[$this->name] = array();
         switch ($this->type) {
             case 'directive':
-                if ($useAttr && $this->attributes && count($this->attributes) > 0) {
+                if ($useAttr && !empty($this->attributes)) {
                     $array[$this->name]['#'] = $this->content;
                     $array[$this->name]['@'] = $this->attributes;
                 } else {
@@ -700,7 +700,7 @@ class Config_Container {
                 }
                 break;
             case 'section':
-                if ($useAttr && $this->attributes&& count($this->attributes) > 0) {
+                if ($useAttr && !empty($this->attributes)) {
                     $array[$this->name]['@'] = $this->attributes;
                 }
                 if ($count = count($this->children)) {
