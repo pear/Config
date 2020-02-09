@@ -2,8 +2,7 @@
 bug 2780 regression
 --FILE--
 <?php
-    set_include_path(dirname(dirname(__FILE__)) . ':' . get_include_path());
-    require_once 'Config.php' ;
+    require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'setup.php.inc';
     $c1 = new Config_Container('section', 'root');
     $c2 = new Config_Container();
 

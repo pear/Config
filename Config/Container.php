@@ -17,8 +17,6 @@
 //
 // $Id$
 
-require_once 'Config.php';
-
 /**
 * Interface for Config containers
 *
@@ -62,7 +60,7 @@ class Config_Container {
     * Array of attributes for this item
     * @var  array
     */
-    var $attributes;
+    var $attributes = [];
 
     /**
     * Unique id to differenciate nodes
@@ -82,7 +80,7 @@ class Config_Container {
     * @param  string  $content    Content of container object
     * @param  array   $attributes Array of attributes for container object
     */
-    function __construct($type = 'section', $name = '', $content = '', $attributes = null)
+    function __construct($type = 'section', $name = '', $content = '', $attributes = [])
     {
         $this->type       = $type;
         $this->name       = $name;
@@ -694,7 +692,7 @@ class Config_Container {
         $array[$this->name] = array();
         switch ($this->type) {
             case 'directive':
-                if ($useAttr && count($this->attributes) > 0) {
+                if ($useAttr && !empty($this->attributes)) {
                     $array[$this->name]['#'] = $this->content;
                     $array[$this->name]['@'] = $this->attributes;
                 } else {
@@ -702,7 +700,7 @@ class Config_Container {
                 }
                 break;
             case 'section':
-                if ($useAttr && count($this->attributes) > 0) {
+                if ($useAttr && !empty($this->attributes)) {
                     $array[$this->name]['@'] = $this->attributes;
                 }
                 if ($count = count($this->children)) {
@@ -773,4 +771,3 @@ class Config_Container {
         }
     } // end func writeDatasrc
 } // end class Config_Container
-?>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpunit backupGlobals="false"
+         defaultTestSuite="all_tests"
+         backupStaticAttributes="true"
+         colors="true"
+         bootstrap="./tests/bootstrap_phpunit.php"
+         >
+
+    <testsuites>
+        <!-- TODO defaultTestSuite will work with phpunit 6.1 -->
+        <testsuite name="all_tests">
+            <directory>./tests/integration</directory>
+            <directory>./tests/legacy</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <!-- /!\ whitelist will exclude every outside class from coverage -->
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./Config</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-clover" target="clover.xml"/>
+        <log type="coverage-html" target="tests/coverage/"/>
+    </logging>
+</phpunit>

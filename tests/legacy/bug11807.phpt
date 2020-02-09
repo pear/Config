@@ -27,7 +27,7 @@ print file_get_contents($path);
 ?>
 --CLEAN--
 <?php
-unlink(dirname(__FILE__) . '/bug11807.txt');
+//unlink(dirname(__FILE__) . '/bug11807.txt');
 ?>
 --EXPECT--
 <?php

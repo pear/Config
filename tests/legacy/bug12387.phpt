@@ -5,13 +5,12 @@ Test for request #12387: Allow hyphens in the key
 require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'setup.php.inc';
 $datasrc = dirname(__FILE__) . '/bug12387.ini';
 $root = $config->parseConfig($datasrc, 'genericconf');
-var_dump($root->toArray());
+var_export($root->toArray());
 ?>
 --EXPECT--
-array(1) {
-  ["root"]=>
-  array(1) {
-    ["hy-phen"]=>
-    string(5) "value"
-  }
-}
+array (
+  'root' => 
+  array (
+    'hy-phen' => 'value',
+  ),
+)
