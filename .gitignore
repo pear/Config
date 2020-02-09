@@ -3,5 +3,4 @@ composer.lock
 composer.phar
 vendor
 tests/coverage
-.phpunit.result.cache
 clover.xml
